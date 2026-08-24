@@ -1,4 +1,5 @@
-#Plataforma de Agendamento de Serviços
+# Plataforma de Agendamento de Serviços
+
 📌 Descrição do Projeto
 
 Este projeto tem como objetivo desenvolver uma plataforma de agendamento de serviços, voltada para negócios como barbearias, estúdios ou prestadores de serviços em geral.
