@@ -12,8 +12,8 @@ Compensação para o fator "pessoal": artefatos escritos a cada marco e
 revisão obrigatória de toda contribuição.
 
 ## Iteração
-- Duração: 2 semanas, iniciando na segunda-feira
-- Planejamento: 1h30min, na segunda-feira 20h
+- Duração: 2 semanas, iniciando na quarta-feira
+- Planejamento: 1h30min, na quarta-feira ás 20h
 - Acompanhamento: mensagem escrita ocasional no canal da equipe (WhatsApp)
 - Demonstração: quinta-feira da segunda semana, com o usuário quando possível no turno matutino
 - Retrospectiva: 10 min, após a demonstração
