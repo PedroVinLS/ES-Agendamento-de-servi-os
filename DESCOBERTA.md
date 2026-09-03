@@ -2,7 +2,7 @@
 
 ## Problema
 Muitos prestadores de serviços realizam seus agendamentos de forma manual e descentralizada, o que pode causar conflitos de horários, agendamentos duplicados e dificuldades na organização da agenda. Dessa forma, existe a necessidade de centralizar e organizar esse processo de maneira mais eficiente.
-[Fontes: R1, E1, E2]
+[Fontes: N1]
 
 ## Partes interessadas
 | Parte | Categoria | Interesse | Poder | Contato |
@@ -16,16 +16,12 @@ Muitos prestadores de serviços realizam seus agendamentos de forma manual e des
 (traços com fonte, conforme o modelo do capítulo)
 
 ## Fontes consultadas
-- R1: reunião às 02-09-2026.
-- E1: ...
-- E2: ...
-- O1: ...
+- N1: reunião às 02-09-2026.
 
 ## Necessidades levantadas
-| Id | Necessidade | Parte interessada | Fonte | Situação |
+| Id | Necessidade | Parte | Fonte | Situação |
 |---|---|---|---|---|
-| N1 | ... | Estabelecimento comercial | E1 | Confirmada |
-| N2 | ... | Usuário público | E2 | A verificar |
+| N1 | ... | Coordenação | E1 | Confirmada |
 
 ## Escopo
 -Conectar o site à internet geral.
