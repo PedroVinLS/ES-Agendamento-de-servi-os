@@ -43,8 +43,8 @@ Este README representa a versão inicial do projeto, podendo sofrer alterações
 
 ## Integrantes do projeto
 
-- Davi Nicolas de Paula Kolcenti: @davikolcenti
-- José Augusto Rennan Rodrigues Abreu: @EIJARRA
-- Kauê César Gonçalves: @Euaks
-- Pedro Vinícius Lima Silva: @PedroVinLS
-- Pedro Henrique Oliveira Soares @Pepe2hd
+- Davi Nicolas de Paula Kolcenti: [@davikolcenti](https://github.com/davikolcenti)
+- José Augusto Rennan Rodrigues Abreu: [@EIJARRA](https://github.com/EIJARRA)
+- Kauê César Gonçalves: [@Euaks](https://github.com/Euaks)
+- Pedro Vinícius Lima Silva: [@PedroVinLS](https://github.com/PedroVinLS)
+- Pedro Henrique Oliveira Soares [@Pepe2hd](https://github.com/Pepe2hd)
