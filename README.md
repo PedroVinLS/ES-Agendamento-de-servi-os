@@ -40,3 +40,11 @@ As diretrizes de contribuição estão descritas no arquivo CONTRIBUTING.md.
 ## 📌 Observações
 
 Este README representa a versão inicial do projeto, podendo sofrer alterações conforme o avanço das etapas de desenvolvimento e refinamento dos requisitos.
+
+##Integrantes do projeto
+
+-Davi Nicolas de Paula Kolcenti: @davikolcenti
+-José Augusto Rennan Rodrigues Abreu: @EIJARRA
+-Kauê César Gonçalves: @Euaks
+-Pedro Vinícius Lima Silva: @PedroVinLS
+-Pedro Henrique Oliveira Soares @Pepe2hd
