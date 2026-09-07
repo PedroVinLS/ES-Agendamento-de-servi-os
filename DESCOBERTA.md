@@ -9,19 +9,45 @@ Muitos prestadores de serviços realizam seus agendamentos de forma manual e des
 |---|---|---|---|---|
 | Estabelecimento comercial | Criar e manejar | Criar sem esforço manual | Alto | irrelevante |
 | Usuário público | usuário comum | poder usar os serviços dos estabelcimentos  | Baixo | irrelevante |
-...
 
-## Personas 
-### Rafael, aluno vivendo de auxílios do governo
-(traços com fonte, conforme o modelo do capítulo)
+### Persona: 
+Kauê, aluno que vivendo de auxílios do governo.
+
+- Contexto: 4º período, estudante em Palmas, vai ao câmpus
+  duas vezes por semana. [Fonte: entrevista E3]
+- Objetivo: contratar serviços com preço consideravel.
+  [Fonte: entrevista E3]
+- Dificuldade atual: problema com a encanação.
+  [Fonte: entrevista E3]
+- Condição de uso: acessa pelo celular, com conexão instável no trajeto.
+  [Fonte: observação O1, 2026-08-26]
+- O que ele não precisa: de agilidade no processo. [Fonte: entrevista E3]
+
+Mario, o encanador
+
+- Contexto: Encanador, com poucos clientes, começou a
+  trabalhar recentemente em Palmas. [Fonte: entrevista E3]
+- Objetivo: conseguir novos clientes fiéis e novas oportunidades.
+  [Fonte: entrevista E3]
+- Dificuldade atual: começou a trabalhar recentemente,
+  e possui poucos clientes.
+  [Fonte: entrevista E3]
+- Condição de uso: acessa pelo celular, com conexão instável no trajeto.
+  [Fonte: observação O1, 2026-08-26]
+- O que ele não precisa: velocidade de upload. [Fonte: entrevista E3]
+
 
 ## Fontes consultadas
 - N1: reunião às 02-09-2026.
+- N2: reunião às 02-09-2026.
+- N3: reunião às 02-09-2026.
 
 ## Necessidades levantadas
 | Id | Necessidade | Parte | Fonte | Situação |
 |---|---|---|---|---|
 | N1 | ... | Coordenação | E1 | Confirmada |
+| N2 | ... | Coordenação | E1 | Confirmada |
+| N3 | ... | Coordenação | E1 | Confirmada |
 
 ## Escopo
 -Conectar o site à internet geral.
@@ -41,3 +67,4 @@ Muitos prestadores de serviços realizam seus agendamentos de forma manual e des
 
 ## Histórico de revisão
 - 2026-09-03: versão inicial
+- 2026-09-07: versão parcialmente pronta.
