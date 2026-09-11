@@ -14,40 +14,50 @@ Muitos prestadores de serviços realizam seus agendamentos de forma manual e des
 Kauê, aluno que vivendo de auxílios do governo.
 
 - Contexto: 4º período, estudante em Palmas, vai ao câmpus
-  duas vezes por semana. [Fonte: entrevista E3]
+  duas vezes por semana. [Fonte: entrevista E4, E5, E6]
 - Objetivo: contratar serviços com preço consideravel.
-  [Fonte: entrevista E3]
+  [Fonte: entrevista E4, E5, E6]
 - Dificuldade atual: problema com a encanação.
-  [Fonte: entrevista E3]
+  [Fonte: entrevista E4, E5, E6]
 - Condição de uso: acessa pelo celular, com conexão instável no trajeto.
   [Fonte: observação O1, 2026-08-26]
-- O que ele não precisa: de agilidade no processo. [Fonte: entrevista E3]
+- O que ele não precisa: de agilidade no processo. [Fonte: entrevista E4, E5, E6]
 
 Mario, o encanador
 
 - Contexto: Encanador, com poucos clientes, começou a
-  trabalhar recentemente em Palmas. [Fonte: entrevista E3]
+  trabalhar recentemente em Palmas. [Fonte: entrevista E1, E2, E3]
 - Objetivo: conseguir novos clientes fiéis e novas oportunidades.
-  [Fonte: entrevista E3]
+  [Fonte: entrevista E1, E2, E3]
 - Dificuldade atual: começou a trabalhar recentemente,
   e possui poucos clientes.
-  [Fonte: entrevista E3]
+  [Fonte: entrevista E1, E2, E3]
 - Condição de uso: acessa pelo celular, com conexão instável no trajeto.
   [Fonte: observação O1, 2026-08-26]
-- O que ele não precisa: velocidade de upload. [Fonte: entrevista E3]
+- O que ele não precisa: velocidade de upload. [Fonte: entrevista E1, E2, E3]
 
 
 ## Fontes consultadas
 - N1: reunião às 02-09-2026.
-- N2: reunião às 02-09-2026.
-- N3: reunião às 02-09-2026.
+- E1: entrevista, prestador de serviço, 2026-09-08, 20 min, conduzida por Pedro Silva.
+- O1: observação, prestador de serviço, 2026-09-08, 30 min.
+- E2: entrevista, prestador de serviço, 2026-09-09, 15 min, conduzida por José Abreu.
+- E3: entrevista, prestador de serviço, 2026-09-10, 25 min, conduzida por Pedro Soares.
+- E4: entrevista, usuário público, 2026-09-11, 20 min, conduzida por Kauê Gonçalves.
+- E5: entrevista, usuário público, 2026-09-11, 20 min, conduzida por Kauê Gonçalves.
+- E6: entrevista, usuário público, 2026-09-11, 15 min, conduzida por Davi Kolcenti.
 
 ## Necessidades levantadas
 | Id | Necessidade | Parte | Fonte | Situação |
 |---|---|---|---|---|
-| N1 | ... | Coordenação | E1 | Confirmada |
-| N2 | ... | Coordenação | E1 | Confirmada |
-| N3 | ... | Coordenação | E1 | Confirmada |
+| N1 | Notificações via WhatsApp | Prestador de serviço | E1 | Confirmada |
+| N2 | Agenda | Prestador de serviço | E1 | Confirmada |
+| N3 | Acesso as informações do cliente | Prestador de serviço | E1 | Confirmada |
+| N4 | Tag de priorização | Prestador de serviço | E2 | Confirmada |
+| N5 | Definição de localização | Prestador de serviço | E3 | Confirmada |
+| N6 | Relação de materiais necessários | Prestador de serviço | E3 | Confirmada |
+| N7 | Agilidade na comunicação | Usuário público | E4 | Confirmada |
+| N8 | Acesso as informações do prestador de serviço | Usuário público | E4 | Confirmada |
 
 ## Escopo
 -Conectar o site à internet geral.
@@ -67,4 +77,5 @@ Mario, o encanador
 
 ## Histórico de revisão
 - 2026-09-03: versão inicial
-- 2026-09-07: versão parcialmente pronta.
+- 2026-09-07: versão parcial.
+- 2026-09-11: versão final.
