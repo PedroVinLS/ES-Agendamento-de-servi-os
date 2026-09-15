@@ -67,15 +67,23 @@ Mario, o encanador
 -Resolver problemas de busca de comércio.
 
 ### Fora de escopo nesta versão
-- Implementação de transações entre usuário-comércio, pois a transação será feita só pelo estabelecimento.
-- Implementação de sistema de criptografia para a segurança dos dados do cliente, pois não desejamos nos submeter à LGPD.
+- Implementação de transações entre usuário-comércio. Motivo: A transação será feita só pelo estabelecimento.
+- Implementação de sistema de criptografia para a segurança dos dados do cliente. Motivo: Não desejamos nos submeter à LGPD.
+- Implementação da aba de relação de materiais. Motivo: Exige tratamento de uma variedade de materiais.
 
 ## Produto mínimo viável
 -O site está conectado com a internet.
 -Estabelecimentos podem registrar seus negócios no site.
 -Usuário podem contactar e marcar horário com o negócio.
 
+## Riscos iniciais
+| Id | Risco | Prob. | Impacto | Resposta | Ação e responsável |
+|---|---|---|---|---|---|
+| R1 | Falha no envio de notificações via WhatsApp | Médio | Médio | Mitigar | Implementar fallback (notificação interna) – Dev Backend |
+| R2 | Baixo desempenho na comunicação (acima de 10s) | Alto | Alto | Mitigar | Otimização de requisições e testes de carga – Dev FullStack |
+
 ## Histórico de revisão
 - 2026-09-03: versão inicial
 - 2026-09-07: versão parcial.
-- 2026-09-11: versão final.
+- 2026-09-11: versão parcialmente final.
+- 2026-09-14: versão final.
