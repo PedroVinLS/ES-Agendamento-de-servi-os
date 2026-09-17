@@ -1,0 +1,46 @@
+erDiagram
+    USUARIO ||--|| CLIENTE : vira
+    USUARIO ||--|| PRESTADOR : vira
+    CLIENTE ||--o{ SERVICO: requesita
+    PRESTADOR ||--o{ SERVICO: executa
+    SERVICO ||--|| AGENDA: possui
+    SERVICO ||--o{ MATERIAIS: possui
+    USUARIO {
+        int id PK
+        string nome
+        date dataCriacao
+        string email
+        string senha
+    }
+    CLIENTE {
+        int id_usuario FK
+        string cpf PK
+        string observacoes
+    }
+    PRESTADOR {
+        int id_usuario FK
+        string cnpj PK
+        string servicoPrestado
+        int avaliacao 
+    }
+    SERVICO {
+        int id PK
+        int id_prestador FK
+        int id_cliente FK
+        float preco
+        string tag
+        string descricao
+    }
+    AGENDA {
+        int id PK
+        int id_servico FK
+        timestamp horario
+        string local
+    }
+    MATERIAIS {
+        int id PK
+        int id_servico FK
+        float preco
+        string nome
+        int quantidade
+    }
