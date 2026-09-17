@@ -1,0 +1,37 @@
+classDiagram
+  direction LR
+  class Usuario["Usuario"] {
+    nome
+    dataCriacao
+    email
+    senha 
+  }
+  class Cliente["Cliente"] {
+    cpf
+    observacoes
+  }
+  class Prestador["Prestador"] {
+    cnpj
+    servicoPrestado
+    avaliacao
+  }
+  class Servico["Servico"] {
+    preco
+    tag
+    descricao
+  }
+  class Agenda["Agenda"] {
+    horario
+    local
+  }
+  class Materiais["Materiais"] {
+    preco
+    nome 
+    quantidade 
+  }
+Cliente "1" --* "1" Usuario : pode ser
+Prestador "1" --* "1" Usuario : pode ser
+Servico "0..*" <-- "1" Cliente : requesita
+Servico "0..*" <-- "1" Prestador : executa
+Servico "1" *-- "1" Agenda : possui
+Servico "1" *-- "0..*" Materiais : possui
