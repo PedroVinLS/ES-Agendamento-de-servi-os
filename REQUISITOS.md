@@ -35,7 +35,7 @@ RNF-01 Tempo de comunicação entre usuários
 - Aceitável: até 10 segundos.
 - Pretendido: até 5 segundos. 
 - Como verificar: medição no navegador, com a base de teste de 30
-  alunos, três execuções, valor considerado é o maior. [Origem: N7]
+  usuários, três execuções, valor considerado é o maior. [Origem: N7]
 
 ## Restrições e regras de negócio
 RN-01 O sistema deve aceitar um usuário tanto na condição de cliente quanto na de prestador de serviço. [Origem: O1] 
