@@ -39,7 +39,7 @@ Estados do documento em `diagrams/estados-documento.mmd`.
 | D-02 | Inclusão de materiais como classe separada | Há serviços que dispensam a necessidade de materiais | Mais de uma classe para definir por completo um serviço |
 
 ## Protótipo
-Telas do fluxo principal em `prototipo/`, com as recusas previstas.
+Telas do fluxo principal em `diagrams/prototype/`.
 
 ## Histórico de revisão
 - 2026-09-16: versão inicial
