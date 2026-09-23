@@ -1,0 +1,28 @@
+stateDiagram-v2
+    [*] --> Disponivel
+
+    Disponivel --> Solicitado : Cliente solicita serviço
+
+    Solicitado --> VerificandoAgenda : Consultar agenda
+
+    VerificandoAgenda --> HorarioDisponivel : Há horário disponível
+    VerificandoAgenda --> SemHorario : Não há horário disponível
+
+    SemHorario --> VerificandoAgenda : Consultar novamente
+    SemHorario --> Cancelado : Cliente desiste
+
+    HorarioDisponivel --> Agendado : Cliente confirma horário
+
+    Agendado --> EmExecucao : Prestador inicia serviço
+    Agendado --> Cancelado : Cliente cancela
+
+    EmExecucao --> Finalizado : Prestador finaliza serviço
+
+    Finalizado --> AguardandoAvaliacao : Serviço concluído
+
+    AguardandoAvaliacao --> Avaliado : Cliente avalia
+    AguardandoAvaliacao --> Encerrado : Encerrar sem avaliação
+
+    Avaliado --> [*]
+    Encerrado --> [*]
+    Cancelado --> [*]
