@@ -1,0 +1,72 @@
+sequenceDiagram
+    autonumber
+
+    actor Cliente
+    participant Sistema
+    participant Usuario
+    participant Servico
+    participant Prestador
+    participant Agenda
+    participant Materiais
+
+    %% Login
+    Cliente->>Sistema: Informa email e senha
+    Sistema->>Usuario: Validar credenciais
+    Usuario-->>Sistema: Credenciais válidas
+    Sistema-->>Cliente: Login realizado
+
+    %% Consulta de serviços
+    Cliente->>Sistema: Solicita serviços disponíveis
+    Sistema->>Servico: Consultar serviços
+    Servico->>Prestador: Consultar prestador responsável
+    Prestador-->>Servico: Retorna dados do prestador
+    Servico-->>Sistema: Retorna serviços disponíveis
+    Sistema-->>Cliente: Exibe serviços e prestadores
+
+    %% Seleção do serviço
+    Cliente->>Sistema: Seleciona um serviço
+    Sistema->>Servico: Consultar detalhes do serviço
+    Servico-->>Sistema: Retorna preço, tag e descrição
+
+    %% Consulta da agenda
+    Sistema->>Agenda: Consultar horários do serviço
+    Agenda-->>Sistema: Retorna horários disponíveis
+    Sistema-->>Cliente: Exibe horários disponíveis
+
+    %% Agendamento
+    Cliente->>Sistema: Seleciona horário
+    Sistema->>Agenda: Verificar disponibilidade
+
+    alt Horário disponível
+        Agenda-->>Sistema: Horário disponível
+        Sistema->>Servico: Registrar cliente no serviço
+        Servico-->>Sistema: Serviço registrado
+
+        Sistema->>Agenda: Confirmar agendamento
+        Agenda-->>Sistema: Agendamento confirmado
+
+        Sistema-->>Cliente: Exibe confirmação do agendamento
+
+    else Horário indisponível
+        Agenda-->>Sistema: Horário indisponível
+        Sistema-->>Cliente: Solicita outro horário
+    end
+
+    %% Execução do serviço
+    Prestador->>Sistema: Consulta serviços agendados
+    Sistema->>Servico: Buscar serviço
+    Servico-->>Sistema: Retorna serviço e cliente
+
+    Prestador->>Sistema: Inicia execução do serviço
+    Sistema->>Materiais: Consultar materiais necessários
+    Materiais-->>Sistema: Retorna materiais e quantidades
+
+    Sistema-->>Prestador: Exibe materiais do serviço
+    Prestador->>Sistema: Finaliza execução do serviço
+    Sistema-->>Cliente: Serviço concluído
+
+    %% Avaliação
+    Cliente->>Sistema: Envia avaliação do serviço
+    Sistema->>Prestador: Registrar avaliação
+    Prestador-->>Sistema: Avaliação registrada
+    Sistema-->>Cliente: Confirma avaliação
