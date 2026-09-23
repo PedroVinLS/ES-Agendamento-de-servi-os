@@ -10,7 +10,7 @@ Muitos prestadores de serviços realizam seus agendamentos de forma manual e des
 | Estabelecimento comercial | Criar e manejar | Criar sem esforço manual | Alto | irrelevante |
 | Usuário público | usuário comum | poder usar os serviços dos estabelcimentos  | Baixo | irrelevante |
 
-### Persona: 
+### Persona 
 Kauê, aluno que vivendo de auxílios do governo.
 
 - Contexto: 4º período, estudante em Palmas, vai ao câmpus
@@ -60,11 +60,11 @@ Mario, o encanador
 | N8 | Acesso as informações do prestador de serviço | Usuário público | E4 | Confirmada |
 
 ## Escopo
--Conectar o site à internet geral.
--Conectar o comércio ao usuário.
--Permitir varios usuários usarem o site ao mesmo tempo.
--Resolver problemas de agendamento.
--Resolver problemas de busca de comércio.
+- Conectar o site à internet geral.
+- Conectar o comércio ao usuário.
+- Permitir varios usuários usarem o site ao mesmo tempo.
+- Resolver problemas de agendamento.
+- Resolver problemas de busca de comércio.
 
 ### Fora de escopo nesta versão
 - Implementação de transações entre usuário-comércio. Motivo: A transação será feita só pelo estabelecimento.
@@ -72,11 +72,11 @@ Mario, o encanador
 - Implementação da aba de relação de materiais. Motivo: Exige tratamento de uma variedade de materiais.
 
 ## Produto mínimo viável
--O site está conectado com a internet.
+- O site está conectado com a internet.
 
--Estabelecimentos podem registrar seus negócios no site.
+- Estabelecimentos podem registrar seus negócios no site.
 
--Usuário podem contactar e marcar horário com o negócio.
+- Usuário podem contactar e marcar horário com o negócio.
 
 ## Riscos iniciais
 | Id | Risco | Prob. | Impacto | Resposta | Ação e responsável |
@@ -89,3 +89,4 @@ Mario, o encanador
 - 2026-09-07: versão parcial.
 - 2026-09-11: versão parcialmente final.
 - 2026-09-14: versão final.
+- 2026-09-14: formatando alguns textos.
