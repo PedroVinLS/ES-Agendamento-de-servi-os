@@ -12,20 +12,11 @@ Compensação para o fator "pessoal": artefatos escritos a cada marco e
 revisão obrigatória de toda contribuição.
 
 ## Iteração
-- Duração: 2 semanas, iniciando na quarta-feira
-- Planejamento: 1h30min, na quarta-feira ás 20h
+- Duração: 1 semana, iniciando na segunda-feira
+- Planejamento: 1h30min, na segunda-feira ás 20h
 - Acompanhamento: mensagem escrita ocasional no canal da equipe (WhatsApp)
-- Demonstração: quinta-feira da segunda semana, com o usuário quando possível no turno matutino
+- Demonstração: Nas quintas-feiras, com o usuário quando possível no turno matutino
 - Retrospectiva: 10 min, após a demonstração
-
-## Papéis
-- Prioriza o:
-- Prioriza o:
-- Prioriza o:
-- Prioriza o:
-- Prioriza o:
-- Conduz a demonstração e prioriza o backlog: Davi Kolcenti
-- Demais decisões técnicas: quem estiver na tarefa
 
 ## Definição de pronto
 - Critério de funcionalidade atendido
@@ -34,3 +25,4 @@ revisão obrigatória de toda contribuição.
 
 ## Histórico de revisão do processo
 - 21/08/2026: versão inicial
+- 23/09/2026: versão parcial
