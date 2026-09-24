@@ -37,8 +37,8 @@ Estados do documento em `diagrams/estados-documento.mmd`.
 |---|---|---|---|
 | D-01 | Cliente e Prestador como herança de Usuário | Regra de negócio RN-01 | Insuficiência na definição própria de Cliente |
 | D-02 | Inclusão de materiais como classe separada | Há serviços que dispensam a necessidade de materiais | Mais de uma classe para definir por completo um serviço |
-| D-03 | Regras de prazo em módulo único | Risco R5, regulamento pode mudar | Uma indireção a mais entre tela e regra| 
-| D-04 | Avaliação do supervisor como classe separada | "Enviar arquivo" não se aplica a ela | Duas listagens em vez de uma |
+| D-03 | "Agenda" como classe, e não atributo | Atributos insuficientes para a definição completa de um "agendamento" | Mais classes necessárias para definir por completo um serviço |
+| D-04 | "Cancelar"  como estado final | Abrange maior variedade de situações antes sem tratamento | Conclusão da sequência de atividades com irresolução da uma solicitação | 
 
 ## Protótipo
 Telas do fluxo principal em `diagrams/prototype/`.
