@@ -73,9 +73,7 @@ Mario, o encanador
 
 ## Produto mínimo viável
 - O site está conectado com a internet.
-
 - Estabelecimentos podem registrar seus negócios no site.
-
 - Usuário podem contactar e marcar horário com o negócio.
 
 ## Riscos iniciais
