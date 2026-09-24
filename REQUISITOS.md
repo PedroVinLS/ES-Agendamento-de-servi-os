@@ -38,7 +38,7 @@ RNF-01 Tempo de comunicação entre usuários
   usuários, três execuções, valor considerado é o maior. [Origem: N7]
 
 ## Restrições e regras de negócio
-RN-01 O sistema deve aceitar um usuário tanto na condição de cliente quanto na de prestador de serviço. [Origem: O1] 
+RN-01 O sistema deve aceitar um usuário na condição de cliente ou prestador de serviço. [Origem: O1] 
 
 RN-02 O sistema deve aceitar o cadastro de um usuário se, e somente se, seu perfil esteja completo dentro das exigências da aplicação. [Origem: O1] 
 
@@ -72,3 +72,4 @@ Para o conjunto:
 - 2026-09-07: versão inicial (criação do REQUISITOS.md);
 - 2026-09-11: versão parcial (requisitos funcionais / não funcionais, restrições e regras de negócios);
 - 2026-09-14: versão parcial (inclusão de critérios de aceitação e revisão do checklist);
+- 2026-09-23: versão parcial (retirando ambiguidade dos requisitos);
