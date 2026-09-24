@@ -1,10 +1,10 @@
 MIT License
 
-Copyright (c) 2026 Davi Nicolas de Paula Kolcenti
-Copyright (c) 2026 José Augusto Rennan Rodrigues Abreu
-Copyright (c) 2026 Kaue Cesar Goncalves
-Copyright (c) 2026 Pedro Henrique Oliveira Soares
-Copyright (c) 2026 Pedro Vinícius Lima Silva
+Copyright (c) 2026 Davi Nicolas de Paula Kolcenti<br>
+Copyright (c) 2026 José Augusto Rennan Rodrigues Abreu<br>
+Copyright (c) 2026 Kaue Cesar Goncalves<br>
+Copyright (c) 2026 Pedro Henrique Oliveira Soares<br>
+Copyright (c) 2026 Pedro Vinícius Lima Silva<br>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
