@@ -46,7 +46,7 @@ RN-03 O sistema deve recusar o agendamento de dois serviços diferentes prestado
 
 RN-04 O sistema deve definir um preço mínimo para os serviços oferecidos dentro da plataforma. [Origem: O1]
 
-##Custo do Backlog Ordenado
+## Custo do Backlog Ordenado
 | Ordem | Item | MoSCoW | Pontos |
 |---:|---|---|---|
 | 1 | HU-01.1 Cadastrar usuário no banco de dados| Obrigatório | 6 |
