@@ -23,8 +23,8 @@ Operações em `contrato/operacoes.md`, exemplos em `contrato/exemplos/`.
 | Data e hora de agendamento | Mostra horários possíveis e destaca os disponíveis | Registra a escolha, se necessário recusa com 409 |
 
 ## Qualidades e custos
-|---|---|---|---|
 | Qualidade | Requisito | Decisão | Custo aceito |
+|---|---|---|---|
 | Manutenibilidade | Possível necessidade de manutenção | Regras definidas em objetos no backend; o frontend as consulta | Uma nova camada entre a tela e a regra |
 | Eficiência de desempenho | RNF-01: conjunto de 60 mensagens em até 10 segundos | Sistema de troca de mensagens otimizado | Funcionalidade de troca de mensagens mais complexa de desenvolver |
 | Confiabilidade | Envio de solicitação não configura serviço agendado | Registrar a solicitação, definir seu estado (aceita/recusada) e retornar | Necessidade de retorno para confirmação de solicitação |
@@ -32,8 +32,8 @@ Operações em `contrato/operacoes.md`, exemplos em `contrato/exemplos/`.
 | Flexibilidade | Interface utilizável em tela de celular (O1) | Frontend separado, que fala com o backend só pelo contrato | O contrato precisa ser mantido |
 
 ## Decisões
-|---|---|---|---|---|
 | Id | Decisão | Motivo | Consequência aceita | Situação |
+|---|---|---|---|---|
 | A-01 | O backend decide toda verificação importante; o fronted lida com verificações menores e orienta o usuário | Impossibilita irregularidades provenientes do usuário | Dois centros de verificação para manter coerentes | Aceita |
 | A-02 | Banco de dados relacional acessado apenas pelo backend | Modelo de dados definido em PROJETO.md | Toda consulta, necessariamente, passa pelo backend | Aceita |
 
