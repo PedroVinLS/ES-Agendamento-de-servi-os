@@ -46,6 +46,19 @@ RN-03 O sistema deve recusar o agendamento de dois serviços diferentes prestado
 
 RN-04 O sistema deve definir um preço mínimo para os serviços oferecidos dentro da plataforma. [Origem: O1]
 
+##Custo do Backlog Ordenado
+| Ordem | Item | MoSCoW | Pontos |
+|---:|---|---|---|
+| 1 | HU-01.1 Cadastrar usuário no banco de dados| Obrigatório | 6 |
+| 2 | HU-01.2 Registrar usuário registrado como um cliente ou um prestador de serviço| Obrigatório | 3 |
+| 3 | HU-02.1 Registro de serviço por um prestador cadastrado no sistema| Obrigatório | 8 |
+| 4 | HU-02.2 Expansão e detalhamento dos serviços e qualidades de um prestador de serviço | baixo | 3 |
+| 5 | HU-03.1 Interação do usuário com agenda do prestador de serviços | Obrigatório | 8 |
+| 6 | HU-03.2 Resolução de conflito de agendamento alguns serviços através de tags | Importante | 6 |
+| 7 | HU-04.1 Aviso de resolução e confirmação de serviço através do Whatsapp | Importante | 6 |
+| 8 | HU-04.2 Avaliação do serviço prestado e do prestador | baixo | 2 |
+
+Pontos totais: 42, Obrigatórios: 25, Porcentagem de Obrigatório: 59.523%
 
 ## Lista de verificação da revisão
 
@@ -69,6 +82,7 @@ Para o conjunto:
       review parcial.
 
 ## Histórico de revisão
+- 2026-10-15: versão parcial (Criação das fatias do sistema ordenadas por ponto)
 - 2026-10-15: versão parcial (modificação da dependência de  RF-02)
 - 2026-09-07: versão inicial (criação do REQUISITOS.md);
 - 2026-09-11: versão parcial (requisitos funcionais / não funcionais, restrições e regras de negócios);
