@@ -7,7 +7,7 @@ Capacidade: 2 pessoas equivalentes; previsão de 6 pontos.
 |---|---:|---|
 | HU-01.1 Cadastrar usuário no banco de dados | 6 | Sim |
 
-Evidência: a ser definido
+Evidência: a ser definido.
 Resultado: a ser definido.
 
 ### Restrospectiva
