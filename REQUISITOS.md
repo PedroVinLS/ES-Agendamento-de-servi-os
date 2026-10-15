@@ -4,7 +4,7 @@
 | Ordem | Item | Origem | MoSCoW | Risco técnico | Depende de |
 |---:|---|---|---|---|---|
 | 1 | RF-01 | N1, N5 | Importante | Baixo | RN-02  |
-| 2 | RF-02 | N2 | Obrigatório | Médio | — |
+| 2 | RF-02 | N2 | Obrigatório | Médio | RN-01 |
 | 3 | RF-03 | N3, N8 | Obrigatório | Baixo | RN-02 |
 | 4 | RF-04 | N4 | Desejável | Baixo | — |
 | 5 | RF-05 | N6 | Fora desta versão | Alto | — |
@@ -69,6 +69,7 @@ Para o conjunto:
       review parcial.
 
 ## Histórico de revisão
+- 2026-10-15: versão parcial (modificação da dependência de  RF-02)
 - 2026-09-07: versão inicial (criação do REQUISITOS.md);
 - 2026-09-11: versão parcial (requisitos funcionais / não funcionais, restrições e regras de negócios);
 - 2026-09-14: versão parcial (inclusão de critérios de aceitação e revisão do checklist);
