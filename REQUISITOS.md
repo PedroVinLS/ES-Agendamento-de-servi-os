@@ -49,7 +49,7 @@ RN-04 O sistema deve definir um preço mínimo para os serviços oferecidos dent
 ## Custo do Backlog Ordenado
 | Ordem | Item | MoSCoW | Pontos |
 |---:|---|---|---|
-| 1 | HU-01.1 Cadastrar usuário no banco de dados| Obrigatório | 6 |
+| 1 | HU-01.1 Implementação e teste da Agenda| Importante | 6 |
 | 2 | HU-01.2 Registrar usuário registrado como um cliente ou um prestador de serviço| Obrigatório | 3 |
 | 3 | HU-02.1 Registro de serviço por um prestador cadastrado no sistema| Obrigatório | 8 |
 | 4 | HU-02.2 Expansão e detalhamento dos serviços e qualidades de um prestador de serviço | baixo | 3 |
@@ -82,6 +82,7 @@ Para o conjunto:
       review parcial.
 
 ## Histórico de revisão
+- 2026-10-26: versão parcial (modificação da primeira fatia)
 - 2026-10-15: versão parcial (Criação das fatias do sistema ordenadas por ponto)
 - 2026-10-15: versão parcial (modificação da dependência de  RF-02)
 - 2026-09-07: versão inicial (criação do REQUISITOS.md);
