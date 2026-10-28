@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#245A50">
+  <meta name="description" content="Protótipo de agendamento de serviços por dia e horário.">
+  <title>Agendamento de Serviços</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <button class="logo-button" type="button" aria-label="Logo — voltar ao menu principal (ainda não implementado)">
+        <span class="logo-word">LOGO</span>
+        <span class="logo-hint">(volta ao menu<br>principal)</span>
+      </button>
+      <div class="page-title">
+        <h1>AGENDAMENTO DE SERVIÇOS</h1>
+      </div>
+    </header>
+
+    <main class="main-layout">
+      <section class="schedule-panel" aria-label="Grade semanal de agendamento">
+        <div id="schedule-board" class="schedule-board" role="grid" aria-label="Selecione um ou mais horários disponíveis"></div>
+      </section>
+
+      <aside class="sidebar">
+        <section class="instructions-panel" aria-labelledby="instructions-title">
+          <h2 id="instructions-title">INSTRUÇÕES</h2>
+          <p>Passe o cursor sobre uma célula para destacar o dia e o horário. Clique com o botão esquerdo para selecionar um horário disponível. Você pode selecionar múltiplas células; clique novamente em uma célula selecionada para desfazer a seleção. Clique no botão vermelho abaixo para confirmar o agendamento.</p>
+          <p>Você pode desfazer todas as seleções pelo botão “Cancelar agendamento”. Depois da confirmação, os horários agendados ficam marcados como ocupados.</p>
+          <p>Se julgar necessário, você pode selecionar dois ou mais horários diferentes para um serviço mais longo. O provedor do serviço pode cobrar extra pelo atendimento prolongado.</p>
+        </section>
+
+        <div class="action-area">
+          <button id="confirm-button" class="action-button confirm-button" type="button" disabled>
+            <span>CONFIRMAR</span>
+            <span>AGENDAMENTO</span>
+          </button>
+          <button id="cancel-button" class="action-button cancel-button" type="button" disabled>
+            CANCELAR AGENDAMENTO
+          </button>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <dialog id="result-dialog" class="result-dialog" aria-labelledby="dialog-title" aria-describedby="dialog-message">
+    <div class="dialog-mark" aria-hidden="true">✓</div>
+    <h2 id="dialog-title">Agendamento realizado!</h2>
+    <p id="dialog-message">O agendamento foi confirmado com sucesso.</p>
+    <button id="dialog-close" class="dialog-close-button" type="button">ENTENDI</button>
+  </dialog>
+</body>
+</html>
