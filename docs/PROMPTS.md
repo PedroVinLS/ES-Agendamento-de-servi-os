@@ -55,8 +55,8 @@ O serviço deve:
 O arquivo deve conter apenas as regras de negócio da agenda, sem implementar rotas, API, banco de dados ou modelos, pois essas partes são responsabilidade de outras equipes.
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 Pedro Henrique: 28/10/2026.
-Desenvolver o arquivo DisponibilidadeService.js para o backend do projeto *Agendamento de Serviços*, referente à primeira fatia (HU-01.1).
 
 O serviço deve:
 
@@ -71,10 +71,6 @@ O serviço deve:
 
 O arquivo deve conter apenas as regras de negócio relacionadas à disponibilidade, sem implementar rotas, API, banco de dados ou modelos, pois essas partes são responsabilidade de outras equipes.
 
-
-
-
-Desenvolver o arquivo DisponibilidadeValidator.js para o backend do projeto *Agendamento de Serviços*, referente à primeira fatia (HU-01.1).
 
 O validador deve:
 
