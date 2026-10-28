@@ -55,3 +55,40 @@ O serviço deve:
 O arquivo deve conter apenas as regras de negócio da agenda, sem implementar rotas, API, banco de dados ou modelos, pois essas partes são responsabilidade de outras equipes.
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Pedro Henrique: 28/10/2026.
+Desenvolver o arquivo DisponibilidadeService.js para o backend do projeto *Agendamento de Serviços*, referente à primeira fatia (HU-01.1).
+
+O serviço deve:
+
+- Permitir o cadastro dos horários disponíveis de cada prestador.
+- Consultar as disponibilidades cadastradas, filtrando por prestador e período.
+- Comunicar-se com o DisponibilidadeValidator.js para validar os horários antes do cadastro.
+- Impedir o registro de disponibilidades duplicadas ou sobrepostas.
+- Disponibilizar os dados para o AgendaService.js, permitindo a organização da agenda semanal.
+- Utilizar armazenamento temporário em memória para testes locais, enquanto o banco de dados não estiver integrado.
+
+*Requisitos técnicos:* utilizar JavaScript com Node.js, classes, funções assíncronas (async/await) e module.exports.
+
+O arquivo deve conter apenas as regras de negócio relacionadas à disponibilidade, sem implementar rotas, API, banco de dados ou modelos, pois essas partes são responsabilidade de outras equipes.
+
+
+
+
+Desenvolver o arquivo DisponibilidadeValidator.js para o backend do projeto *Agendamento de Serviços*, referente à primeira fatia (HU-01.1).
+
+O validador deve:
+
+- Verificar se o identificador do prestador é válido.
+- Validar datas no formato AAAA-MM-DD, rejeitando datas inexistentes.
+- Validar horários no formato HH:MM, utilizando o padrão de 24 horas.
+- Permitir disponibilidades de segunda-feira a sábado, entre 6h e 18h.
+- Exigir que os horários comecem e terminem em horas cheias.
+- Garantir que o horário de início seja anterior ao horário de término.
+- Identificar e impedir períodos duplicados ou sobrepostos para o mesmo prestador e data.
+- Permitir intervalos consecutivos sem considerá-los conflitos, como 08h–09h e 09h–10h.
+
+*Requisitos técnicos:* utilizar JavaScript com Node.js, organizar as validações em métodos reutilizáveis e exportar a classe com module.exports.
+
+O arquivo deve ser utilizado pelo DisponibilidadeService.js, sem implementar rotas, API, banco de dados ou modelos.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
