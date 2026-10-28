@@ -53,4 +53,5 @@ O serviço deve:
 **Requisitos técnicos:** utilizar JavaScript com Node.js, organizar o código em uma classe, utilizar `async/await` quando necessário e exportar com `module.exports`.
 
 O arquivo deve conter apenas as regras de negócio da agenda, sem implementar rotas, API, banco de dados ou modelos, pois essas partes são responsabilidade de outras equipes.
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
