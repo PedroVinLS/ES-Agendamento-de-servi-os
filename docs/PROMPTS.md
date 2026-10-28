@@ -1,4 +1,5 @@
 Davi Kolcenti: 28/10/2026
+
 Yo, chatgpt, eu tenho uma pergunta: como eu faço para conectar a minha interface gráfica a um backend para que ela de fato seja funcional? Eu fiquei encarregado de criar o front-end de uma página em particular de uma aplicação WEB, e meus colégas ficaram responsáveis pelo manejo do backend, e ainda outros colegas com o manejo do banco de dados. Eu fiz a interface e os elementos no Figma, então, como conecto isso às funcionalidades criadas por eles?
 
 Então, você conseguiria transformar uma tela do figma e os elementos gráficos que criei em código HTML5, CSS, JSON para que a interface possa se conectar à API criada?
