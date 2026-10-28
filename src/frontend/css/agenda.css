@@ -1,0 +1,395 @@
+@import url('https://fonts.googleapis.com/css2?family=Inria+Sans:ital,wght@0,400;0,700;1,400&display=swap');
+
+:root {
+  color-scheme: light;
+  --page-bg: #DFEFE9;
+  --grid-frame: #CFE1DB;
+  --cell-bg: #F5FAF7;
+  --teal: #245A50;
+  --teal-dark: #176B59;
+  --hover: #83D0BD;
+  --selected: #39BD94;
+  --selected-border: #168565;
+  --booked: #176B59;
+  --confirm-red: #DD1519;
+  --confirm-red-hover: #BD1015;
+  --disabled-bg: #B8C7C2;
+  --disabled-text: #E8EFEC;
+  --white: #FFFFFF;
+  --cell-radius: 9px;
+  font-family: "Inria Sans", "Arial Narrow", Arial, sans-serif;
+  font-synthesis: none;
+}
+
+* { box-sizing: border-box; }
+
+html { min-width: 320px; background: var(--page-bg); }
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  background: var(--page-bg);
+  color: var(--white);
+}
+
+button { font: inherit; }
+
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 7px 18px 18px;
+}
+
+.topbar {
+  display: flex;
+  flex: 0 0 69px;
+  align-items: stretch;
+  gap: 7px;
+  min-width: 0;
+}
+
+.logo-button,
+.page-title {
+  height: 69px;
+  border: 0;
+  border-radius: 5px;
+  background: var(--teal);
+  color: var(--white);
+}
+
+.logo-button {
+  flex: 0 0 126px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 8px 11px;
+  text-align: left;
+  cursor: default;
+}
+
+.logo-word {
+  font-size: 13px;
+  font-style: italic;
+  line-height: 1.2;
+}
+
+.logo-hint {
+  margin-top: 2px;
+  font-size: 13px;
+  font-style: italic;
+  line-height: 1.15;
+}
+
+.page-title {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  max-width: calc(100vw - 169px);
+  padding: 0 16px;
+}
+
+.page-title h1 {
+  margin: 0;
+  font-size: clamp(23px, 2.1vw, 40px);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: .2px;
+  white-space: nowrap;
+}
+
+.main-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: 12px;
+  flex: 1 1 auto;
+  min-height: 760px;
+}
+
+.schedule-panel {
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  padding: 20px 20px 18px;
+  border-radius: 4px;
+  background: var(--grid-frame);
+}
+
+.schedule-board {
+  display: grid;
+  grid-template-columns: 112px repeat(6, minmax(0, 1fr));
+  grid-template-rows: 41px repeat(12, minmax(0, 1fr));
+  gap: 6px;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.corner-cell { min-width: 0; }
+
+.day-heading,
+.time-heading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  border-radius: 10px;
+  background: var(--teal);
+  color: var(--white);
+  text-align: center;
+  font-size: clamp(14px, 1.25vw, 24px);
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.day-heading { padding: 3px 5px; white-space: nowrap; }
+
+.time-heading {
+  flex-direction: column;
+  gap: 2px;
+  padding: 3px 2px;
+  line-height: 1.1;
+}
+
+.slot {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  padding: 5px;
+  border: 2px solid transparent;
+  border-radius: var(--cell-radius);
+  background: var(--cell-bg);
+  color: var(--teal);
+  cursor: pointer;
+  font-size: clamp(13px, 1.1vw, 20px);
+  font-weight: 700;
+  text-align: center;
+  transition: background-color 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.slot:not(.is-booked):hover {
+  background: var(--hover);
+}
+
+.slot:not(.is-booked):focus-visible {
+  outline: 3px solid #0C6954;
+  outline-offset: 2px;
+  z-index: 1;
+}
+
+.slot.is-selected {
+  border-color: var(--selected-border);
+  background: var(--selected);
+  color: #103F35;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 24%);
+}
+
+.slot.is-selected:hover { background: #2BAF87; }
+
+.slot.is-booked,
+.slot.is-booked:disabled {
+  border-color: var(--booked);
+  background: var(--booked);
+  color: var(--white);
+  cursor: not-allowed;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 10%);
+}
+
+.booked-label {
+  display: block;
+  font-size: clamp(12px, 1.05vw, 18px);
+  line-height: 1.1;
+}
+
+.sidebar {
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.instructions-panel {
+  flex: 0 0 auto;
+  min-height: 400px;
+  padding: 10px;
+  border-radius: 10px;
+  background: var(--teal);
+  color: var(--white);
+}
+
+.instructions-panel h2 {
+  margin: 0 0 8px;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.15;
+  text-align: center;
+}
+
+.instructions-panel p {
+  margin: 0 0 11px;
+  font-size: 18px;
+  font-style: italic;
+  line-height: 1.25;
+}
+
+.instructions-panel p:last-child { margin-bottom: 0; }
+
+.action-area {
+  display: grid;
+  gap: 12px;
+  margin-top: auto;
+}
+
+.action-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  border: 0;
+  border-radius: 0;
+  color: var(--white);
+  font-weight: 700;
+  text-align: center;
+  transition: background-color 120ms ease, color 120ms ease, opacity 120ms ease;
+}
+
+.confirm-button {
+  min-height: 112px;
+  flex-direction: column;
+  gap: 1px;
+  padding: 12px;
+  background: var(--confirm-red);
+  font-size: 28px;
+  line-height: 1.12;
+}
+
+.cancel-button {
+  min-height: 49px;
+  padding: 8px 10px;
+  background: var(--teal);
+  font-size: 20px;
+  line-height: 1.15;
+}
+
+.action-button:not(:disabled) { cursor: pointer; }
+.confirm-button:not(:disabled):hover { background: var(--confirm-red-hover); }
+.cancel-button:not(:disabled):hover { background: #174A41; }
+.action-button:not(:disabled):focus-visible,
+.dialog-close-button:focus-visible {
+  outline: 3px solid #0C6954;
+  outline-offset: 3px;
+}
+
+.action-button:disabled {
+  background: var(--disabled-bg);
+  color: var(--disabled-text);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.result-dialog {
+  width: min(420px, calc(100vw - 32px));
+  padding: 28px;
+  border: 0;
+  border-radius: 14px;
+  background: #F5FAF7;
+  color: #173F37;
+  text-align: center;
+  box-shadow: 0 18px 60px rgb(10 40 34 / 25%);
+}
+
+.result-dialog::backdrop { background: rgb(12 33 29 / 48%); }
+
+.dialog-mark {
+  display: grid;
+  width: 54px;
+  height: 54px;
+  margin: 0 auto 12px;
+  place-items: center;
+  border-radius: 50%;
+  background: #D4F0E5;
+  color: var(--teal-dark);
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.result-dialog h2 {
+  margin: 0 0 8px;
+  font-size: 25px;
+}
+
+.result-dialog p {
+  margin: 0 0 22px;
+  font-size: 17px;
+  line-height: 1.4;
+}
+
+.dialog-close-button {
+  min-width: 130px;
+  min-height: 43px;
+  padding: 10px 18px;
+  border: 0;
+  border-radius: 5px;
+  background: var(--teal);
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+@media (min-width: 1500px) and (min-height: 850px) {
+  .main-layout { min-height: 0; }
+  .schedule-panel { padding-bottom: 18px; }
+}
+
+@media (max-width: 1450px) {
+  .main-layout {
+    grid-template-columns: minmax(0, 1fr) 320px;
+  }
+  .schedule-panel { overflow-x: auto; }
+  .schedule-board { min-width: 1050px; }
+  .instructions-panel { min-height: 0; }
+  .instructions-panel h2 { font-size: 28px; }
+  .instructions-panel p { font-size: 16px; }
+  .confirm-button { font-size: 24px; }
+  .cancel-button { font-size: 17px; }
+}
+
+@media (max-width: 1050px) {
+  .app-shell { padding: 10px; }
+  .topbar { flex-basis: auto; min-height: 62px; height: auto; }
+  .logo-button, .page-title { min-height: 62px; height: auto; }
+  .logo-button { flex-basis: 96px; padding: 7px; }
+  .logo-word, .logo-hint { font-size: 11px; }
+  .page-title { padding: 10px 12px; max-width: calc(100vw - 121px); }
+  .page-title h1 { font-size: clamp(18px, 3.2vw, 30px); white-space: normal; }
+  .main-layout {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: auto;
+  }
+  .schedule-panel { height: 830px; padding: 14px; }
+  .schedule-board { min-width: 1050px; }
+  .sidebar { display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, .8fr); align-items: stretch; }
+  .instructions-panel { min-height: 0; }
+  .action-area { align-self: end; margin-top: 0; }
+}
+
+@media (max-width: 620px) {
+  .sidebar { grid-template-columns: minmax(0, 1fr); }
+  .action-area { grid-row: 1; }
+  .confirm-button { min-height: 72px; font-size: 22px; }
+  .cancel-button { min-height: 44px; }
+  .instructions-panel { padding: 14px; }
+  .instructions-panel h2 { font-size: 26px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0.01ms !important; }
+}
