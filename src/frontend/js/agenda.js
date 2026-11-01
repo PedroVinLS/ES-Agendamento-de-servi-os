@@ -1,456 +1,712 @@
-
 "use strict";
 
-// ==========================================
-// 1. CONFIGURAÇÃO DA API
-// ==========================================
-
-// Ajuste para a porta e o endereço usados pela equipe da API.
-const API_BASE_URL = "http://localhost:3000/api";
-
-// Substitua pelo ID real do prestador.
-const PRESTADOR_ID = "1";
-
-// Informe a segunda-feira da semana que será exibida.
-// Substitua pela data escolhida no sistema.
-const WEEK_START_DATE = "2026-10-26";
-
-// Rotas ilustrativas: confirmar com a equipe da API.
-const ROTAS = {
-  consultarAgenda: "/agenda",
-  cadastrarDisponibilidade: "/agenda"
-};
 
 // ==========================================
-// 2. ESTRUTURA DA AGENDA
+// 1. CONFIGURAÇÕES DA AGENDA
 // ==========================================
 
 const days = [
-  "SEGUNDA-FEIRA",
-  "TERÇA-FEIRA",
-  "QUARTA-FEIRA",
-  "QUINTA-FEIRA",
-  "SEXTA-FEIRA",
-  "SÁBADO"
+    "SEGUNDA-FEIRA",
+    "TERÇA-FEIRA",
+    "QUARTA-FEIRA",
+    "QUINTA-FEIRA",
+    "SEXTA-FEIRA",
+    "SÁBADO"
 ];
 
-const hours = Array.from({ length: 12 }, (_, index) => ({
-  start: index + 6,
-  end: index + 7
-}));
+const hours = Array.from(
+    { length: 12 },
+    (_, index) => ({
+        start: index + 6,
+        end: index + 7
+    })
+);
 
-const board = document.getElementById("schedule-board");
-const confirmButton = document.getElementById("confirm-button");
-const cancelButton = document.getElementById("cancel-button");
-const resultDialog = document.getElementById("result-dialog");
-const dialogTitle = document.getElementById("dialog-title");
-const dialogMessage = document.getElementById("dialog-message");
-const dialogClose = document.getElementById("dialog-close");
-
-// Estado da interface
-const selectedSlots = new Set();
-const bookedSlots = new Set();
-const slotButtons = new Map();
-
-let isLoading = false;
-let isSaving = false;
 
 // ==========================================
-// 3. FUNÇÕES AUXILIARES
+// 2. ELEMENTOS HTML
+// ==========================================
+
+const board = document.getElementById("schedule-board");
+
+const logoButton = document.getElementById("logo-button");
+const pageTitle = document.getElementById("page-title");
+
+const confirmButton = document.getElementById("confirm-button");
+const cancelButton = document.getElementById("cancel-button");
+
+
+/* Tutorial inicial */
+
+const tutorialDialog = document.getElementById("tutorial-dialog");
+
+const tutorialButton = document.getElementById("tutorial-button");
+
+
+/* Pop-up de cancelamento */
+
+const cancelDialog = document.getElementById("cancel-dialog");
+
+const cancelDialogMessage =
+    document.getElementById("cancel-dialog-message");
+
+const cancelDialogBack =
+    document.getElementById("cancel-dialog-back");
+
+const cancelDialogConfirm =
+    document.getElementById("cancel-dialog-confirm");
+
+
+/* Pop-up de sucesso */
+
+const resultDialog = document.getElementById("result-dialog");
+
+const resultDialogMessage =
+    document.getElementById("result-dialog-message");
+
+const resultDialogClose =
+    document.getElementById("result-dialog-close");
+
+
+// ==========================================
+// 3. NAVEGAÇÃO DO CABEÇALHO
+// ==========================================
+
+// A logo ainda não possui uma página de destino.
+
+logoButton.addEventListener("click", event => {
+
+    event.preventDefault();
+
+});
+
+
+// O título também não possui uma página de destino.
+
+pageTitle.addEventListener("click", event => {
+
+    event.preventDefault();
+
+});
+
+
+// ==========================================
+// 4. ESTADOS DOS AGENDAMENTOS
+// ==========================================
+
+// Horários que o usuário selecionou,
+// mas ainda não confirmou.
+
+const selectedSlots = new Set();
+
+
+// Horários que já foram confirmados.
+
+const bookedSlots = new Set();
+
+
+// Guarda os elementos HTML de cada horário.
+
+const slotButtons = new Map();
+
+
+// ==========================================
+// 5. FUNÇÕES AUXILIARES
 // ==========================================
 
 function formatHour(hour) {
-  return `${hour}h`;
+
+    return `${hour}h`;
+
 }
 
-function formatTime(hour) {
-  return `${String(hour).padStart(2, "0")}:00`;
-}
-
-function getDateForDay(dayIndex) {
-  const date = new Date(`${WEEK_START_DATE}T00:00:00Z`);
-  date.setUTCDate(date.getUTCDate() + dayIndex);
-  return date.toISOString().slice(0, 10);
-}
 
 function slotKey(dayIndex, hourIndex) {
-  return `${dayIndex}-${hourIndex}`;
+
+    return `${dayIndex}-${hourIndex}`;
+
 }
 
-function getSlotData(key) {
-  const [dayIndex, hourIndex] = key.split("-").map(Number);
-  const hour = hours[hourIndex];
-
-  return {
-    prestadorId: PRESTADOR_ID,
-    data: getDateForDay(dayIndex),
-    diaSemana: days[dayIndex],
-    inicio: formatTime(hour.start),
-    fim: formatTime(hour.end)
-  };
-}
-
-async function requestAPI(path, options = {}) {
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers
-    }
-  });
-
-  const texto = await response.text();
-  let resultado = {};
-
-  if (texto) {
-    try {
-      resultado = JSON.parse(texto);
-    } catch {
-      resultado = { mensagem: texto };
-    }
-  }
-
-  if (!response.ok) {
-    throw new Error(
-      resultado.erro ||
-      resultado.message ||
-      resultado.mensagem ||
-      `Erro na API: ${response.status}`
-    );
-  }
-
-  return resultado;
-}
-
-// ==========================================
-// 4. MONTAGEM DA AGENDA NA TELA
-// ==========================================
 
 function createCell(className, text, row, col) {
-  const element = document.createElement("div");
-  element.className = className;
 
-  if (text) element.textContent = text;
-  if (row !== undefined) element.style.gridRow = String(row);
-  if (col !== undefined) element.style.gridColumn = String(col);
+    const element = document.createElement("div");
 
-  return element;
+    element.className = className;
+
+    if (text) {
+
+        element.textContent = text;
+
+    }
+
+    element.style.gridRow = String(row);
+
+    element.style.gridColumn = String(col);
+
+    return element;
+
 }
 
-function createSchedule() {
-  board.replaceChildren();
-  slotButtons.clear();
-
-  board.appendChild(createCell("corner-cell", "", 1, 1));
-
-  days.forEach((day, dayIndex) => {
-    const heading = createCell("day-heading", day, 1, dayIndex + 2);
-    heading.setAttribute("role", "columnheader");
-    board.appendChild(heading);
-  });
-
-  hours.forEach((hour, hourIndex) => {
-    const row = hourIndex + 2;
-
-    const label = document.createElement("div");
-    label.className = "time-heading";
-    label.style.gridRow = String(row);
-    label.style.gridColumn = "1";
-    label.setAttribute("role", "rowheader");
-
-    const start = document.createElement("span");
-    start.textContent = formatHour(hour.start);
-
-    const end = document.createElement("span");
-    end.textContent = `até ${formatHour(hour.end)}`;
-
-    label.append(start, end);
-    board.appendChild(label);
-
-    days.forEach((day, dayIndex) => {
-      const key = slotKey(dayIndex, hourIndex);
-      const button = document.createElement("button");
-
-      button.type = "button";
-      button.className = "slot";
-      button.style.gridRow = String(row);
-      button.style.gridColumn = String(dayIndex + 2);
-      button.dataset.slotKey = key;
-      button.dataset.day = day;
-      button.dataset.date = getDateForDay(dayIndex);
-      button.dataset.start = String(hour.start);
-      button.dataset.end = String(hour.end);
-
-      button.setAttribute("role", "gridcell");
-      button.setAttribute("aria-pressed", "false");
-      button.title =
-        `${day} — ${formatHour(hour.start)} até ${formatHour(hour.end)}`;
-
-      button.addEventListener("click", () => toggleSlot(key));
-      button.addEventListener("contextmenu", event => {
-        event.preventDefault();
-      });
-
-      slotButtons.set(key, button);
-      board.appendChild(button);
-    });
-  });
-
-  updateInterface();
-}
 
 // ==========================================
-// 5. SELEÇÃO DOS HORÁRIOS
+// 6. CRIAÇÃO DA GRADE
+// ==========================================
+
+function createSchedule() {
+
+    board.replaceChildren();
+
+    slotButtons.clear();
+
+
+    // CÉLULA VAZIA DO CANTO SUPERIOR ESQUERDO
+
+    board.appendChild(
+        createCell("corner-cell", "", 1, 1)
+    );
+
+
+    // CABEÇALHOS DOS DIAS
+
+    days.forEach((day, dayIndex) => {
+
+        const heading = createCell(
+            "day-heading",
+            day,
+            1,
+            dayIndex + 2
+        );
+
+        heading.setAttribute(
+            "role",
+            "columnheader"
+        );
+
+        board.appendChild(heading);
+
+    });
+
+
+    // LINHAS DE HORÁRIOS
+
+    hours.forEach((hour, hourIndex) => {
+
+        const row = hourIndex + 2;
+
+
+        // ETIQUETA DO HORÁRIO
+
+        const label = document.createElement("div");
+
+        label.className = "time-heading";
+
+        label.style.gridRow = String(row);
+
+        label.style.gridColumn = "1";
+
+        label.setAttribute("role", "rowheader");
+
+
+        const start = document.createElement("span");
+
+        start.textContent = formatHour(hour.start);
+
+
+        const end = document.createElement("span");
+
+        end.textContent = `até ${formatHour(hour.end)}`;
+
+
+        label.append(start, end);
+
+        board.appendChild(label);
+
+
+        // CÉLULAS DOS DIAS
+
+        days.forEach((day, dayIndex) => {
+
+            const key = slotKey(dayIndex, hourIndex);
+
+            const button = document.createElement("button");
+
+            button.type = "button";
+
+            button.className = "slot";
+
+
+            button.style.gridRow = String(row);
+
+            button.style.gridColumn = String(dayIndex + 2);
+
+
+            // Informações associadas à célula.
+
+            button.dataset.slotKey = key;
+
+            button.dataset.day = day;
+
+            button.dataset.start = String(hour.start);
+
+            button.dataset.end = String(hour.end);
+
+
+            button.setAttribute("role", "gridcell");
+
+            button.setAttribute("aria-pressed", "false");
+
+            button.setAttribute(
+                "aria-label",
+                `${day}, ${formatHour(hour.start)} até ${formatHour(hour.end)}, disponível`
+            );
+
+
+            button.title =
+                `${day} — ${formatHour(hour.start)} até ${formatHour(hour.end)}`;
+
+
+            // CLIQUE: seleciona ou desmarca o horário.
+
+            button.addEventListener("click", () => {
+
+                toggleSlot(key);
+
+            });
+
+
+            // Evita o menu de contexto do botão direito.
+
+            button.addEventListener("contextmenu", event => {
+
+                event.preventDefault();
+
+            });
+
+
+            slotButtons.set(key, button);
+
+            board.appendChild(button);
+
+        });
+
+    });
+
+
+    updateInterface();
+
+}
+
+
+// ==========================================
+// 7. SELEÇÃO DOS HORÁRIOS
 // ==========================================
 
 function toggleSlot(key) {
-  if (isLoading || isSaving || bookedSlots.has(key)) return;
 
-  if (selectedSlots.has(key)) {
-    selectedSlots.delete(key);
-  } else {
-    selectedSlots.add(key);
-  }
+    // Impede selecionar horários já confirmados.
 
-  updateInterface();
+    if (bookedSlots.has(key)) {
+
+        return;
+
+    }
+
+
+    // Caso a célula já esteja selecionada,
+    // remove a seleção.
+
+    if (selectedSlots.has(key)) {
+
+        selectedSlots.delete(key);
+
+    }
+
+    // Caso contrário, adiciona a seleção.
+
+    else {
+
+        selectedSlots.add(key);
+
+    }
+
+
+    updateInterface();
+
 }
+
+
+// ==========================================
+// 8. ATUALIZAÇÃO VISUAL DA AGENDA
+// ==========================================
 
 function updateInterface() {
-  for (const [key, button] of slotButtons.entries()) {
-    const isSelected = selectedSlots.has(key);
-    const isBooked = bookedSlots.has(key);
 
-    button.classList.toggle("is-selected", isSelected && !isBooked);
-    button.classList.toggle("is-booked", isBooked);
+    for (const [key, button] of slotButtons.entries()) {
 
-    button.setAttribute("aria-pressed", String(isSelected));
+        const isSelected = selectedSlots.has(key);
 
-    if (isBooked) {
-      button.disabled = true;
-      button.innerHTML = '<span class="booked-label">Agendado!</span>';
+        const isBooked = bookedSlots.has(key);
 
-      button.setAttribute(
-        "aria-label",
-        `${button.dataset.day}, ${formatHour(Number(button.dataset.start))} ` +
-        `até ${formatHour(Number(button.dataset.end))}, agendado`
-      );
 
-      button.title = "Este horário já foi agendado";
-    } else {
-      button.disabled = isLoading || isSaving;
-      button.textContent = "";
+        // Atualiza o estado visual da célula.
 
-      const status = isSelected ? "selecionado" : "disponível";
+        button.classList.toggle(
+            "is-selected",
+            isSelected && !isBooked
+        );
 
-      button.setAttribute(
-        "aria-label",
-        `${button.dataset.day}, ${formatHour(Number(button.dataset.start))} ` +
-        `até ${formatHour(Number(button.dataset.end))}, ${status}`
-      );
+        button.classList.toggle(
+            "is-booked",
+            isBooked
+        );
 
-      button.title =
-        `${button.dataset.day} — ` +
-        `${formatHour(Number(button.dataset.start))} até ` +
-        `${formatHour(Number(button.dataset.end))}`;
+
+        button.setAttribute(
+            "aria-pressed",
+            String(isSelected)
+        );
+
+
+        // ==================================
+        // HORÁRIO JÁ AGENDADO
+        // ==================================
+
+        if (isBooked) {
+
+            button.disabled = true;
+
+            button.innerHTML =
+                '<span class="booked-label">Agendado!</span>';
+
+
+            button.setAttribute(
+                "aria-label",
+                `${button.dataset.day}, ${formatHour(Number(button.dataset.start))} até ${formatHour(Number(button.dataset.end))}, agendado`
+            );
+
+
+            button.title = "Este horário já foi agendado";
+
+        }
+
+
+        // ==================================
+        // HORÁRIO DISPONÍVEL
+        // ==================================
+
+        else {
+
+            button.disabled = false;
+
+            button.textContent = "";
+
+
+            const status = isSelected
+                ? "selecionado"
+                : "disponível";
+
+
+            button.setAttribute(
+                "aria-label",
+                `${button.dataset.day}, ${formatHour(Number(button.dataset.start))} até ${formatHour(Number(button.dataset.end))}, ${status}`
+            );
+
+
+            button.title =
+                `${button.dataset.day} — ${formatHour(Number(button.dataset.start))} até ${formatHour(Number(button.dataset.end))}`;
+
+        }
+
     }
-  }
 
-  const hasSelection = selectedSlots.size > 0;
 
-  confirmButton.disabled = !hasSelection || isLoading || isSaving;
-  cancelButton.disabled = !hasSelection || isLoading || isSaving;
+    // ======================================
+    // ATUALIZAÇÃO DOS BOTÕES
+    // ======================================
 
-  confirmButton.setAttribute(
-    "aria-disabled",
-    String(confirmButton.disabled)
-  );
+    const hasSelection = selectedSlots.size > 0;
 
-  cancelButton.setAttribute(
-    "aria-disabled",
-    String(cancelButton.disabled)
-  );
-}
+    const hasBookings = bookedSlots.size > 0;
 
-// ==========================================
-// 6. MENSAGENS AO USUÁRIO
-// ==========================================
 
-function openMessage(title, message) {
-  dialogTitle.textContent = title;
-  dialogMessage.textContent = message;
+    // CONFIRMAR:
+    // Só fica ativo quando existe seleção.
 
-  if (typeof resultDialog.showModal === "function") {
-    resultDialog.showModal();
-  } else {
-    window.alert(`${title}\n\n${message}`);
-  }
-}
+    confirmButton.disabled = !hasSelection;
 
-// ==========================================
-// 7. BUSCAR OS DADOS DA API
-// ==========================================
 
-async function carregarAgenda() {
-  isLoading = true;
-  updateInterface();
+    // CANCELAR:
+    // Fica ativo quando há seleções temporárias
+    // ou horários já confirmados.
 
-  try {
-    const inicio = getDateForDay(0);
-    const fim = getDateForDay(5);
+    cancelButton.disabled =
+        !hasSelection && !hasBookings;
 
-    const query = new URLSearchParams({
-      prestadorId: PRESTADOR_ID,
-      dataInicio: inicio,
-      dataFim: fim
-    });
 
-    const resultado = await requestAPI(
-      `${ROTAS.consultarAgenda}?${query.toString()}`
+    confirmButton.setAttribute(
+        "aria-disabled",
+        String(!hasSelection)
     );
 
-    // Contrato esperado:
-    // { horarios: [{ data, inicio, fim, status }] }
-    const horarios =
-      Array.isArray(resultado) ? resultado :
-      resultado.horarios || resultado.disponibilidades || [];
+
+    cancelButton.setAttribute(
+        "aria-disabled",
+        String(cancelButton.disabled)
+    );
+
+}
+
+
+// ==========================================
+// 9. ABRIR POP-UPS
+// ==========================================
+
+function openDialog(dialog) {
+
+    if (typeof dialog.showModal === "function") {
+
+        if (!dialog.open) {
+
+            dialog.showModal();
+
+        }
+
+    }
+
+    else {
+
+        console.error(
+            "Este navegador não oferece suporte a janelas modais HTML."
+        );
+
+    }
+
+}
+
+
+// ==========================================
+// 10. TUTORIAL INICIAL
+// ==========================================
+
+// O tutorial aparece sempre que a página é carregada.
+
+openDialog(tutorialDialog);
+
+
+// Impede fechar o tutorial pressionando ESC.
+// O usuário deverá clicar em ENTENDIDO.
+
+tutorialDialog.addEventListener("cancel", event => {
+
+    event.preventDefault();
+
+});
+
+
+// Botão ENTENDIDO.
+
+tutorialButton.addEventListener("click", () => {
+
+    tutorialDialog.close();
+
+});
+
+
+// ==========================================
+// 11. POP-UP DE SUCESSO
+// ==========================================
+
+function showSuccess(message) {
+
+    resultDialogMessage.textContent = message;
+
+    openDialog(resultDialog);
+
+}
+
+
+// Botão ENTENDIDO do pop-up de sucesso.
+
+resultDialogClose.addEventListener("click", () => {
+
+    resultDialog.close();
+
+});
+
+
+// ==========================================
+// 12. CONFIRMAR AGENDAMENTO
+// ==========================================
+
+confirmButton.addEventListener("click", () => {
+
+    // Não executa nada caso nenhuma célula esteja selecionada.
+
+    if (selectedSlots.size === 0) {
+
+        return;
+
+    }
+
+
+    // Quantidade de horários escolhidos.
+
+    const confirmedCount = selectedSlots.size;
+
+
+    // Transfere os horários selecionados
+    // para a lista de horários confirmados.
+
+    for (const key of selectedSlots) {
+
+        bookedSlots.add(key);
+
+    }
+
+
+    // Remove a seleção temporária.
+
+    selectedSlots.clear();
+
+
+    // Atualiza a aparência da agenda e dos botões.
+
+    updateInterface();
+
+
+    // Mensagem de sucesso.
+
+    const message = confirmedCount === 1
+
+        ? "Seu horário foi agendado com sucesso!"
+
+        : `Seus ${confirmedCount} horários foram agendados com sucesso!`;
+
+
+    showSuccess(message);
+
+});
+
+
+// ==========================================
+// 13. BOTÃO CANCELAR AGENDAMENTO
+// ==========================================
+
+cancelButton.addEventListener("click", () => {
+
+
+    // CASO 1:
+    // EXISTEM HORÁRIOS JÁ CONFIRMADOS.
+
+    if (bookedSlots.size > 0) {
+
+        const count = bookedSlots.size;
+
+
+        // Monta a mensagem dinamicamente.
+
+        const timeDescription = count === 1
+
+            ? "1 horário agendado"
+
+            : `${count} horários agendados`;
+
+
+        cancelDialogMessage.textContent =
+
+            `Você tem certeza que deseja cancelar todos os ${timeDescription}?`;
+
+
+        // Abre a janela de confirmação.
+
+        openDialog(cancelDialog);
+
+        return;
+
+    }
+
+
+    // CASO 2:
+    // EXISTEM SOMENTE SELEÇÕES TEMPORÁRIAS.
+
+    if (selectedSlots.size > 0) {
+
+        // Remove todas as seleções.
+
+        selectedSlots.clear();
+
+
+        // Atualiza os botões e a agenda.
+
+        updateInterface();
+
+    }
+
+});
+
+
+// ==========================================
+// 14. BOTÃO VOLTAR DO POP-UP
+// ==========================================
+
+// Fecha o pop-up sem modificar os agendamentos.
+
+cancelDialogBack.addEventListener("click", () => {
+
+    cancelDialog.close();
+
+});
+
+
+// ==========================================
+// 15. CONFIRMAR CANCELAMENTO
+// ==========================================
+
+function cancelAllBookings() {
+
+    // Remove todos os horários confirmados.
 
     bookedSlots.clear();
 
-    for (const horario of horarios) {
-      const status = String(horario.status || "").toUpperCase();
 
-      if (!["AGENDADO", "BOOKED", "OCUPADO"].includes(status)) {
-        continue;
-      }
+    // Também remove qualquer seleção temporária.
 
-      const dayIndex = Array.from(
-        { length: 6 },
-        (_, index) => getDateForDay(index)
-      ).indexOf(String(horario.data).slice(0, 10));
+    selectedSlots.clear();
 
-      const inicioHorario = String(horario.inicio).slice(0, 5);
-      const hourIndex = hours.findIndex(
-        hour => formatTime(hour.start) === inicioHorario
-      );
 
-      if (
-        dayIndex >= 0 &&
-        dayIndex < 6 &&
-        hourIndex >= 0
-      ) {
-        bookedSlots.add(slotKey(dayIndex, hourIndex));
-      }
-    }
+    // Atualiza a aparência da agenda.
 
     updateInterface();
-  } catch (erro) {
-    console.error("Erro ao carregar a agenda:", erro);
 
-    openMessage(
-      "Erro ao carregar a agenda",
-      "Não foi possível consultar os horários na API. " +
-      "Verifique se o servidor está funcionando e se a rota está correta."
-    );
-  } finally {
-    isLoading = false;
-    updateInterface();
-  }
+
+    // Fecha a janela de confirmação.
+
+    cancelDialog.close();
+
 }
 
-// ==========================================
-// 8. ENVIAR OS HORÁRIOS PARA A API
-// ==========================================
-
-async function confirmarHorarios() {
-  if (selectedSlots.size === 0 || isSaving || isLoading) return;
-
-  const selecionados = Array.from(selectedSlots);
-  let confirmados = 0;
-  const erros = [];
-
-  isSaving = true;
-  updateInterface();
-
-  try {
-    // Envia cada horário separadamente.
-    for (const key of selecionados) {
-      const dados = getSlotData(key);
-
-      try {
-        await requestAPI(ROTAS.cadastrarDisponibilidade, {
-          method: "POST",
-          body: JSON.stringify(dados)
-        });
-
-        // Só marca como agendado após sucesso da API.
-        bookedSlots.add(key);
-        selectedSlots.delete(key);
-        confirmados++;
-      } catch (erro) {
-        erros.push(`${dados.data}, ${dados.inicio}: ${erro.message}`);
-      }
-
-      updateInterface();
-    }
-
-    if (confirmados > 0) {
-      const palavra = confirmados === 1 ? "horário" : "horários";
-
-      openMessage(
-        erros.length ? "Agendamento parcial" : "Agendamento realizado!",
-        `${confirmados} ${palavra} confirmado(s) com sucesso.` +
-        (erros.length
-          ? `\n\nNão foi possível confirmar ${erros.length} horário(s).`
-          : "")
-      );
-    } else {
-      openMessage(
-        "Não foi possível agendar",
-        erros[0] || "A API não confirmou nenhum horário."
-      );
-    }
-
-    // Atualiza os dados a partir do servidor.
-    await carregarAgenda();
-  } catch (erro) {
-    console.error("Erro ao confirmar horários:", erro);
-
-    openMessage(
-      "Erro",
-      "Ocorreu um problema ao enviar os horários para a API."
-    );
-  } finally {
-    isSaving = false;
-    updateInterface();
-  }
-}
 
 // ==========================================
-// 9. EVENTOS DOS BOTÕES
+// 16. BOTÃO CANCELAR DO POP-UP
 // ==========================================
 
-confirmButton.addEventListener("click", confirmarHorarios);
+cancelDialogConfirm.addEventListener("click", () => {
 
-cancelButton.addEventListener("click", () => {
-  if (isSaving || isLoading) return;
+    cancelAllBookings();
 
-  selectedSlots.clear();
-  updateInterface();
 });
 
-dialogClose.addEventListener("click", () => {
-  resultDialog.close();
-});
 
-resultDialog.addEventListener("click", event => {
-  if (event.target === resultDialog) {
-    resultDialog.close();
-  }
-});
+// Pressionar ESC ou fechar a janela pelo navegador
+// não altera os agendamentos.
+// O comportamento é equivalente ao botão VOLTAR.
+
 
 // ==========================================
-// 10. INICIALIZAÇÃO
+// 17. INICIALIZAÇÃO
 // ==========================================
+
+// Cria a agenda assim que o JavaScript é executado.
 
 createSchedule();
-carregarAgenda();
