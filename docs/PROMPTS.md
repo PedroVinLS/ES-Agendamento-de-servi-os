@@ -198,6 +198,31 @@ Também permanecem pendentes os testes completos da interface no navegador e a c
 
 A etapa individual de José Augusto foi concluída e versionada, com as validações de CPF e CNPJ implementadas e aprovadas nos testes iniciais.
 
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Pedro Henrique 04/11/2026:
+
+Quero que você crie um arquivo chamado `api.js` para o meu projeto de agendamento de serviços, localizado em `src/frontend/js/`.
+
+Esse arquivo será responsável por fazer a comunicação entre o frontend e o backend utilizando `fetch()`.
+
+Ele deverá:
+- Centralizar as requisições HTTP para a API.
+- Enviar e receber dados em formato JSON.
+- Tratar respostas e erros HTTP, como 400, 401, 403, 404, 409, 422 e 500.
+- Tratar falhas de conexão e tempo limite.
+- Permitir o envio de credenciais de sessão quando necessário.
+- Disponibilizar funções reutilizáveis para o `cadastro.js` utilizar no cadastro de clientes e prestadores.
+
+Considere que o José já implementou as validações de CPF e CNPJ no `cadastro.js`, então não quero que você sobrescreva ou prejudique o código dele.
+
+O arquivo deve ser organizado, reutilizável e preparado para integrar com a API desenvolvida pelo Pedro Vinícius. Não invente endpoints: confirme as rotas disponíveis antes de definir a integração definitiva.
+
+Minha responsabilidade é desenvolver essa comunicação HTTP e integrar o `api.js` ao cadastro existente.
+
 O ChatGPT foi utilizado para análise do código existente, orientação sobre Git e GitHub Codespaces, elaboração das funções, apoio às modificações e preparação dos testes.
 
 Todas as alterações no repositório foram executadas manualmente pelo integrante responsável, sem modificações diretas realizadas pela IA.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
