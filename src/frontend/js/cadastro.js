@@ -326,7 +326,7 @@ clientForm.addEventListener("submit", event => {
     // onze números de 0 a 9.
 
     const cpfIsValid =
-        /^[0-9]{11}$/.test(clientCpf.value);
+        validarCPF(clientCpf.value)
 
 
     // Verifica se o usuário aceitou os termos.
@@ -349,14 +349,14 @@ clientForm.addEventListener("submit", event => {
         if (!cpfIsValid && !acceptedTerms) {
 
             message =
-                "O CPF deve conter exatamente 11 números, sem pontos, espaços ou hífen, e você precisa aceitar os termos de serviço. Confira os dados e tente novamente.";
+                "O CPF informado deve ser válido, conter 11 números e você precisa aceitar os termos de serviço. Confira os dados e tente novamente.";
 
         }
 
         else if (!cpfIsValid) {
 
             message =
-                "O CPF informado está em formato incorreto. Insira exatamente 11 números de 0 a 9, sem pontos, espaços ou hífen.";
+                "O CPF informado é inválido. Confira os 11 números e tente novamente.";
 
         }
 
@@ -447,7 +447,7 @@ providerForm.addEventListener("submit", event => {
     // quatorze números de 0 a 9.
 
     const cnpjIsValid =
-        /^[0-9]{14}$/.test(providerCnpj.value);
+        validarCNPJ(providerCnpj.value)
 
 
     // Verifica se o tipo de serviço foi preenchido
@@ -491,14 +491,14 @@ providerForm.addEventListener("submit", event => {
         ) {
 
             message =
-                "O CNPJ deve conter exatamente 14 números, o tipo de serviço deve ser preenchido com até 150 caracteres e você precisa aceitar os termos de serviço. Confira os dados e tente novamente.";
+                "O CNPJ deve ser válido, o tipo de serviço deve estar preenchido com até 150 caracteres e você precisa aceitar os termos de serviço. Confira os dados e tente novamente.";
 
         }
 
         else if (!cnpjIsValid) {
 
             message =
-                "O CNPJ informado está em formato incorreto. Insira exatamente 14 números de 0 a 9, sem pontos, espaços ou hífen.";
+                "O CNPJ informado é inválido. Confira os 14 números e tente novamente.";
 
         }
 
@@ -624,7 +624,7 @@ providerService.addEventListener("input", () => {
 clientCpf.addEventListener("input", () => {
 
     const isValid =
-        /^[0-9]{11}$/.test(clientCpf.value);
+        validarCPF(clientCpf.value)
 
 
     markValidity(clientCpf, isValid);
@@ -639,7 +639,7 @@ clientCpf.addEventListener("input", () => {
 providerCnpj.addEventListener("input", () => {
 
     const isValid =
-        /^[0-9]{14}$/.test(providerCnpj.value);
+        validarCNPJ(providerCnpj.value)
 
 
     markValidity(providerCnpj, isValid);
@@ -655,3 +655,76 @@ providerCnpj.addEventListener("input", () => {
 // escolha entre Cliente e Provedor.
 
 showScreen(roleScreen);
+
+
+/**
+ * Valida CPF utilizando os dígitos verificadores.
+ */
+function validarCPF(valor) {
+    const cpf = valor.trim();
+
+    if (!/^\d{11}$/.test(cpf)) {
+        return false;
+    }
+
+    if (/^(\d)\1{10}$/.test(cpf)) {
+        return false;
+    }
+
+    const numeros = [...cpf].map(Number);
+
+    for (let tamanho = 9; tamanho <= 10; tamanho++) {
+        const soma = numeros
+            .slice(0, tamanho)
+            .reduce((total, numero, indice) => {
+                return total + numero * (tamanho + 1 - indice);
+            }, 0);
+
+        const digito = ((soma * 10) % 11) % 10;
+
+        if (digito !== numeros[tamanho]) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/**
+ * Valida CNPJ numérico utilizando os dígitos verificadores.
+ */
+function validarCNPJ(valor) {
+    const cnpj = valor.trim();
+
+    if (!/^\d{14}$/.test(cnpj)) {
+        return false;
+    }
+
+    if (/^(\d)\1{13}$/.test(cnpj)) {
+        return false;
+    }
+
+    const numeros = [...cnpj].map(Number);
+
+    const pesos = [
+        [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2],
+        [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]
+    ];
+
+    for (let etapa = 0; etapa < 2; etapa++) {
+        const soma = pesos[etapa].reduce(
+            (total, peso, indice) =>
+                total + numeros[indice] * peso,
+            0
+        );
+
+        const resto = soma % 11;
+        const digito = resto < 2 ? 0 : 11 - resto;
+
+        if (digito !== numeros[12 + etapa]) {
+            return false;
+        }
+    }
+
+    return true;
+}

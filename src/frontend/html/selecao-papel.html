@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#DFEFE9">
+
+    <title>Escolha seu perfil — Agendamento de Serviços</title>
+
+   <link rel="stylesheet" href="../css/cadastro.css">
+
+    <script src="../js/cadastro.js" defer></script>
+</head>
+
+<body>
+
+    <main class="app" id="app">
+
+        <!-- ================================= -->
+        <!-- TELA INICIAL: ESCOLHA DO PAPEL -->
+        <!-- ================================= -->
+
+        <section class="screen role-screen is-active"
+                 id="role-screen"
+                 aria-labelledby="role-title">
+
+            <header class="role-heading">
+
+                <h1 id="role-title">
+                    O QUE VOCÊ DESEJA SER?
+                </h1>
+
+            </header>
+
+
+            <div class="role-options">
+
+
+                <!-- CARTÃO CLIENTE -->
+
+                <article class="role-card">
+
+                    <h2>CLIENTE</h2>
+
+                    <div class="role-divider"></div>
+
+
+                    <ul class="role-description">
+
+                        <li>
+                            Desfrute de inúmeros serviços de alta
+                            qualidade, de profissionais qualificados
+                            perto de você!
+                        </li>
+
+                        <li>
+                            Agende facilmente serviços na hora que
+                            desejar e, se mudar de ideia, basta um
+                            clique para cancelar!
+                        </li>
+
+                        <li>
+                            Informe seu telefone e localização para
+                            encontrar os melhores serviços perto
+                            de você.
+                        </li>
+
+                        <li>
+                            Avalie os serviços prestados e ajude a
+                            informar sua comunidade sobre os serviços
+                            disponíveis.
+                        </li>
+
+                    </ul>
+
+
+                    <button class="role-button"
+                            id="choose-client"
+                            type="button">
+
+                        REGISTRA-SE COMO CLIENTE
+
+                    </button>
+
+                </article>
+
+
+
+                <!-- CARTÃO PROVEDOR -->
+
+                <article class="role-card">
+
+                    <h2>PROVEDOR</h2>
+
+                    <div class="role-divider"></div>
+
+
+                    <ul class="role-description">
+
+                        <li>
+                            Tenha acesso a uma enorme quantidade de
+                            usuários, dos mais variados tipos!
+                        </li>
+
+                        <li>
+                            Maneje sua agenda de trabalho com um
+                            único clique e escolha quem vai ser
+                            atendido prioritariamente.
+                        </li>
+
+                        <li>
+                            Informe seus dados e seus serviços para
+                            que usuários próximos possam encontrar
+                            você.
+                        </li>
+
+                        <li>
+                            Serviços melhores geram notas maiores,
+                            e provedores com notas maiores recebem
+                            prioridade nas pesquisas!
+                        </li>
+
+                    </ul>
+
+
+                    <button class="role-button"
+                            id="choose-provider"
+                            type="button">
+
+                        REGISTRA-SE COMO PROVEDOR
+
+                    </button>
+
+                </article>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ================================= -->
+        <!-- TELA DE CADASTRO: CLIENTE -->
+        <!-- ================================= -->
+
+        <section class="screen registration-screen"
+                 id="client-screen"
+                 aria-labelledby="client-title"
+                 hidden>
+
+
+            <header class="registration-heading">
+
+                <h1 id="client-title">
+                    FINALIZE SEU CADASTRO
+                </h1>
+
+            </header>
+
+
+
+            <form class="registration-card client-card"
+                  id="client-form"
+                  novalidate>
+
+
+                <!-- CPF -->
+
+                <div class="field-group">
+
+                    <label class="field-title"
+                           for="client-cpf">
+
+                        INSIRA SEU CPF
+
+                    </label>
+
+
+                    <p class="field-hint" id="cpf-hint">
+
+                        Formato aceito: 00000000000
+                        (onze números de 0 a 9,
+                        sem pontos ou hífen)
+
+                    </p>
+
+
+                    <input
+                        class="text-field"
+                        id="client-cpf"
+                        name="cpf"
+                        type="text"
+                        inputmode="numeric"
+                        autocomplete="off"
+                        maxlength="20"
+                        aria-describedby="cpf-hint"
+                    >
+
+                </div>
+
+
+
+                <!-- ACEITE DOS TERMOS -->
+
+                <label class="consent-row"
+                       for="client-terms">
+
+
+                    <input
+                        class="consent-checkbox"
+                        id="client-terms"
+                        name="terms"
+                        type="checkbox"
+                    >
+
+
+                    <span>
+
+                        Ao clicar nesta caixa e inserir o CPF,
+                        você concorda integralmente com nossos
+                        termos de serviço. Leia os termos de
+                        serviço
+
+                        <a href="#"
+                           class="terms-link"
+                           data-terms-link>
+
+                            aqui
+
+                        </a>.
+
+                    </span>
+
+                </label>
+
+
+
+                <!-- BOTÃO DE CADASTRO -->
+
+                <button class="submit-button"
+                        type="submit">
+
+                    REGISTRA-SE COMO CLIENTE
+
+                </button>
+
+
+            </form>
+
+        </section>
+
+
+
+        <!-- ================================= -->
+        <!-- TELA DE CADASTRO: PROVEDOR -->
+        <!-- ================================= -->
+
+        <section class="screen registration-screen"
+                 id="provider-screen"
+                 aria-labelledby="provider-title"
+                 hidden>
+
+
+            <header class="registration-heading">
+
+                <h1 id="provider-title">
+                    FINALIZE SEU CADASTRO
+                </h1>
+
+            </header>
+
+
+
+            <form class="registration-card provider-card"
+                  id="provider-form"
+                  novalidate>
+
+
+                <!-- CNPJ -->
+
+                <div class="field-group">
+
+                    <label class="field-title"
+                           for="provider-cnpj">
+
+                        INSIRA SEU CNPJ
+
+                    </label>
+
+
+                    <p class="field-hint" id="cnpj-hint">
+
+                        Formato aceito: 00000000000000
+                        (quatorze números de 0 a 9,
+                        sem pontos ou hífen)
+
+                    </p>
+
+
+                    <input
+                        class="text-field"
+                        id="provider-cnpj"
+                        name="cnpj"
+                        type="text"
+                        inputmode="numeric"
+                        autocomplete="off"
+                        maxlength="20"
+                        aria-describedby="cnpj-hint"
+                    >
+
+                </div>
+
+
+
+                <!-- TIPO DE SERVIÇO -->
+
+                <div class="field-group service-field-group">
+
+                    <label class="field-title"
+                           for="provider-service">
+
+                        INSIRA O TIPO DE SERVIÇO QUE VOCÊ PRESTA
+
+                    </label>
+
+
+                    <p class="field-hint" id="service-hint">
+
+                        Formato aceito: até 150 caracteres
+
+                    </p>
+
+
+                    <input
+                        class="text-field"
+                        id="provider-service"
+                        name="service"
+                        type="text"
+                        maxlength="150"
+                        autocomplete="off"
+                        aria-describedby="service-hint service-counter"
+                    >
+
+
+                    <span class="character-counter"
+                          id="service-counter">
+
+                        0/150 caracteres
+
+                    </span>
+
+                </div>
+
+
+
+                <!-- ACEITE DOS TERMOS -->
+
+                <label class="consent-row"
+                       for="provider-terms">
+
+
+                    <input
+                        class="consent-checkbox"
+                        id="provider-terms"
+                        name="terms"
+                        type="checkbox"
+                    >
+
+
+                    <span>
+
+                        Ao clicar nesta caixa e inserir o CNPJ,
+                        você concorda integralmente com nossos
+                        termos de serviço. Leia os termos de
+                        serviço
+
+                        <a href="#"
+                           class="terms-link"
+                           data-terms-link>
+
+                            aqui
+
+                        </a>.
+
+                    </span>
+
+                </label>
+
+
+
+                <!-- BOTÃO DE CADASTRO -->
+
+                <button class="submit-button"
+                        type="submit">
+
+                    REGISTRA-SE COMO PROVEDOR
+
+                </button>
+
+
+            </form>
+
+        </section>
+
+    </main>
+
+
+
+    <!-- ====================================== -->
+    <!-- POP-UP DE ERRO OU SUCESSO -->
+    <!-- ====================================== -->
+
+    <dialog class="feedback-dialog"
+            id="feedback-dialog"
+            aria-labelledby="feedback-title"
+            aria-describedby="feedback-message">
+
+
+        <div class="feedback-icon"
+             id="feedback-icon"
+             aria-hidden="true">
+
+            !
+
+        </div>
+
+
+        <h2 id="feedback-title">
+
+            Verifique seus dados
+
+        </h2>
+
+
+        <p id="feedback-message">
+
+            Confira as informações e tente novamente.
+
+        </p>
+
+
+        <button class="feedback-button"
+                id="feedback-button"
+                type="button">
+
+            VOLTAR E CORRIGIR
+
+        </button>
+
+
+    </dialog>
+
+
+</body>
+</html>
