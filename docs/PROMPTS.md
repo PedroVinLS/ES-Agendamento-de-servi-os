@@ -127,3 +127,77 @@ Perfeito, agora nó temos que unir a versão de computador com a de celular:
 
 6. Clicar sobre o logo ou sobre o "Agendamento de serviços" acima não faz nada pois ainda não temos a tela do serviço ou do menu principal, mas eventualmente elas vão ter de levar a essas telas.
 Novamente, crie apenas o código, e deixe que eu coloque eles nos arquivos do meu computador, visto que ainda estou com problemas para baixar os arquivos por aqui.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+José Augusto 04/11/2026:
+
+## Registro de desenvolvimento com auxílio de IA — HU-01.2
+
+**História de usuário:** HU-01.2 — Registrar usuário como cliente ou prestador de serviço.  
+**Branch:** `feat/hu012-validacoes`  
+**Commit:** `0976a6b`
+
+### 1. Objetivo
+
+Utilizar o ChatGPT como apoio técnico para implementar e aprimorar as validações do cadastro de clientes e prestadores de serviço, preservando as funcionalidades existentes e preparando a interface para futura integração com a API.
+
+### 2. Atividades realizadas
+
+- Análise do código JavaScript de cadastro desenvolvido anteriormente por Davi Kolcenti.
+- Criação da branch `feat/hu012-validacoes`, utilizando `davikolcenti-patch-1` como base.
+- Recuperação do arquivo `selecao-papel.html` da branch `davikolcenti-patch-2`.
+- Correção dos caminhos de referência ao JavaScript e CSS no HTML.
+- Implementação das funções `validarCPF()` e `validarCNPJ()`, incluindo verificação dos dígitos verificadores.
+- Substituição das validações anteriores, que verificavam somente a quantidade de números.
+- Atualização das mensagens de erro exibidas ao usuário para refletir as novas validações.
+- Preservação da estrutura original de formulários, seleção de perfil, pop-ups e contador de caracteres.
+
+### 3. Arquivos envolvidos
+
+**`src/frontend/js/cadastro.js`**
+
+Arquivo existente, modificado para incluir validações mais completas de CPF e CNPJ, mantendo o comportamento principal da interface.
+
+**`src/frontend/html/selecao-papel.html`**
+
+Arquivo recuperado de outra branch e adicionado à branch de desenvolvimento, com ajuste dos caminhos de referência aos arquivos externos.
+
+### 4. Testes e verificações
+
+Foram realizadas verificações de sintaxe com `node --check` e de formatação com `git diff --check`, considerando o padrão CRLF do arquivo.
+
+Também foram executados quatro testes automatizados simples das funções de validação:
+
+- CPF válido: aprovado.
+- CPF inválido: aprovado.
+- CNPJ válido: aprovado.
+- CNPJ inválido: aprovado.
+
+Os quatro testes apresentaram os resultados esperados.
+
+### 5. Versionamento
+
+As alterações foram registradas no commit `0976a6b`, com a mensagem:
+
+`feat(hu-01.2): validacoes de CPF e CNPJ no cadastro`
+
+A branch `feat/hu012-validacoes` foi enviada ao repositório remoto e permaneceu separada da `main`, sem realizar merge.
+
+### 6. Limitações e próximas etapas
+
+A implementação realizada contempla as validações do frontend, mas ainda não conclui integralmente as regras RN-01 e RN-02 no backend.
+
+A confirmação de cadastro existente na interface continua sendo demonstrativa, sem persistência de dados.
+
+A integração HTTP com a API será desenvolvida por Pedro Henrique, enquanto as regras obrigatórias de cadastro, exclusividade entre cliente e prestador e integridade dos registros deverão ser garantidas pelo backend.
+
+Também permanecem pendentes os testes completos da interface no navegador e a confirmação da disponibilidade do arquivo CSS correspondente.
+
+### 7. Resultado
+
+A etapa individual de José Augusto foi concluída e versionada, com as validações de CPF e CNPJ implementadas e aprovadas nos testes iniciais.
+
+O ChatGPT foi utilizado para análise do código existente, orientação sobre Git e GitHub Codespaces, elaboração das funções, apoio às modificações e preparação dos testes.
+
+Todas as alterações no repositório foram executadas manualmente pelo integrante responsável, sem modificações diretas realizadas pela IA.
