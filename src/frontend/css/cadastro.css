@@ -1,0 +1,1141 @@
+@import url('https://fonts.googleapis.com/css2?family=Inria+Sans:wght@400;700&display=swap');
+
+
+/* ========================================= */
+/* PALETA DE CORES */
+/* ========================================= */
+
+:root {
+
+    --page-bg: #DFEFE9;
+
+    --title-bg: #CFE1DB;
+
+    --teal: #245A50;
+
+    --teal-hover: #1D4B43;
+
+    --button: #168875;
+
+    --button-hover: #116F60;
+
+    --divider: #83D0BD;
+
+    --input-bg: #D9D9D9;
+
+    --input-line: #AEB6B3;
+
+    --white: #FFFFFF;
+
+    --text-dark: #173F37;
+
+    --error: #B4232B;
+
+    --success: #168875;
+
+
+    font-family: 'Inria Sans', Arial, sans-serif;
+
+    font-synthesis: none;
+
+}
+
+
+
+/* ========================================= */
+/* CONFIGURAÇÕES GERAIS */
+/* ========================================= */
+
+* {
+
+    box-sizing: border-box;
+
+}
+
+
+html,
+body {
+
+    min-width: 320px;
+
+    min-height: 100%;
+
+}
+
+
+body {
+
+    margin: 0;
+
+    min-height: 100vh;
+
+    background: var(--page-bg);
+
+    color: var(--white);
+
+}
+
+
+button,
+input,
+a {
+
+    font: inherit;
+
+}
+
+
+button {
+
+    -webkit-tap-highlight-color: transparent;
+
+}
+
+
+.app {
+
+    min-height: 100vh;
+
+    min-height: 100svh;
+
+}
+
+
+.screen {
+
+    width: 100%;
+
+    min-height: 100vh;
+
+    min-height: 100svh;
+
+}
+
+
+.screen[hidden] {
+
+    display: none !important;
+
+}
+
+
+.screen.is-active {
+
+    display: block;
+
+}
+
+
+
+/* ========================================= */
+/* ESCOLHA DO PAPEL */
+/* ========================================= */
+
+.role-screen {
+
+    padding: 38px clamp(18px, 5vw, 86px) 56px;
+
+}
+
+
+.role-heading {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-height: 126px;
+
+    padding: 16px 24px;
+
+    border-radius: 60px;
+
+    background: var(--title-bg);
+
+    color: var(--teal);
+
+    text-align: center;
+
+}
+
+
+.role-heading h1 {
+
+    margin: 0;
+
+    font-size: clamp(32px, 5vw, 78px);
+
+    font-weight: 400;
+
+    letter-spacing: 1px;
+
+    line-height: 1.1;
+
+}
+
+
+
+/* ========================================= */
+/* CARTÕES CLIENTE E PROVEDOR */
+/* ========================================= */
+
+.role-options {
+
+    display: grid;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: clamp(24px, 4vw, 64px);
+
+    width: min(100%, 1698px);
+
+    margin: 48px auto 0;
+
+}
+
+
+.role-card {
+
+    display: flex;
+
+    flex-direction: column;
+
+    min-width: 0;
+
+    min-height: 640px;
+
+    padding: 16px clamp(20px, 2.5vw, 42px) 26px;
+
+    border-radius: 54px;
+
+    background: var(--teal);
+
+    color: var(--white);
+
+}
+
+
+.role-card h2 {
+
+    margin: 0;
+
+    font-size: clamp(34px, 4vw, 62px);
+
+    font-weight: 400;
+
+    letter-spacing: 1px;
+
+    line-height: 1.35;
+
+    text-align: center;
+
+}
+
+
+.role-divider {
+
+    width: 100%;
+
+    height: 5px;
+
+    flex: 0 0 5px;
+
+    margin: 0 0 28px;
+
+    border-radius: 999px;
+
+    background: var(--divider);
+
+}
+
+
+
+/* ========================================= */
+/* DESCRIÇÕES DOS PAPÉIS */
+/* ========================================= */
+
+.role-description {
+
+    display: grid;
+
+    gap: 24px;
+
+    margin: 0 0 28px;
+
+    padding-left: 31px;
+
+    font-size: clamp(17px, 1.55vw, 25px);
+
+    line-height: 1.3;
+
+}
+
+
+.role-description li {
+
+    padding-left: 4px;
+
+}
+
+
+
+/* ========================================= */
+/* BOTÕES DE ESCOLHA */
+/* ========================================= */
+
+.role-button {
+
+    width: 100%;
+
+    min-height: 96px;
+
+    margin-top: auto;
+
+    padding: 16px 20px;
+
+    border: 0;
+
+    border-radius: 36px;
+
+    background: var(--button);
+
+    color: var(--white);
+
+    font-size: clamp(20px, 2.4vw, 38px);
+
+    font-weight: 400;
+
+    line-height: 1.15;
+
+    text-align: center;
+
+    cursor: pointer;
+
+    transition:
+        transform 160ms ease,
+        box-shadow 160ms ease,
+        background-color 160ms ease;
+
+}
+
+
+.role-button:hover {
+
+    transform: translateY(-3px) scale(1.025);
+
+    background: var(--button-hover);
+
+    box-shadow:
+        0 0 0 3px rgb(131 208 189 / 75%),
+        0 0 24px rgb(131 208 189 / 55%);
+
+}
+
+
+.role-button:active {
+
+    transform: translateY(0) scale(.99);
+
+}
+
+
+.role-button:focus-visible {
+
+    outline: 3px solid var(--white);
+
+    outline-offset: 4px;
+
+}
+
+
+
+/* ========================================= */
+/* TELAS DE CADASTRO */
+/* ========================================= */
+
+.registration-screen {
+
+    padding: 38px clamp(16px, 5vw, 86px) 48px;
+
+}
+
+
+.registration-heading {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-height: 126px;
+
+    padding: 16px 24px;
+
+    border-radius: 60px;
+
+    background: var(--title-bg);
+
+    color: var(--teal);
+
+    text-align: center;
+
+}
+
+
+.registration-heading h1 {
+
+    margin: 0;
+
+    font-size: clamp(34px, 5vw, 78px);
+
+    font-weight: 400;
+
+    letter-spacing: 1px;
+
+    line-height: 1.1;
+
+}
+
+
+
+/* ========================================= */
+/* FORMULÁRIOS */
+/* ========================================= */
+
+.registration-card {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 24px;
+
+    width: min(686px, 100%);
+
+    min-height: 700px;
+
+    margin: 36px auto 0;
+
+    padding: 35px 23px 39px;
+
+    border-radius: 54px;
+
+    background: var(--teal);
+
+    color: var(--white);
+
+}
+
+
+.client-card {
+
+    min-height: 700px;
+
+}
+
+
+.provider-card {
+
+    min-height: 700px;
+
+}
+
+
+.field-group {
+
+    display: flex;
+
+    flex-direction: column;
+
+    min-width: 0;
+
+}
+
+
+
+/* ========================================= */
+/* TÍTULOS DOS CAMPOS */
+/* ========================================= */
+
+.field-title {
+
+    display: block;
+
+    margin: 0 0 3px;
+
+    font-size: clamp(23px, 2.35vw, 40px);
+
+    font-weight: 700;
+
+    line-height: 1.12;
+
+}
+
+
+.field-hint {
+
+    margin: 0 0 11px;
+
+    font-size: clamp(16px, 1.55vw, 26px);
+
+    font-weight: 700;
+
+    line-height: 1.25;
+
+}
+
+
+
+/* ========================================= */
+/* CAMPOS DE TEXTO */
+/* ========================================= */
+
+.text-field {
+
+    display: block;
+
+    width: 100%;
+
+    min-height: 63px;
+
+    padding: 10px 13px;
+
+    border: 0;
+
+    border-bottom: 4px solid var(--input-line);
+
+    border-radius: 13px;
+
+    outline: none;
+
+    background: var(--input-bg);
+
+    color: #222222;
+
+    font-size: 23px;
+
+}
+
+
+.text-field:focus {
+
+    border-bottom-color: var(--divider);
+
+    box-shadow: 0 0 0 2px rgb(131 208 189 / 35%);
+
+}
+
+
+.text-field[aria-invalid="true"] {
+
+    border-bottom-color: #F4A5A5;
+
+}
+
+
+
+/* ========================================= */
+/* CAMPO TIPO DE SERVIÇO */
+/* ========================================= */
+
+.service-field-group {
+
+    gap: 0;
+
+}
+
+
+.service-field-group .field-title {
+
+    margin-top: 0;
+
+}
+
+
+.character-counter {
+
+    align-self: flex-end;
+
+    margin-top: 5px;
+
+    color: rgb(255 255 255 / 82%);
+
+    font-size: 13px;
+
+}
+
+
+
+/* ========================================= */
+/* CHECKBOX E TERMOS DE SERVIÇO */
+/* ========================================= */
+
+.consent-row {
+
+    display: grid;
+
+    grid-template-columns: 32px minmax(0, 1fr);
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin: 0 4px;
+
+    color: var(--white);
+
+    font-size: clamp(16px, 1.55vw, 25px);
+
+    font-weight: 700;
+
+    line-height: 1.3;
+
+    cursor: pointer;
+
+}
+
+
+.consent-checkbox {
+
+    width: 30px;
+
+    height: 30px;
+
+    margin: 0;
+
+    accent-color: var(--button);
+
+    cursor: pointer;
+
+}
+
+
+.terms-link {
+
+    color: var(--white);
+
+    text-decoration: underline;
+
+    text-underline-offset: 3px;
+
+}
+
+
+.terms-link:hover {
+
+    color: var(--divider);
+
+}
+
+
+
+/* ========================================= */
+/* BOTÃO DE CADASTRO */
+/* ========================================= */
+
+.submit-button {
+
+    width: 100%;
+
+    min-height: 102px;
+
+    margin-top: auto;
+
+    padding: 15px 18px;
+
+    border: 0;
+
+    border-radius: 35px;
+
+    background: var(--button);
+
+    color: var(--white);
+
+    font-size: clamp(21px, 2.35vw, 38px);
+
+    font-weight: 400;
+
+    line-height: 1.15;
+
+    cursor: pointer;
+
+    transition:
+        transform 160ms ease,
+        box-shadow 160ms ease,
+        background-color 160ms ease;
+
+}
+
+
+.submit-button:hover {
+
+    transform: translateY(-3px) scale(1.015);
+
+    background: var(--button-hover);
+
+    box-shadow:
+        0 0 0 3px rgb(131 208 189 / 75%),
+        0 0 24px rgb(131 208 189 / 55%);
+
+}
+
+
+.submit-button:active {
+
+    transform: translateY(0) scale(.99);
+
+}
+
+
+.submit-button:focus-visible {
+
+    outline: 3px solid var(--white);
+
+    outline-offset: 4px;
+
+}
+
+
+
+/* ========================================= */
+/* POP-UP DE ERRO / SUCESSO */
+/* ========================================= */
+
+.feedback-dialog {
+
+    width: min(500px, calc(100vw - 32px));
+
+    max-height: calc(100svh - 32px);
+
+    overflow-y: auto;
+
+    margin: auto;
+
+    padding: 30px 26px 26px;
+
+    border: 0;
+
+    border-radius: 18px;
+
+    background: #F5FAF7;
+
+    color: var(--text-dark);
+
+    text-align: center;
+
+    box-shadow: 0 18px 60px rgb(10 40 34 / 28%);
+
+}
+
+
+.feedback-dialog::backdrop {
+
+    background: rgb(12 33 29 / 58%);
+
+    backdrop-filter: blur(5px);
+
+    -webkit-backdrop-filter: blur(5px);
+
+}
+
+
+
+/* ========================================= */
+/* ÍCONE DO POP-UP */
+/* ========================================= */
+
+.feedback-icon {
+
+    display: grid;
+
+    width: 58px;
+
+    height: 58px;
+
+    margin: 0 auto 14px;
+
+    place-items: center;
+
+    border-radius: 50%;
+
+    background: #FBE2E2;
+
+    color: var(--error);
+
+    font-size: 32px;
+
+    font-weight: 700;
+
+}
+
+
+.feedback-dialog.is-success .feedback-icon {
+
+    background: #D4F0E5;
+
+    color: var(--success);
+
+}
+
+
+
+/* ========================================= */
+/* TEXTO DO POP-UP */
+/* ========================================= */
+
+.feedback-dialog h2 {
+
+    margin: 0 0 10px;
+
+    font-size: 26px;
+
+    line-height: 1.2;
+
+}
+
+
+.feedback-dialog p {
+
+    margin: 0 0 23px;
+
+    font-size: 17px;
+
+    line-height: 1.45;
+
+}
+
+
+
+/* ========================================= */
+/* BOTÃO DO POP-UP */
+/* ========================================= */
+
+.feedback-button {
+
+    width: 100%;
+
+    min-height: 48px;
+
+    padding: 11px 16px;
+
+    border: 0;
+
+    border-radius: 7px;
+
+    background: var(--button);
+
+    color: var(--white);
+
+    font-size: 16px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background-color 140ms ease,
+        transform 140ms ease;
+
+}
+
+
+.feedback-button:hover {
+
+    background: var(--button-hover);
+
+}
+
+
+.feedback-button:active {
+
+    transform: scale(.99);
+
+}
+
+
+.feedback-button:focus-visible {
+
+    outline: 3px solid var(--teal);
+
+    outline-offset: 3px;
+
+}
+
+
+
+/* ========================================= */
+/* TABLETS E CELULARES */
+/* ========================================= */
+
+@media (max-width: 900px) {
+
+
+    .role-screen,
+    .registration-screen {
+
+        padding: 18px 14px 28px;
+
+    }
+
+
+    .role-heading,
+    .registration-heading {
+
+        min-height: 86px;
+
+        padding: 14px 16px;
+
+        border-radius: 32px;
+
+    }
+
+
+    .role-heading h1,
+    .registration-heading h1 {
+
+        font-size: clamp(27px, 6vw, 44px);
+
+    }
+
+
+    .role-options {
+
+        grid-template-columns: 1fr;
+
+        gap: 18px;
+
+        margin-top: 22px;
+
+    }
+
+
+    .role-card {
+
+        min-height: 0;
+
+        padding: 15px 20px 20px;
+
+        border-radius: 30px;
+
+    }
+
+
+    .role-card h2 {
+
+        font-size: 34px;
+
+    }
+
+
+    .role-divider {
+
+        margin-bottom: 18px;
+
+    }
+
+
+    .role-description {
+
+        gap: 13px;
+
+        font-size: 17px;
+
+        margin-bottom: 20px;
+
+    }
+
+
+    .role-button {
+
+        min-height: 65px;
+
+        border-radius: 22px;
+
+        font-size: 20px;
+
+    }
+
+
+    .registration-card {
+
+        width: min(686px, 100%);
+
+        min-height: 0;
+
+        margin-top: 20px;
+
+        padding: 25px 18px 22px;
+
+        gap: 20px;
+
+        border-radius: 30px;
+
+    }
+
+
+    .client-card {
+
+        min-height: min(680px, calc(100svh - 130px));
+
+    }
+
+
+    .provider-card {
+
+        min-height: 0;
+
+    }
+
+
+    .field-title {
+
+        font-size: 25px;
+
+    }
+
+
+    .field-hint {
+
+        font-size: 17px;
+
+    }
+
+
+    .text-field {
+
+        min-height: 56px;
+
+        font-size: 19px;
+
+    }
+
+
+    .consent-row {
+
+        grid-template-columns: 27px minmax(0, 1fr);
+
+        gap: 9px;
+
+        font-size: 16px;
+
+    }
+
+
+    .consent-checkbox {
+
+        width: 25px;
+
+        height: 25px;
+
+    }
+
+
+    .submit-button {
+
+        min-height: 66px;
+
+        border-radius: 22px;
+
+        font-size: 20px;
+
+    }
+
+}
+
+
+
+/* ========================================= */
+/* CELULARES PEQUENOS */
+/* ========================================= */
+
+@media (max-width: 420px) {
+
+
+    .role-screen,
+    .registration-screen {
+
+        padding-inline: 10px;
+
+    }
+
+
+    .role-card {
+
+        padding-inline: 16px;
+
+    }
+
+
+    .role-card h2 {
+
+        font-size: 30px;
+
+    }
+
+
+    .role-description {
+
+        font-size: 16px;
+
+    }
+
+
+    .registration-card {
+
+        padding-inline: 15px;
+
+    }
+
+
+    .field-title {
+
+        font-size: 22px;
+
+    }
+
+
+    .field-hint {
+
+        font-size: 15px;
+
+    }
+
+
+    .consent-row {
+
+        font-size: 15px;
+
+    }
+
+
+    .feedback-dialog {
+
+        padding: 25px 19px 20px;
+
+    }
+
+}
+
+
+
+/* ========================================= */
+/* ACESSIBILIDADE */
+/* ========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+
+    *,
+    *::before,
+    *::after {
+
+        transition-duration: .01ms !important;
+
+        scroll-behavior: auto !important;
+
+    }
+
+}
