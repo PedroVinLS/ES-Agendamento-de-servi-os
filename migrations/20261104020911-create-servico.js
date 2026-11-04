@@ -1,7 +1,5 @@
 'use strict';
 
-const { sequelize } = require("../../API - Base/models");
-
 module.exports = {
     async up(queryInterface, Sequelize) {
         await queryInterface.createTable('SERVICO', {

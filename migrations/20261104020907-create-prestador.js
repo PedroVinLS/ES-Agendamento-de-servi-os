@@ -4,15 +4,15 @@ module.exports = {
     async up(queryInterface, Sequelize) {
         await queryInterface.createTable('PRESTADOR', {
             id_usuario: {
-              type: Sequelize.INTEGER,
-              allowNull: false,
-              unique: true,
-              references: {
-                model: 'USUARIO',
-                key: 'id'
-              },
-              onUpdate: 'CASCADE',
-              onDelete: 'CASCADE'
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                unique: true,
+                references: {
+                    model: 'USUARIO',
+                    key: 'id'
+                },
+                onUpdate: 'CASCADE',
+                onDelete: 'CASCADE'
             },
 
             cnpj: {
