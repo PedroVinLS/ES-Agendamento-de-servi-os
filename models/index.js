@@ -2,13 +2,13 @@
 'use strict';
 
 const sequelize = require('../config/database');
-const { DataTypes } = require('sequelize');
+const Sequelize = require('sequelize');
 
-const Usuario = require('./usuario')(sequelize, DataTypes);
-const Cliente = require('./cliente')(sequelize, DataTypes);
-const Prestador = require('./prestador')(sequelize, DataTypes);
-const Agenda = require('./agenda')(sequelize, DataTypes);
-const Servico = require('./servico')(sequelize, DataTypes);
+const Usuario = require('./usuario')(sequelize, Sequelize.DataTypes);
+const Cliente = require('./cliente')(sequelize, Sequelize.DataTypes);
+const Prestador = require('./prestador')(sequelize, Sequelize.DataTypes);
+const Agenda = require('./agenda')(sequelize, Sequelize.DataTypes);
+const Servico = require('./servico')(sequelize, Sequelize.DataTypes);
 
 const models = {
     Usuario,
