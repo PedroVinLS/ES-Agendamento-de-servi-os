@@ -1,6 +1,6 @@
 'use strict';
 
-const { Prestador } = require('../models');
+const { Prestador, Usuario } = require('../models');
 
 class prestadorController {
     async index (req, res) {
@@ -66,6 +66,24 @@ class prestadorController {
             return res.json({ message: 'Prestador excluído com sucesso.' });
         } catch (erro) {
             return res.status(400).json({error : erro.message});
+        }
+    }
+
+    async showMore (req, res) {
+        try {
+            const prestador = await Prestador.findByPk(req.params.cnpj, {
+                include: [
+                    {model: Usuario, as: 'usuario', attributes: ['nome', 'email']}
+                ]
+            });
+
+            if (!prestador) {
+                return res.status(404).json({ erro: 'Prestador não encontrado'});
+            }
+
+            return res.json(prestador);
+        } catch (erro) {
+            return res.status(400).json({erro: erro.message});
         }
     }
 }

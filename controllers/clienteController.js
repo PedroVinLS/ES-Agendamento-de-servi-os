@@ -1,6 +1,6 @@
 'use strict';
 
-const { Cliente } = require('../models');
+const { Cliente, Usuario } = require('../models');
 
 class clienteController {
     async index (req, res) {
@@ -66,6 +66,24 @@ class clienteController {
             return res.json({ message: 'Cliente excluído com sucesso.' });
         } catch (erro) {
             return res.status(400).json({error : erro.message});
+        }
+    }
+
+    async showMore (req, res) {
+        try {
+            const cliente = await Cliente.findByPk(req.params.cpf, {
+                include: [
+                    {model: Usuario, as: 'usuario', attributes: ['nome', 'email']}
+                ]
+            });
+
+            if (!cliente) {
+                return res.status(404).json({ erro: 'Cliente não encontrado'});
+            }
+
+            return res.json(cliente);
+        } catch (erro) {
+            return res.status(400).json({erro: erro.message});
         }
     }
 }
