@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#DFEFE9">
+
+    <title>Criação de Serviço</title>
+
+    <link rel="stylesheet" href="criacao-servico.css">
+    <script src="criacao-servico.js" defer></script>
+</head>
+
+<body>
+
+    <main class="app-shell">
+
+        <!-- CABEÇALHO -->
+
+        <header class="topbar">
+
+            <button class="logo-button" type="button"
+                    aria-label="Voltar ao menu principal">
+
+                <span>LOGO</span>
+
+                <small>
+                    (retorna ao<br>menu principal)
+                </small>
+
+            </button>
+
+            <div class="page-title">
+                <h1>CRIAÇÃO DE SERVIÇO</h1>
+            </div>
+
+        </header>
+
+
+        <!-- FORMULÁRIO PRINCIPAL -->
+
+        <form id="service-form"
+              class="service-layout"
+              novalidate>
+
+
+            <!-- CAMPOS DO SERVIÇO -->
+
+            <section class="form-panel"
+                     aria-label="Informações do serviço">
+
+
+                <!-- NOME -->
+
+                <div class="field-group">
+
+                    <label for="service-name">
+                        Insira o nome do serviço
+                        <span>(até 100 caracteres alfanuméricos)</span>
+                    </label>
+
+                    <input
+                        id="service-name"
+                        name="serviceName"
+                        class="text-input"
+                        type="text"
+                        maxlength="100"
+                        autocomplete="off"
+                        required
+                    >
+
+                    <small class="field-error"
+                           id="service-name-error">
+                    </small>
+
+                </div>
+
+
+                <!-- PREÇO MÍNIMO -->
+
+                <div class="field-group compact-field">
+
+                    <label for="service-price">
+                        Insira o preço mínimo do serviço
+                        <span>(opcional)</span>
+                    </label>
+
+                    <input
+                        id="service-price"
+                        name="servicePrice"
+                        class="text-input price-input"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        inputmode="decimal"
+                        placeholder="R$"
+                    >
+
+                    <small class="field-error"
+                           id="service-price-error">
+                    </small>
+
+                </div>
+
+
+                <!-- TELEFONE -->
+
+                <div class="field-group compact-field">
+
+                    <label>
+                        Insira o telefone de serviço
+                        <span>(opcional)</span>
+                    </label>
+
+                    <div class="phone-fields">
+
+                        <input
+                            id="phone-area"
+                            class="text-input area-input"
+                            type="tel"
+                            inputmode="numeric"
+                            maxlength="2"
+                            placeholder="DDD"
+                            aria-label="DDD"
+                        >
+
+                        <input
+                            id="phone-number"
+                            class="text-input phone-input"
+                            type="tel"
+                            inputmode="numeric"
+                            maxlength="11"
+                            placeholder="Número"
+                            aria-label="Número de telefone"
+                        >
+
+                    </div>
+
+                    <small class="field-error"
+                           id="phone-error">
+                    </small>
+
+                </div>
+
+
+                <!-- DESCRIÇÃO -->
+
+                <div class="field-group description-group">
+
+                    <label for="service-description">
+                        Insira a descrição do serviço
+                        <span>(até 300 caracteres alfanuméricos)</span>
+                    </label>
+
+                    <textarea
+                        id="service-description"
+                        name="serviceDescription"
+                        maxlength="300"
+                        required>
+                    </textarea>
+
+                    <div class="description-footer">
+
+                        <small class="field-error"
+                               id="service-description-error">
+                        </small>
+
+                        <small id="description-counter">
+                            0/300
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- PAINEL DA AGENDA -->
+
+            <aside class="schedule-side">
+
+
+                <div class="schedule-instructions">
+
+                    <p>
+                        Selecione todas as células contendo os horários
+                        e dias que você ou sua equipe poderão atender
+                        um cliente, e então confirme no botão verde abaixo.
+                        Clique novamente sobre uma célula para desfazer
+                        a seleção.
+                    </p>
+
+                </div>
+
+
+                <button
+                    id="open-schedule"
+                    class="schedule-open-button"
+                    type="button">
+
+                    SELECIONAR DIAS/<br>
+                    HORÁRIOS
+
+                </button>
+
+
+                <p id="selection-summary"
+                   class="selection-summary"
+                   aria-live="polite">
+
+                    Nenhum horário selecionado.
+
+                </p>
+
+
+                <button
+                    id="create-service"
+                    class="create-button"
+                    type="submit"
+                    disabled>
+
+                    CRIAR NOVO SERVIÇO<br>
+                    INSIRA SENHA
+
+                </button>
+
+
+            </aside>
+
+        </form>
+
+    </main>
+
+
+
+    <!-- ====================================== -->
+    <!-- MODAL: SELEÇÃO DE DIAS E HORÁRIOS -->
+    <!-- ====================================== -->
+
+    <dialog
+        id="schedule-dialog"
+        class="modal schedule-modal"
+        aria-labelledby="schedule-title">
+
+
+        <header class="modal-header">
+
+            <div>
+
+                <h2 id="schedule-title">
+                    SELECIONE DIAS E HORÁRIOS
+                </h2>
+
+                <p>
+                    Toque/clique nas células disponíveis
+                    para marcar ou desmarcar.
+                </p>
+
+            </div>
+
+
+            <button
+                class="icon-close"
+                type="button"
+                data-close="schedule-dialog"
+                aria-label="Fechar">
+
+                ×
+
+            </button>
+
+        </header>
+
+
+        <!-- LEGENDA -->
+
+        <div class="schedule-legend">
+
+            <span>
+                <i class="legend-swatch available"></i>
+                Não selecionado
+            </span>
+
+            <span>
+                <i class="legend-swatch selected"></i>
+                Selecionado
+            </span>
+
+        </div>
+
+
+        <!-- GRADE -->
+
+        <div class="availability-scroll"
+             id="availability-scroll">
+
+            <div
+                id="availability-grid"
+                class="availability-grid"
+                role="grid"
+                aria-label="Disponibilidade semanal">
+
+            </div>
+
+        </div>
+
+
+        <!-- RODAPÉ DO MODAL -->
+
+        <footer class="modal-footer">
+
+            <span id="modal-selection-count"
+                  aria-live="polite">
+
+                0 horários selecionados
+
+            </span>
+
+
+            <div class="modal-actions">
+
+                <button
+                    class="secondary-action"
+                    type="button"
+                    data-close="schedule-dialog">
+
+                    VOLTAR
+
+                </button>
+
+
+                <button
+                    id="save-schedule"
+                    class="primary-action"
+                    type="button">
+
+                    CONFIRMAR HORÁRIOS
+
+                </button>
+
+            </div>
+
+        </footer>
+
+    </dialog>
+
+
+
+    <!-- ====================================== -->
+    <!-- MODAL: CONFIRMAÇÃO DA SENHA -->
+    <!-- ====================================== -->
+
+    <dialog
+        id="password-dialog"
+        class="modal password-modal"
+        aria-labelledby="password-title">
+
+
+        <header class="modal-header">
+
+            <div>
+
+                <h2 id="password-title">
+                    CONFIRMAR CRIAÇÃO
+                </h2>
+
+                <p>
+                    Digite sua senha para confirmar
+                    a criação do serviço.
+                </p>
+
+            </div>
+
+
+            <button
+                class="icon-close"
+                type="button"
+                data-close="password-dialog"
+                aria-label="Fechar">
+
+                ×
+
+            </button>
+
+        </header>
+
+
+        <form id="password-form" novalidate>
+
+            <label for="confirmation-password">
+                SENHA DO USUÁRIO
+            </label>
+
+            <input
+                id="confirmation-password"
+                class="text-input"
+                type="password"
+                autocomplete="current-password"
+                required
+            >
+
+            <small id="password-error"
+                   class="field-error"
+                   aria-live="polite">
+            </small>
+
+
+            <div class="modal-actions password-actions">
+
+                <button
+                    class="secondary-action"
+                    type="button"
+                    data-close="password-dialog">
+
+                    VOLTAR
+
+                </button>
+
+
+                <button
+                    class="primary-action"
+                    type="submit">
+
+                    CONFIRMAR
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </dialog>
+
+
+
+    <!-- ====================================== -->
+    <!-- MODAL: RESULTADO -->
+    <!-- ====================================== -->
+
+    <dialog
+        id="result-dialog"
+        class="modal result-modal"
+        aria-labelledby="result-title">
+
+
+        <div class="result-icon" aria-hidden="true">
+            ✓
+        </div>
+
+
+        <h2 id="result-title">
+            SERVIÇO CRIADO!
+        </h2>
+
+
+        <p id="result-message">
+            O serviço foi salvo localmente neste navegador.
+        </p>
+
+
+        <button
+            id="result-close"
+            class="primary-action full-button"
+            type="button">
+
+            ENTENDIDO
+
+        </button>
+
+    </dialog>
+
+</body>
+</html>
