@@ -8,8 +8,8 @@
 
     <title>Criação de Serviço</title>
 
-    <link rel="stylesheet" href="criacao-servico.css">
-    <script src="criacao-servico.js" defer></script>
+   <link rel="stylesheet" href="../css/criacao-servico.css">
+    <script src="../js/criacao-servico.js" defer></script>
 </head>
 
 <body>
@@ -82,8 +82,8 @@
                 <div class="field-group compact-field">
 
                     <label for="service-price">
-                        Insira o preço mínimo do serviço
-                        <span>(opcional)</span>
+                        Insira o preço do serviço
+                        <span>(mínimo R$ 0,01)</span>
                     </label>
 
                     <input
@@ -91,10 +91,11 @@
                         name="servicePrice"
                         class="text-input price-input"
                         type="number"
-                        min="0"
+                        min="0.01"
                         step="0.01"
                         inputmode="decimal"
                         placeholder="R$"
+                        required
                     >
 
                     <small class="field-error"

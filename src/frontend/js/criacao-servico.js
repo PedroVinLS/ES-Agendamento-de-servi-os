@@ -33,9 +33,9 @@ const STORAGE_KEY = "servicosCriados";
 const DEMO_PASSWORD = "123456";
 
 
-// Nome, descrição e ao menos um horário são obrigatórios.
-// Preço e telefone são opcionais, conforme o wireframe.
-
+// Nome, descrição, preço e ao menos um horário são obrigatórios.
+// O preço mínimo é R$ 0,01, com até duas casas decimais.
+// O telefone permanece opcional.
 
 // ==========================================
 // ELEMENTOS HTML
@@ -624,15 +624,18 @@ function validatePrice() {
     const value = servicePrice.value.trim();
 
 
-    // O preço é opcional.
+    // O preço é obrigatório.
 
     if (value === "") {
 
-        setInvalid(servicePrice, false);
+        setInvalid(servicePrice, true);
 
-        setFieldError("service-price-error", "");
+        setFieldError(
+            "service-price-error",
+            "Informe o preço do serviço. O valor mínimo é R$ 0,01."
+        );
 
-        return true;
+        return false;
 
     }
 
@@ -641,7 +644,8 @@ function validatePrice() {
 
     const valid =
         Number.isFinite(parsed) &&
-        parsed >= 0;
+        parsed >= 0.01 &&
+        /^\d+(\.\d{1,2})?$/.test(value);
 
 
     setInvalid(servicePrice, !valid);
@@ -652,7 +656,7 @@ function validatePrice() {
 
         valid
             ? ""
-            : "Informe um preço válido ou deixe o campo vazio."
+            : "Informe um preço a partir de R$ 0,01, com no máximo duas casas decimais."
     );
 
 
@@ -740,9 +744,9 @@ function isFormReady() {
 
 function updateCreateButton() {
 
-    // Os campos opcionais só são validados
-    // quando o usuário decide preenchê-los.
-
+    // Valida os campos obrigatórios, incluindo
+    // o preço mínimo de R$ 0,01.
+    // O telefone permanece opcional.
     const ready =
 
         serviceName.value.trim().length > 0 &&
