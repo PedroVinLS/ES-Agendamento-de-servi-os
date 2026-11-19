@@ -5,8 +5,9 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 
 const controller = require('../controllers/servicoController');
+const { Servico, Agenda } = require('../models');
 
-function criarRespostaSimulada() {
+function criarResposta() {
     return {
         statusCode: 200,
         dados: null,
@@ -23,60 +24,96 @@ function criarRespostaSimulada() {
     };
 }
 
-const servicoValido = {
-    name: 'Corte masculino',
-    description: 'Corte de cabelo tradicional.',
-    minimumPrice: 25.50,
-    phone: null,
-    availability: [
-        { dayIndex: 0, start: 9, end: 10 }
-    ]
-};
+function dadosValidos() {
+    return {
+        id_cliente: '12345678901',
+        id_prestador: '12345678000190',
+        id_agenda: 1,
+        descricao: 'Corte masculino'
+    };
+}
 
-test('Recusa cadastro sem autenticação', async () => {
-    const req = { body: servicoValido };
-    const res = criarRespostaSimulada();
+test('Recusa horário ocupado pelo prestador', async (t) => {
+    t.mock.method(Agenda, 'findByPk', async () => ({
+        id: 1,
+        horario: new Date('2026-12-01T14:00:00Z')
+    }));
 
-    await controller.create(req, res);
+    t.mock.method(Servico, 'findOne', async (consulta) => {
+        if (consulta.where.id_prestador) {
+            return { id: 10 };
+        }
 
-    assert.equal(res.statusCode, 401);
+        return null;
+    });
+
+    const criar = t.mock.method(
+        Servico,
+        'create',
+        async () => ({ id: 1 })
+    );
+
+    const res = criarResposta();
+
+    await controller.create({ body: dadosValidos() }, res);
+
+    assert.equal(res.statusCode, 409);
+    assert.equal(criar.mock.callCount(), 0);
 });
 
-test('Recusa serviço com preço inválido', async () => {
-    const req = {
-        usuarioAutenticado: { id: 1, tipo: 'prestador' },
-        body: { ...servicoValido, minimumPrice: 0 }
-    };
+test('Recusa horário ocupado pelo cliente', async (t) => {
+    t.mock.method(Agenda, 'findByPk', async () => ({
+        id: 1,
+        horario: new Date('2026-12-01T14:00:00Z')
+    }));
 
-    const res = criarRespostaSimulada();
+    t.mock.method(Servico, 'findOne', async (consulta) => {
+        if (consulta.where.id_cliente) {
+            return { id: 11 };
+        }
 
-    await controller.create(req, res);
+        return null;
+    });
 
-    assert.equal(res.statusCode, 400);
+    const criar = t.mock.method(
+        Servico,
+        'create',
+        async () => ({ id: 1 })
+    );
+
+    const res = criarResposta();
+
+    await controller.create({ body: dadosValidos() }, res);
+
+    assert.equal(res.statusCode, 409);
+    assert.equal(criar.mock.callCount(), 0);
 });
 
-test('Recusa serviço sem nome', async () => {
-    const req = {
-        usuarioAutenticado: { id: 1, tipo: 'prestador' },
-        body: { ...servicoValido, name: '' }
-    };
+test('Registra atendimento quando o horário está livre', async (t) => {
+    const dados = dadosValidos();
 
-    const res = criarRespostaSimulada();
+    t.mock.method(Agenda, 'findByPk', async () => ({
+        id: 1,
+        horario: new Date('2026-12-01T14:00:00Z')
+    }));
 
-    await controller.create(req, res);
+    t.mock.method(Servico, 'findOne', async () => null);
 
-    assert.equal(res.statusCode, 400);
-});
+    const criar = t.mock.method(
+        Servico,
+        'create',
+        async (entrada) => ({
+            id: 20,
+            ...entrada
+        })
+    );
 
-test('Mantém cadastro bloqueado até a integração', async () => {
-    const req = {
-        usuarioAutenticado: { id: 1, tipo: 'prestador' },
-        body: servicoValido
-    };
+    const res = criarResposta();
 
-    const res = criarRespostaSimulada();
+    await controller.create({ body: dados }, res);
 
-    await controller.create(req, res);
-
-    assert.equal(res.statusCode, 503);
+    assert.equal(res.statusCode, 201);
+    assert.equal(criar.mock.callCount(), 1);
+    assert.deepEqual(criar.mock.calls[0].arguments[0], dados);
+    assert.equal(res.dados.id, 20);
 });
