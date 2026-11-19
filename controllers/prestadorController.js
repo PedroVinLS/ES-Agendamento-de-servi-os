@@ -2,6 +2,10 @@
 
 const { Prestador, Usuario, Cliente } = require('../models');
 
+const {
+    validarServicoPrestador
+} = require('../validators/servicoPrestadorValidator');
+
 class prestadorController {
     async index (req, res) {
         try {
@@ -29,7 +33,18 @@ class prestadorController {
 
     async create (req, res) {
         try {
-            const cliente = await Cliente.findOne({where: {id_usuario: req.body.id_usuario}})
+            const resultado = validarServicoPrestador(req.body);
+
+            if (!resultado.valido) {
+                return res.status(400).json({
+                    error: 'Dados do serviço inválidos.',
+                    detalhes: resultado.erros
+                });
+            }
+
+            const cliente = await Cliente.findOne({
+                where: { id_usuario: req.body.id_usuario }
+            });
 
             if (cliente) {
                 return res.status(409).json({ error: 'Este usuário já está registrado como cliente.'});
