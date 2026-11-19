@@ -1,6 +1,6 @@
 'use strict';
 
-const { Cliente, Usuario } = require('../models');
+const { Cliente, Usuario, Prestador } = require('../models');
 
 class clienteController {
     async index (req, res) {
@@ -29,6 +29,12 @@ class clienteController {
 
     async create (req, res) {
         try {
+            const usuario = await Prestador.findOne({where: {id_usuario: req.body.id_usuario}})
+
+            if (usuario) {
+                return res.status(409).json({ error: 'Este usuário já está registrado como prestador.'});
+            }
+
             const novo = await Cliente.create(req.body);
 
             return res.status(201).json(novo);

@@ -21,6 +21,16 @@ module.exports = {
                 primaryKey: true
             },
 
+            servicoPrestado: {
+                type: Sequelize.STRING(150),
+                allowNull: false
+            },
+
+            preco: {
+                type: Sequelize.DECIMAL(10, 2),
+                allowNull: false
+            },
+
             avaliacao: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
@@ -35,6 +45,16 @@ module.exports = {
             where: {
                 avaliacao: {
                     [Sequelize.Op.between]: [0, 5]
+                }
+            }
+        });
+        await queryInterface.addConstraint('PRESTADOR', {
+            fields: ['preco'],
+            type: 'check',
+            name: 'chk_preco_servico',
+            where: {
+                preco: {
+                [Sequelize.Op.gte]: 0
                 }
             }
         });

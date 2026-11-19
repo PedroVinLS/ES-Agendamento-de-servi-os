@@ -1,10 +1,7 @@
 'use strict';
 
 const { Servico, Cliente, Prestador, Agenda } = require('../models');
-
-const {
-    validarCadastroServico
-} = require('../validators/servicoValidator');
+const { Op } = require('sequelize');
 
 class servicoController {
     async index (req, res) {
@@ -31,44 +28,47 @@ class servicoController {
         }
     }
 
-    async create(req, res) {
+    async create (req, res) {
         try {
-            // A autenticação deverá fornecer a identidade
-            // do usuário por um middleware confiável.
-            if (!req.usuarioAutenticado) {
-                return res.status(401).json({
-                    error: 'Autenticação necessária para cadastrar serviços.'
-                });
-            }
+            const agenda = await Agenda.findByPk(req.body.id_agenda);
 
-            // Verifica os dados recebidos.
-            const resultado = validarCadastroServico(req.body);
-
-            if (!resultado.valido) {
-                return res.status(400).json({
-                    error: 'Dados inválidos.',
-                    detalhes: resultado.erros
-                });
-            }
-
-        // PENDENTE:
-        // 1. Confirmar no banco que o usuário é prestador.
-        // 2. Associar o serviço ao prestador autenticado.
-        // 3. Adequar o modelo Servico à HU-02.1.
-        // 4. Executar Servico.create() com campos permitidos.
-        //
-        // Não liberar a gravação antes dessas etapas.
-
-            return res.status(503).json({
-                error: 'Cadastro indisponível até a conclusão da autenticação e da modelagem.'
+            const prestadorServico = await Servico.findOne({
+                where: {
+                    id_prestador: req.body.id_prestador
+                },
+                include: [{
+                    model: Agenda,
+                    as: 'agenda',
+                    where: {
+                        horario: agenda.horario
+                    },
+                    attributes: []
+                }]
             });
 
+            const clienteServico = await Servico.findOne({
+                where: {
+                    id_cliente: req.body.id_cliente
+                },
+                include: [{
+                    model: Agenda,
+                    as: 'agenda',
+                    where: {
+                        horario: agenda.horario
+                    },
+                    attributes: []
+                }]
+            });
+
+            if (prestadorServico || clienteServico) {
+                return res.status(409).json({ error: 'Este prestador/cliente já está possui um serviço registrado neste horário.'});
+            }
+
+            const novo = await Servico.create(req.body);
+
+            return res.status(201).json(novo);
         } catch (erro) {
-            console.error('Erro ao cadastrar serviço:', erro);
-
-            return res.status(500).json({
-                error: 'Erro interno ao processar o cadastro.'
-            });
+            return res.status(400).json({error : erro.message});
         }
     }
     
@@ -80,9 +80,66 @@ class servicoController {
                 return res.status(404).json({ error: 'Serviço não encontrado.'});
             }
 
-            await servico.update(req.body);
+            if(!req.body.horario && !req.body.local) {
+                return res.status(400).json({ error: 'Informe um horário/local novo.'});
+            }
+
+            const agenda = await Agenda.findByPk(servico.id_agenda);
+
+            const newData = {};
+
+            if (req.body.horario !== undefined) {
+                newData.horario = req.body.horario;
+
+                const prestadorServico = await Servico.findOne({
+                    where: {
+                        id: {[Op.ne] : servico.id},
+                        id_prestador: servico.id_prestador
+                    },
+                    include: [{
+                        model: Agenda,
+                        as: 'agenda',
+                        where: {
+                            horario: req.body.horario
+                        },
+                        attributes: []
+                    }]
+                });
+
+                const clienteServico = await Servico.findOne({
+                    where: {
+                        id: {[Op.ne] : servico.id},
+                        id_cliente: servico.id_cliente
+                    },
+                    include: [{
+                        model: Agenda,
+                        as: 'agenda',
+                        where: {
+                            horario: req.body.horario
+                        },
+                        attributes: []
+                    }]
+                });
+
+                if (prestadorServico || clienteServico) {
+                    return res.status(409).json({ error: 'Este prestador/cliente já está possui um serviço registrado neste horário.'});
+                }
+            }
+
+            if (req.body.local !== undefined) {
+                newData.local = req.body.local;
+            }
+
+            await agenda.update(newData);
             
-            return res.json(servico);
+            const retorno = await Servico.findByPk(servico.id, {
+                include: [{
+                    model: Agenda,
+                    as: 'agenda'
+                }]
+            });
+
+            return res.json(retorno);
         } catch (erro) {
             return res.status(400).json({error : erro.message});
         }

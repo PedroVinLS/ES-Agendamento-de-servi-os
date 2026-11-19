@@ -7,6 +7,7 @@ module.exports = {
         database: process.env.DB_NAME,
         host: process.env.DB_HOST_DEV,
         port: process.env.DB_PORT || 3306,
-        dialect: process.env.DB_DIALECT || 'mysql'
+        dialect: process.env.DB_DIALECT || 'mysql',
+        timezone: '-03:00'
     }
 };
