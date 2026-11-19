@@ -2,6 +2,10 @@
 
 const { Servico, Cliente, Prestador, Agenda } = require('../models');
 
+const {
+    validarCadastroServico
+} = require('../validators/servicoValidator');
+
 class servicoController {
     async index (req, res) {
         try {
@@ -27,13 +31,44 @@ class servicoController {
         }
     }
 
-    async create (req, res) {
+    async create(req, res) {
         try {
-            const novo = await Servico.create(req.body);
+            // A autenticação deverá fornecer a identidade
+            // do usuário por um middleware confiável.
+            if (!req.usuarioAutenticado) {
+                return res.status(401).json({
+                    error: 'Autenticação necessária para cadastrar serviços.'
+                });
+            }
 
-            return res.status(201).json(novo);
+            // Verifica os dados recebidos.
+            const resultado = validarCadastroServico(req.body);
+
+            if (!resultado.valido) {
+                return res.status(400).json({
+                    error: 'Dados inválidos.',
+                    detalhes: resultado.erros
+                });
+            }
+
+        // PENDENTE:
+        // 1. Confirmar no banco que o usuário é prestador.
+        // 2. Associar o serviço ao prestador autenticado.
+        // 3. Adequar o modelo Servico à HU-02.1.
+        // 4. Executar Servico.create() com campos permitidos.
+        //
+        // Não liberar a gravação antes dessas etapas.
+
+            return res.status(503).json({
+                error: 'Cadastro indisponível até a conclusão da autenticação e da modelagem.'
+            });
+
         } catch (erro) {
-            return res.status(400).json({error : erro.message});
+            console.error('Erro ao cadastrar serviço:', erro);
+
+            return res.status(500).json({
+                error: 'Erro interno ao processar o cadastro.'
+            });
         }
     }
     
