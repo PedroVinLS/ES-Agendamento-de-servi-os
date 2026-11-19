@@ -2,14 +2,15 @@
 'use strict';
 
 /**
- * Verifica se existe uma identidade autenticada
- * associada a um prestador.
+ * Verifica se o usuário autenticado é o titular
+ * do cadastro solicitado.
  *
- * Esta função não autentica o usuário.
- * A identidade deverá ser fornecida por uma
- * camada de autenticação confiável.
+ * ATENÇÃO:
+ * A identidade deve ser fornecida por um
+ * middleware de autenticação confiável.
+ * Esta função não autentica usuários.
  */
-function verificarPermissaoCadastro(usuarioAutenticado) {
+function verificarPermissaoCadastro(usuarioAutenticado, idUsuarioSolicitado) {
     if (
         !usuarioAutenticado ||
         typeof usuarioAutenticado !== 'object' ||
@@ -19,9 +20,11 @@ function verificarPermissaoCadastro(usuarioAutenticado) {
     }
 
     return (
-        usuarioAutenticado.tipo === 'prestador' &&
         Number.isInteger(usuarioAutenticado.id) &&
-        usuarioAutenticado.id > 0
+        usuarioAutenticado.id > 0 &&
+        Number.isInteger(idUsuarioSolicitado) &&
+        idUsuarioSolicitado > 0 &&
+        usuarioAutenticado.id === idUsuarioSolicitado
     );
 }
 

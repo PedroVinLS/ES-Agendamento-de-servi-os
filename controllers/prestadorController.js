@@ -6,6 +6,10 @@ const {
     validarServicoPrestador
 } = require('../validators/servicoPrestadorValidator');
 
+const {
+    verificarPermissaoCadastro
+} = require('../validators/permissaoServico');
+
 class prestadorController {
     async index (req, res) {
         try {
@@ -31,8 +35,23 @@ class prestadorController {
         }
     }
 
-    async create (req, res) {
+    async create(req, res) {
         try {
+            if (!req.usuarioAutenticado) {
+                return res.status(401).json({
+                error: 'Autenticação necessária para cadastrar prestador.'
+                });
+            }
+
+            if (!verificarPermissaoCadastro(
+                req.usuarioAutenticado,
+                req.body?.id_usuario
+            )) {
+                return res.status(403).json({
+                    error: 'Você não tem permissão para realizar este cadastro.'
+                });
+            }
+
             const resultado = validarServicoPrestador(req.body);
 
             if (!resultado.valido) {
@@ -47,14 +66,16 @@ class prestadorController {
             });
 
             if (cliente) {
-                return res.status(409).json({ error: 'Este usuário já está registrado como cliente.'});
+                return res.status(409).json({
+                    error: 'Este usuário já está registrado como cliente.'
+                });
             }
 
             const novo = await Prestador.create(req.body);
 
             return res.status(201).json(novo);
-        } catch (erro) {
-            return res.status(400).json({error : erro.message});
+            } catch (erro) {
+            return res.status(400).json({ error: erro.message });
         }
     }
     

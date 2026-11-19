@@ -42,6 +42,7 @@ test('Recusa preço inválido antes de consultar o banco', async (t) => {
     });
 
     const req = {
+        usuarioAutenticado: { id: 1 },
         body: { ...dadosValidos(), preco: 0 }
     };
 
@@ -63,6 +64,7 @@ test('Recusa serviço sem nome antes de consultar o banco', async (t) => {
     });
 
     const req = {
+        usuarioAutenticado: { id: 1 },
         body: { ...dadosValidos(), servicoPrestado: '' }
     };
 
@@ -80,7 +82,11 @@ test('Recusa cadastro quando usuário já é cliente', async (t) => {
         cpf: '12345678901'
     }));
 
-    const req = { body: dadosValidos() };
+    const req = {
+        usuarioAutenticado: { id: 1 },
+        body: dadosValidos()
+    };
+
     const res = criarResposta();
 
     await controller.create(req, res);
@@ -99,11 +105,59 @@ test('Cadastra prestador com dados válidos na lógica atual', async (t) => {
         return { ...entrada };
     });
 
-    const req = { body: dados };
+    const req = {
+        usuarioAutenticado: { id: 1 },
+        body: dados
+    };
+
     const res = criarResposta();
 
     await controller.create(req, res);
 
     assert.equal(res.statusCode, 201);
     assert.deepEqual(dadosRecebidos, dados);
+});
+
+test('Recusa cadastro sem autenticação', async (t) => {
+    let consultouBanco = false;
+
+    t.mock.method(Cliente, 'findOne', async () => {
+        consultouBanco = true;
+        return null;
+    });
+
+    const req = {
+        body: dadosValidos()
+    };
+
+    const res = criarResposta();
+
+    await controller.create(req, res);
+
+    assert.equal(res.statusCode, 401);
+    assert.equal(consultouBanco, false);
+});
+
+test('Recusa cadastro em nome de outro usuário', async (t) => {
+    let consultouBanco = false;
+
+    t.mock.method(Cliente, 'findOne', async () => {
+        consultouBanco = true;
+        return null;
+    });
+
+    const req = {
+        usuarioAutenticado: { id: 1 },
+        body: {
+            ...dadosValidos(),
+            id_usuario: 8
+        }
+    };
+
+    const res = criarResposta();
+
+    await controller.create(req, res);
+
+    assert.equal(res.statusCode, 403);
+    assert.equal(consultouBanco, false);
 });
