@@ -54,7 +54,7 @@ module.exports = {
             name: 'chk_preco_servico',
             where: {
                 preco: {
-                [Sequelize.Op.gte]: 0
+                [Sequelize.Op.gte]: 0.01
                 }
             }
         });

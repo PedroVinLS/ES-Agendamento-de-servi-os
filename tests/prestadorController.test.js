@@ -161,3 +161,105 @@ test('Recusa cadastro em nome de outro usuário', async (t) => {
     assert.equal(res.statusCode, 403);
     assert.equal(consultouBanco, false);
 });
+
+
+test('Recusa atualização de outro prestador', async (t) => {
+    let atualizou = false;
+
+    t.mock.method(Prestador, 'findByPk', async () => ({
+        id_usuario: 8,
+        servicoPrestado: 'Corte masculino',
+        preco: 25.50,
+        update: async () => {
+            atualizou = true;
+        }
+    }));
+
+    const req = {
+        usuarioAutenticado: { id: 1 },
+        params: { cnpj: '12345678000190' },
+        body: { preco: 30 }
+    };
+
+    const res = criarResposta();
+
+    await controller.update(req, res);
+
+    assert.equal(res.statusCode, 403);
+    assert.equal(atualizou, false);
+});
+
+test('Permite atualização do próprio prestador', async (t) => {
+    let dadosAtualizados = null;
+
+    const prestador = {
+        id_usuario: 1,
+        servicoPrestado: 'Corte masculino',
+        preco: 25.50,
+        async update(dados) {
+            dadosAtualizados = dados;
+            Object.assign(this, dados);
+        }
+    };
+
+    t.mock.method(Prestador, 'findByPk', async () => prestador);
+
+    const req = {
+        usuarioAutenticado: { id: 1 },
+        params: { cnpj: '12345678000190' },
+        body: { preco: 30 }
+    };
+
+    const res = criarResposta();
+
+    await controller.update(req, res);
+
+    assert.equal(res.statusCode, 200);
+    assert.deepEqual(dadosAtualizados, { preco: 30 });
+});
+
+test('Recusa exclusão de outro prestador', async (t) => {
+    let excluiu = false;
+
+    t.mock.method(Prestador, 'findByPk', async () => ({
+        id_usuario: 8,
+        destroy: async () => {
+            excluiu = true;
+        }
+    }));
+
+    const req = {
+        usuarioAutenticado: { id: 1 },
+        params: { cnpj: '12345678000190' }
+    };
+
+    const res = criarResposta();
+
+    await controller.destroy(req, res);
+
+    assert.equal(res.statusCode, 403);
+    assert.equal(excluiu, false);
+});
+
+test('Permite exclusão do próprio prestador', async (t) => {
+    let excluiu = false;
+
+    t.mock.method(Prestador, 'findByPk', async () => ({
+        id_usuario: 1,
+        destroy: async () => {
+            excluiu = true;
+        }
+    }));
+
+    const req = {
+        usuarioAutenticado: { id: 1 },
+        params: { cnpj: '12345678000190' }
+    };
+
+    const res = criarResposta();
+
+    await controller.destroy(req, res);
+
+    assert.equal(res.statusCode, 200);
+    assert.equal(excluiu, true);
+});
