@@ -29,6 +29,15 @@ class agendaController {
 
     async create (req, res) {
         try {
+            const agenda = await Agenda.findOne({where: {
+                horario : req.body.horario,
+                local: req.body.local
+            }})
+
+            if (agenda) {
+                return res.status(409).json({ error: 'Este conjunto de horário e local já é descrito em uma outra instância'});
+            }
+
             const novo = await Agenda.create(req.body);
 
             return res.status(201).json(novo);

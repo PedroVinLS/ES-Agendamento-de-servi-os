@@ -50,15 +50,7 @@ module.exports = (sequelize, DataTypes) => {
         id_agenda:  {
             type: DataTypes.INTEGER,
             allowNull: false,
-            unique: true,
         }, 
-        preco: {
-            type: DataTypes.DECIMAL(10, 2),
-            allowNull: false,
-            validate: {
-                min: 0
-            }
-        },
         tag: {
             type: DataTypes.STRING(100),
             allowNull: true

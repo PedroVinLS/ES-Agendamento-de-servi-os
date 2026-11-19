@@ -35,18 +35,12 @@ module.exports = {
             id_agenda: {
               type: Sequelize.INTEGER,
               allowNull: false,
-              unique: true,
               references: {
                 model: 'AGENDA',
                 key: 'id'
               },
               onUpdate: 'CASCADE',
               onDelete: 'CASCADE'
-            },
-
-            preco: {
-                type: Sequelize.DECIMAL(10, 2),
-                allowNull: false,
             },
 
             tag: {
@@ -58,17 +52,6 @@ module.exports = {
               type: Sequelize.TEXT,
               allowNull: true,
             }
-        });
-
-        await queryInterface.addConstraint('SERVICO', {
-          fields: ['preco'],
-          type: 'check',
-          name: 'chk_servico_preco_servico',
-          where: {
-            preco: {
-              [Sequelize.Op.gte]: 0
-            }
-          }
         });
     },
 

@@ -37,6 +37,13 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(150),
             allowNull: false,
         },
+        preco: {
+            type: DataTypes.DECIMAL(10, 2),
+            allowNull: false,
+            validate: {
+                min: 0.01
+            }
+        },
         avaliacao: {
             type: DataTypes.INTEGER,
             allowNull: false,
