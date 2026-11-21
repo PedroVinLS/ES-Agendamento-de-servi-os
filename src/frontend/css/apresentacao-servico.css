@@ -1,0 +1,958 @@
+/* ========================================= */
+/* PALETA */
+/* ========================================= */
+
+:root {
+
+    --page-bg: #DFEFE9;
+
+    --panel-bg: #245A50;
+
+    --panel-light: #CFE1DB;
+
+    --card-bg: #F5FAF7;
+
+    --teal: #245A50;
+
+    --teal-dark: #173F37;
+
+    --action: #168875;
+
+    --action-hover: #116F60;
+
+    --divider: #83D0BD;
+
+    --text: #173F37;
+
+    --muted: #64776F;
+
+    --white: #FFFFFF;
+
+    --star: #D6A33D;
+
+}
+
+
+/* ========================================= */
+/* CONFIGURAÇÕES GERAIS */
+/* ========================================= */
+
+* {
+
+    box-sizing: border-box;
+
+}
+
+
+html,
+body {
+
+    min-width: 320px;
+
+    min-height: 100%;
+
+}
+
+
+body {
+
+    margin: 0;
+
+    min-height: 100vh;
+
+    min-height: 100svh;
+
+    background: var(--page-bg);
+
+    color: var(--text);
+
+    font-family: "Inria Sans", Arial, sans-serif;
+
+}
+
+
+button,
+a {
+
+    font: inherit;
+
+}
+
+
+button {
+
+    -webkit-tap-highlight-color: transparent;
+
+}
+
+
+[hidden] {
+
+    display: none !important;
+
+}
+
+
+/* ========================================= */
+/* ESTRUTURA */
+/* ========================================= */
+
+.service-app {
+
+    display: flex;
+
+    flex-direction: column;
+
+    width: min(1500px, 100%);
+
+    min-height: 100vh;
+
+    min-height: 100svh;
+
+    margin: 0 auto;
+
+    padding: 16px clamp(14px, 3vw, 35px) 28px;
+
+    gap: 16px;
+
+}
+
+
+/* ========================================= */
+/* CABEÇALHO */
+/* ========================================= */
+
+.service-header {
+
+    display: flex;
+
+    align-items: stretch;
+
+    gap: 10px;
+
+    min-height: 70px;
+
+}
+
+
+.logo-button {
+
+    display: flex;
+
+    flex: 0 0 110px;
+
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    justify-content: center;
+
+    padding: 8px 11px;
+
+    border-radius: 8px;
+
+    background: var(--teal);
+
+    color: var(--white);
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    transition: background-color .15s ease;
+
+}
+
+
+.logo-button:hover {
+
+    background: var(--teal-dark);
+
+}
+
+
+.logo-text {
+
+    font-size: 14px;
+
+    font-style: italic;
+
+}
+
+
+.logo-description {
+
+    margin-top: 2px;
+
+    font-size: 11px;
+
+    font-style: italic;
+
+    line-height: 1.15;
+
+}
+
+
+.header-title {
+
+    display: flex;
+
+    flex: 1;
+
+    align-items: center;
+
+    min-width: 0;
+
+    padding: 12px 22px;
+
+    border-radius: 8px;
+
+    background: var(--teal);
+
+    color: var(--white);
+
+}
+
+
+.header-title h1 {
+
+    margin: 0;
+
+    font-size: clamp(23px, 3vw, 40px);
+
+    font-weight: 700;
+
+    line-height: 1.15;
+
+}
+
+
+/* ========================================= */
+/* CONTEÚDO */
+/* ========================================= */
+
+.service-content {
+
+    display: flex;
+
+    flex-direction: column;
+
+    flex: 1;
+
+    min-height: 650px;
+
+    padding: clamp(20px, 3vw, 42px);
+
+    border-radius: 18px;
+
+    background: var(--panel-bg);
+
+    color: var(--white);
+
+}
+
+
+.service-information {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 23px;
+
+    width: 100%;
+
+}
+
+
+/* ========================================= */
+/* NOME DO SERVIÇO */
+/* ========================================= */
+
+.service-name-area {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 7px;
+
+}
+
+
+.information-label {
+
+    color: var(--divider);
+
+    font-size: 15px;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+
+}
+
+
+.service-name-area h2 {
+
+    margin: 0;
+
+    color: var(--white);
+
+    font-size: clamp(30px, 4vw, 55px);
+
+    line-height: 1.15;
+
+    overflow-wrap: anywhere;
+
+}
+
+
+/* ========================================= */
+/* DIVISÓRIA */
+/* ========================================= */
+
+.service-divider {
+
+    width: 100%;
+
+    height: 4px;
+
+    border-radius: 999px;
+
+    background: var(--divider);
+
+}
+
+
+/* ========================================= */
+/* SEÇÕES DE INFORMAÇÃO */
+/* ========================================= */
+
+.information-section {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 9px;
+
+}
+
+
+.information-section h3 {
+
+    margin: 0;
+
+    color: var(--divider);
+
+    font-size: 21px;
+
+    font-weight: 700;
+
+    letter-spacing: .3px;
+
+}
+
+
+.information-section p {
+
+    margin: 0;
+
+    color: var(--white);
+
+    font-size: 19px;
+
+    line-height: 1.5;
+
+    overflow-wrap: anywhere;
+
+}
+
+
+/* ========================================= */
+/* DESCRIÇÃO */
+/* ========================================= */
+
+.description-section p {
+
+    max-width: 1050px;
+
+    white-space: pre-wrap;
+
+    overflow-wrap: anywhere;
+
+}
+
+
+/* ========================================= */
+/* AVALIAÇÃO */
+/* ========================================= */
+
+.rating-display {
+
+    display: flex;
+
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    gap: 10px;
+
+}
+
+
+.rating-stars {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 3px;
+
+    font-size: 34px;
+
+    line-height: 1;
+
+}
+
+
+.rating-star {
+
+    color: #B6C9C1;
+
+}
+
+
+.rating-star.is-full {
+
+    color: var(--star);
+
+}
+
+
+.rating-star.is-half {
+
+    background: linear-gradient(
+        90deg,
+        var(--star) 50%,
+        #B6C9C1 50%
+    );
+
+    background-clip: text;
+
+    -webkit-background-clip: text;
+
+    color: transparent;
+
+}
+
+
+.rating-value {
+
+    color: var(--white);
+
+    font-size: 25px;
+
+    font-weight: 700;
+
+}
+
+
+.rating-maximum {
+
+    margin-left: -8px;
+
+    color: rgba(255,255,255,.75);
+
+    font-size: 18px;
+
+}
+
+
+.rating-description {
+
+    color: rgba(255,255,255,.8) !important;
+
+    font-size: 14px !important;
+
+}
+
+
+/* ========================================= */
+/* RODAPÉ */
+/* ========================================= */
+
+.service-footer {
+
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: flex-start;
+
+    gap: 15px;
+
+    margin-top: auto;
+
+    padding-top: 35px;
+
+}
+
+
+/* ========================================= */
+/* BOTÃO AGENDAR */
+/* ========================================= */
+
+.book-service-button {
+
+    min-width: min(420px, 100%);
+
+    min-height: 86px;
+
+    padding: 15px 25px;
+
+    border: 0;
+
+    border-radius: 9px;
+
+    background: var(--action);
+
+    color: var(--white);
+
+    font-size: clamp(22px, 2.3vw, 32px);
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background-color .15s ease,
+        transform .15s ease,
+        box-shadow .15s ease;
+
+}
+
+
+.book-service-button:hover {
+
+    background: var(--action-hover);
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 0 0 3px rgba(131,208,189,.65),
+        0 0 23px rgba(131,208,189,.3);
+
+}
+
+
+.book-service-button:active {
+
+    transform: scale(.99);
+
+}
+
+
+/* ========================================= */
+/* AVISO PARA PRESTADORES */
+/* ========================================= */
+
+.provider-notice {
+
+    max-width: 550px;
+
+    padding: 16px 20px;
+
+    border-left: 4px solid var(--divider);
+
+    border-radius: 5px;
+
+    background: rgba(255,255,255,.08);
+
+    color: rgba(255,255,255,.9);
+
+    font-size: 15px;
+
+    line-height: 1.4;
+
+}
+
+
+/* ========================================= */
+/* ESTADO DE ERRO */
+/* ========================================= */
+
+.service-error {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex: 1;
+
+    min-height: 400px;
+
+    padding: 30px;
+
+    border-radius: 18px;
+
+    background: var(--panel-bg);
+
+    color: var(--white);
+
+    text-align: center;
+
+}
+
+
+.error-icon {
+
+    display: grid;
+
+    width: 60px;
+
+    height: 60px;
+
+    margin-bottom: 15px;
+
+    place-items: center;
+
+    border-radius: 50%;
+
+    background: #FBE2E2;
+
+    color: #B4232B;
+
+    font-size: 32px;
+
+    font-weight: 700;
+
+}
+
+
+.service-error h2 {
+
+    margin: 0 0 10px;
+
+    font-size: 24px;
+
+}
+
+
+.service-error p {
+
+    max-width: 500px;
+
+    margin: 0 0 22px;
+
+    color: rgba(255,255,255,.85);
+
+    font-size: 16px;
+
+    line-height: 1.5;
+
+}
+
+
+.return-button {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-height: 50px;
+
+    padding: 12px 20px;
+
+    border-radius: 7px;
+
+    background: var(--action);
+
+    color: white;
+
+    font-weight: 700;
+
+    text-decoration: none;
+
+}
+
+
+.return-button:hover {
+
+    background: var(--action-hover);
+
+}
+
+
+/* ========================================= */
+/* TABLETS */
+/* ========================================= */
+
+@media (max-width: 900px) {
+
+    .service-content {
+
+        min-height: 600px;
+
+        padding: 25px;
+
+    }
+
+    .service-name-area h2 {
+
+        font-size: clamp(29px, 5vw, 42px);
+
+    }
+
+    .information-section h3 {
+
+        font-size: 19px;
+
+    }
+
+    .information-section p {
+
+        font-size: 17px;
+
+    }
+
+}
+
+
+/* ========================================= */
+/* CELULARES */
+/* ========================================= */
+
+@media (max-width: 600px) {
+
+    .service-app {
+
+        min-height: 100svh;
+
+        padding: 9px;
+
+        gap: 10px;
+
+    }
+
+    .service-header {
+
+        min-height: 59px;
+
+        gap: 6px;
+
+    }
+
+    .logo-button {
+
+        flex-basis: 77px;
+
+        padding: 5px 7px;
+
+        border-radius: 7px;
+
+    }
+
+    .logo-text {
+
+        font-size: 12px;
+
+    }
+
+    .logo-description {
+
+        font-size: 10px;
+
+    }
+
+    .header-title {
+
+        padding: 9px 11px;
+
+        border-radius: 7px;
+
+    }
+
+    .header-title h1 {
+
+        font-size: clamp(16px, 4vw, 23px);
+
+    }
+
+    .service-content {
+
+        min-height: 0;
+
+        flex: 1;
+
+        padding: 20px 15px;
+
+        border-radius: 13px;
+
+    }
+
+    .service-information {
+
+        gap: 20px;
+
+    }
+
+    .information-label {
+
+        font-size: 12px;
+
+    }
+
+    .service-name-area h2 {
+
+        font-size: clamp(27px, 7vw, 36px);
+
+    }
+
+    .information-section h3 {
+
+        font-size: 17px;
+
+    }
+
+    .information-section p {
+
+        font-size: 16px;
+
+        line-height: 1.45;
+
+    }
+
+    .rating-stars {
+
+        font-size: 29px;
+
+    }
+
+    .rating-value {
+
+        font-size: 21px;
+
+    }
+
+    .service-footer {
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+        padding-top: 35px;
+
+    }
+
+    .book-service-button {
+
+        width: 100%;
+
+        min-width: 0;
+
+        min-height: 68px;
+
+        padding: 12px;
+
+        font-size: 22px;
+
+    }
+
+    .provider-notice {
+
+        width: 100%;
+
+        font-size: 14px;
+
+    }
+
+    .service-error {
+
+        min-height: 350px;
+
+        padding: 20px 15px;
+
+    }
+
+    .service-error h2 {
+
+        font-size: 19px;
+
+    }
+
+}
+
+
+/* ========================================= */
+/* CELULARES PEQUENOS */
+/* ========================================= */
+
+@media (max-width: 360px) {
+
+    .header-title h1 {
+
+        font-size: 15px;
+
+    }
+
+    .service-name-area h2 {
+
+        font-size: 26px;
+
+    }
+
+    .book-service-button {
+
+        font-size: 19px;
+
+    }
+
+}
+
+
+/* ========================================= */
+/* TOUCH */
+/* ========================================= */
+
+@media (hover: none) {
+
+    .book-service-button:hover {
+
+        transform: none;
+
+        box-shadow: none;
+
+    }
+
+    .book-service-button:active {
+
+        background: var(--action-hover);
+
+        transform: scale(.98);
+
+    }
+
+}
+
+
+/* ========================================= */
+/* ACESSIBILIDADE */
+/* ========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    * {
+
+        transition-duration: .01ms !important;
+
+    }
+
+}
