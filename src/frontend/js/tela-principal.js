@@ -1038,19 +1038,9 @@ function createServiceCard(service) {
 
     card.addEventListener("click", () => {
 
-        dispatchAppEvent(
-            "main:open-service",
-            {
-                serviceId: service.id,
+    openServicePresentation(service);
 
-                service,
-
-                role: state.role,
-
-                readOnly: state.role === "prestador"
-
-            }
-        );
+});
 
     });
 
@@ -1314,3 +1304,81 @@ dispatchAppEvent(
         role: state.role
     }
 );
+
+// ==========================================
+// ABRIR A APRESENTAÇÃO DE UM SERVIÇO
+// ==========================================
+
+function openServicePresentation(service) {
+
+    if (!service || typeof service !== "object") {
+
+        console.error(
+            "Não foi possível abrir o serviço selecionado."
+        );
+
+        return;
+
+    }
+
+
+    // Identifica o serviço, independentemente
+    // de qual nome o backend utiliza para o identificador.
+
+    const serviceId =
+        service.id ??
+        service.serviceId ??
+        service.service_id ??
+        null;
+
+
+    // Prepara os dados temporários para a próxima página.
+
+    try {
+
+        sessionStorage.setItem(
+            "app:selectedService",
+            JSON.stringify(service)
+        );
+
+
+        sessionStorage.setItem(
+            "app:activeRole",
+            state.role
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Não foi possível preparar os dados do serviço:",
+            error
+        );
+
+    }
+
+
+    // Monta o endereço da página de apresentação.
+
+    const destination = new URL(
+        "apresentacao-servico.html",
+        window.location.href
+    );
+
+
+    if (serviceId !== null) {
+
+        destination.searchParams.set(
+            "serviceId",
+            String(serviceId)
+        );
+
+    }
+
+
+    // Navega para a nova página.
+
+    window.location.href = destination.href;
+
+}
