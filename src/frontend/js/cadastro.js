@@ -425,7 +425,7 @@ clientForm.addEventListener("submit", event => {
             // Recarrega a aplicação e retorna
             // à tela inicial de escolha do papel.
 
-            window.location.reload();
+            window.location.replace("tela-principal.html");
 
         }
 
@@ -585,7 +585,7 @@ providerForm.addEventListener("submit", event => {
             // ainda não existe.
             // Retorna à tela inicial.
 
-            window.location.reload();
+            window.location.replace("tela-principal.html");
 
         }
 
