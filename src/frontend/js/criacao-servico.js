@@ -112,12 +112,6 @@ const resultClose =
     document.getElementById("result-close");
 
 
-// LOGO
-
-const logoButton =
-    document.querySelector(".logo-button");
-
-
 // ==========================================
 // ESTADO DA AGENDA
 // ==========================================
@@ -1174,17 +1168,7 @@ document.querySelectorAll("[data-close]").forEach(button => {
 });
 
 
-// ==========================================
-// LOGO
-// ==========================================
-
-// O menu principal ainda não foi implementado.
-
-logoButton.addEventListener("click", event => {
-
-    event.preventDefault();
-
-});
+// A marca ServiceOne é um link direto para tela-principal.html.
 
 
 // ==========================================
