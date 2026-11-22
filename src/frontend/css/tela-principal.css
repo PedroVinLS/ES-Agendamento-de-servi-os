@@ -416,6 +416,11 @@ a:focus-visible {
 /* CABEÇALHO DA PESQUISA + AÇÃO DO PRESTADOR */
 /* ========================================= */
 
+/* O botão não aparece em telas de clientes ou sem papel definido. */
+body:not([data-user-role="prestador"]) #create-service-button {
+    display: none !important;
+}
+
 .search-heading-row {
     display: flex;
     align-items: center;
