@@ -68,6 +68,9 @@ const resultsScroll = document.getElementById("results-scroll");
 
 const roleIndicator = document.getElementById("role-indicator");
 
+// Ação disponível exclusivamente para prestadores.
+const createServiceButton = document.getElementById("create-service-button");
+
 
 // ==========================================
 // 3. ESTADO DA APLICAÇÃO
@@ -197,20 +200,31 @@ function normalizeRole(role) {
 
     const value = String(role || "")
         .trim()
-        .toLowerCase();
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[_-]+/g, " ");
 
     if (
         value === "prestador" ||
         value === "provedor" ||
-        value === "provider"
+        value === "provider" ||
+        value.includes("prestador de servico") ||
+        value.includes("provedor de servico") ||
+        value.includes("service provider")
     ) {
-
         return "prestador";
-
     }
 
-    return "cliente";
+    if (
+        value === "cliente" ||
+        value === "client" ||
+        value.includes("usuario cliente")
+    ) {
+        return "cliente";
+    }
 
+    return null;
 }
 
 
@@ -241,6 +255,11 @@ function updateRoleInterface() {
 
 
     providerLegend.hidden = !isProvider;
+
+    // Somente prestadores podem acessar a criação de serviços.
+    if (createServiceButton) {
+        createServiceButton.hidden = !isProvider;
+    }
 
 
     // Informa a categoria da pesquisa.
@@ -317,6 +336,30 @@ searchTab.addEventListener("click", () => {
     changeTab("search");
 
 });
+
+
+// ==========================================
+// 7A. CRIAR SERVIÇO (EXCLUSIVO DO PRESTADOR)
+// ==========================================
+
+if (createServiceButton) {
+
+    createServiceButton.addEventListener("click", () => {
+
+        // Segunda verificação: não depende apenas do botão estar oculto.
+        if (state.role !== "prestador") {
+            return;
+        }
+
+        dispatchAppEvent("main:create-service", {
+            role: state.role
+        });
+
+        // A tela e seus arquivos ficam na mesma pasta da tela principal.
+        window.location.href = "criacao-servicos.html";
+    });
+
+}
 
 
 // ==========================================
@@ -1038,9 +1081,19 @@ function createServiceCard(service) {
 
     card.addEventListener("click", () => {
 
-    openServicePresentation(service);
+        dispatchAppEvent(
+            "main:open-service",
+            {
+                serviceId: service.id,
 
-});
+                service,
+
+                role: state.role,
+
+                readOnly: state.role === "prestador"
+
+            }
+        );
 
     });
 
@@ -1182,13 +1235,28 @@ window.MainScreen = Object.freeze({
 
     setUserRole(role) {
 
-        state.role = normalizeRole(role);
+        const normalizedRole = normalizeRole(role);
+
+        if (!normalizedRole) {
+            console.error("Papel de usuário desconhecido:", role);
+            return false;
+        }
+
+        state.role = normalizedRole;
+
+        try {
+            sessionStorage.setItem("app:activeRole", normalizedRole);
+        } catch (error) {
+            console.error("Não foi possível atualizar o papel na sessão:", error);
+        }
 
         updateRoleInterface();
 
         renderWeekGrid();
 
         renderServices();
+
+        return true;
 
     },
 
@@ -1277,13 +1345,49 @@ window.MainScreen = Object.freeze({
 
 // Tenta obter o papel já informado pelo sistema.
 
-const initialRole =
-    window.APP_USER?.role ||
-    document.body.dataset.userRole ||
-    "cliente";
+// O papel autenticado pelo backend é a fonte prioritária.
+// Se ainda não estiver disponível globalmente, usamos o papel
+// colocado no sessionStorage pelo fluxo de cadastro/login.
+// O atributo estático do HTML é apenas o último fallback, para
+// não sobrescrever "prestador" com um data-user-role="cliente".
+function readInitialUserRole() {
+
+    const backendRole =
+        window.APP_USER?.role ??
+        window.APP_USER?.papel ??
+        window.APP_USER?.user?.role ??
+        window.APP_USER?.data?.role;
+
+    const storedRole = (() => {
+        try {
+            return sessionStorage.getItem("app:activeRole");
+        } catch (error) {
+            console.warn("Não foi possível ler o papel da sessão:", error);
+            return null;
+        }
+    })();
+
+    const htmlRole = document.body.dataset.userRole;
+
+    return (
+        normalizeRole(backendRole) ||
+        normalizeRole(storedRole) ||
+        normalizeRole(htmlRole) ||
+        "cliente"
+    );
+
+}
 
 
-state.role = normalizeRole(initialRole);
+state.role = readInitialUserRole();
+
+// Sincroniza o papel inicial para que a apresentação do serviço
+// e outros módulos da mesma sessão recebam a mesma informação.
+try {
+    sessionStorage.setItem("app:activeRole", state.role);
+} catch (error) {
+    console.warn("Não foi possível guardar o papel inicial:", error);
+}
 
 
 // Configura a apresentação inicial.
@@ -1304,81 +1408,3 @@ dispatchAppEvent(
         role: state.role
     }
 );
-
-// ==========================================
-// ABRIR A APRESENTAÇÃO DE UM SERVIÇO
-// ==========================================
-
-function openServicePresentation(service) {
-
-    if (!service || typeof service !== "object") {
-
-        console.error(
-            "Não foi possível abrir o serviço selecionado."
-        );
-
-        return;
-
-    }
-
-
-    // Identifica o serviço, independentemente
-    // de qual nome o backend utiliza para o identificador.
-
-    const serviceId =
-        service.id ??
-        service.serviceId ??
-        service.service_id ??
-        null;
-
-
-    // Prepara os dados temporários para a próxima página.
-
-    try {
-
-        sessionStorage.setItem(
-            "app:selectedService",
-            JSON.stringify(service)
-        );
-
-
-        sessionStorage.setItem(
-            "app:activeRole",
-            state.role
-        );
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "Não foi possível preparar os dados do serviço:",
-            error
-        );
-
-    }
-
-
-    // Monta o endereço da página de apresentação.
-
-    const destination = new URL(
-        "apresentacao-servico.html",
-        window.location.href
-    );
-
-
-    if (serviceId !== null) {
-
-        destination.searchParams.set(
-            "serviceId",
-            String(serviceId)
-        );
-
-    }
-
-
-    // Navega para a nova página.
-
-    window.location.href = destination.href;
-
-}
