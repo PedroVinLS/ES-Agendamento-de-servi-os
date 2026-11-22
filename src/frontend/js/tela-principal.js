@@ -236,6 +236,9 @@ function updateRoleInterface() {
 
     const isProvider = state.role === "prestador";
 
+    // Mantém o papel no DOM sincronizado com o login/sessão.
+    document.body.dataset.userRole = state.role;
+
 
     roleIndicator.textContent = isProvider
         ? "PRESTADOR"
@@ -355,8 +358,14 @@ if (createServiceButton) {
             role: state.role
         });
 
-        // A tela e seus arquivos ficam na mesma pasta da tela principal.
-        window.location.href = "criacao-servicos.html";
+        // O destino único é definido no HTML, conforme o nome real do arquivo.
+        const destination = createServiceButton.dataset.target;
+
+        if (destination) {
+            window.location.assign(destination);
+        } else {
+            console.error("Destino de criação de serviços não configurado.");
+        }
     });
 
 }
