@@ -29,7 +29,6 @@ const hours = Array.from(
 
 const board = document.getElementById("schedule-board");
 
-const logoButton = document.getElementById("logo-button");
 const pageTitle = document.getElementById("page-title");
 
 const confirmButton = document.getElementById("confirm-button");
@@ -72,13 +71,7 @@ const resultDialogClose =
 // 3. NAVEGAÇÃO DO CABEÇALHO
 // ==========================================
 
-// A logo ainda não possui uma página de destino.
-
-logoButton.addEventListener("click", event => {
-
-    event.preventDefault();
-
-});
+// O botão com a marca ServiceOne retorna ao menu principal por seu href.
 
 
 // O título também não possui uma página de destino.
