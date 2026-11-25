@@ -9,14 +9,15 @@ module.exports = (sequelize, DataTypes) => {
     class Agenda extends Model {
 
         static associate(models) {
-            this.hasOne(models.Servico, {
+            this.hasMany(models.Servico, {
                 foreignKey: 'id_agenda',
-                as: 'servico'
+                as: 'servicos'
             });
         }
     }
+
     Agenda.init({
-        id:  {
+        id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true,
@@ -28,12 +29,13 @@ module.exports = (sequelize, DataTypes) => {
         local: {
             type: DataTypes.STRING(255),
             allowNull: false
-        },  
+        },
     }, {
         sequelize,
         modelName: 'Agenda',
         tableName: 'AGENDA',
-        timestamps: false, 
+        timestamps: false,
     });
+
     return Agenda;
 };
