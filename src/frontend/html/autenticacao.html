@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#DFEFE9">
+
+    <title>Autenticação — Agendamento de Serviços</title>
+
+    <link rel="stylesheet" href="autenticacao.css">
+
+    <script src="autenticacao.js" defer></script>
+</head>
+
+<body>
+
+    <main class="auth-app">
+
+        <!-- ================================= -->
+        <!-- TELA DE LOGIN -->
+        <!-- ================================= -->
+
+        <section
+            class="auth-screen"
+            id="login-screen"
+            aria-labelledby="login-title">
+
+            <header class="auth-heading">
+
+                <h1 id="login-title">
+                    LOGIN
+                </h1>
+
+            </header>
+
+
+            <form
+                class="auth-card login-card"
+                id="login-form"
+                novalidate>
+
+
+                <!-- E-MAIL -->
+
+                <div class="field-group">
+
+                    <label for="login-email" class="field-title">
+                        INSIRA SEU EMAIL
+                    </label>
+
+                    <input
+                        class="text-field"
+                        id="login-email"
+                        name="email"
+                        type="email"
+                        maxlength="150"
+                        autocomplete="username"
+                        required>
+
+                </div>
+
+
+                <!-- SENHA -->
+
+                <div class="field-group">
+
+                    <label for="login-password" class="field-title">
+                        INSIRA SUA SENHA
+                    </label>
+
+                    <input
+                        class="text-field"
+                        id="login-password"
+                        name="password"
+                        type="password"
+                        maxlength="250"
+                        autocomplete="current-password"
+                        required>
+
+                </div>
+
+
+                <!-- BOTÕES -->
+
+                <div class="auth-actions">
+
+                    <button
+                        class="auth-button primary-button"
+                        type="submit">
+
+                        ENTRAR NO SISTEMA
+
+                    </button>
+
+
+                    <button
+                        class="auth-button secondary-button"
+                        id="go-to-register"
+                        type="button">
+
+                        CADASTRA-SE
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+
+        <!-- ================================= -->
+        <!-- TELA DE CADASTRO -->
+        <!-- ================================= -->
+
+        <section
+            class="auth-screen"
+            id="register-screen"
+            aria-labelledby="register-title"
+            hidden>
+
+
+            <header class="auth-heading">
+
+                <h1 id="register-title">
+                    CADASTRO
+                </h1>
+
+            </header>
+
+
+            <form
+                class="auth-card register-card"
+                id="register-form"
+                novalidate>
+
+
+                <!-- NOME -->
+
+                <div class="field-group">
+
+                    <label for="register-name" class="field-title">
+                        INSIRA SEU NOME
+                    </label>
+
+                    <p class="field-hint">
+                        Até 150 caracteres.
+                    </p>
+
+                    <input
+                        class="text-field"
+                        id="register-name"
+                        name="name"
+                        type="text"
+                        maxlength="150"
+                        autocomplete="name"
+                        required>
+
+                </div>
+
+
+                <!-- E-MAIL -->
+
+                <div class="field-group">
+
+                    <label for="register-email" class="field-title">
+                        INSIRA SEU EMAIL
+                    </label>
+
+                    <p class="field-hint">
+                        Até 150 caracteres.
+                    </p>
+
+                    <input
+                        class="text-field"
+                        id="register-email"
+                        name="email"
+                        type="email"
+                        maxlength="150"
+                        autocomplete="email"
+                        required>
+
+                </div>
+
+
+                <!-- SENHA -->
+
+                <div class="field-group">
+
+                    <label for="register-password" class="field-title">
+                        INSIRA SUA SENHA
+                    </label>
+
+                    <p class="field-hint">
+                        Até 250 caracteres alfanuméricos.
+                    </p>
+
+                    <input
+                        class="text-field"
+                        id="register-password"
+                        name="password"
+                        type="password"
+                        maxlength="250"
+                        autocomplete="new-password"
+                        required>
+
+                </div>
+
+
+                <!-- BOTÕES -->
+
+                <div class="auth-actions">
+
+                    <button
+                        class="auth-button primary-button"
+                        type="submit">
+
+                        FINALIZAÇÃO DE CADASTRO
+
+                    </button>
+
+
+                    <button
+                        class="auth-button secondary-button"
+                        id="back-to-login"
+                        type="button">
+
+                        ENTRAR NO SISTEMA
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+    </main>
+
+
+
+    <!-- ================================= -->
+    <!-- POP-UP DE ERRO OU RESULTADO -->
+    <!-- ================================= -->
+
+    <dialog
+        class="feedback-dialog"
+        id="feedback-dialog"
+        aria-labelledby="feedback-title">
+
+
+        <div
+            class="feedback-icon"
+            id="feedback-icon"
+            aria-hidden="true">
+
+            !
+
+        </div>
+
+
+        <h2 id="feedback-title">
+            DADOS INCORRETOS
+        </h2>
+
+
+        <p id="feedback-message">
+            Confira as informações e tente novamente.
+        </p>
+
+
+        <button
+            class="feedback-button"
+            id="feedback-button"
+            type="button">
+
+            VOLTAR E CORRIGIR
+
+        </button>
+
+
+    </dialog>
+
+</body>
+</html>

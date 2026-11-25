@@ -1,4 +1,7 @@
-require('dotenv').config();
+require('dotenv').config({
+    path: process.env.ENV_FILE || '.env',
+    override: true
+});
 
 module.exports = {
     development: {

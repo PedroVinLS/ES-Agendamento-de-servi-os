@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#DFEFE9">
+
+    <title>Apresentação do Serviço | ServiceOne</title>
+
+    <link rel="stylesheet" href="apresentacao-servico.css">
+    <link rel="stylesheet" href="identidade-serviceone.css">
+
+    <script src="apresentacao-servico.js" defer></script>
+</head>
+
+<body>
+
+    <main class="service-app">
+
+
+        <!-- ================================= -->
+        <!-- CABEÇALHO -->
+        <!-- ================================= -->
+
+        <header class="service-header">
+
+
+            <!-- LOGO: VOLTAR À TELA PRINCIPAL -->
+
+            <a href="tela-principal.html"
+               class="logo-button"
+               aria-label="ServiceOne — voltar ao menu principal"
+               title="Voltar ao menu principal">
+                <img src="serviceone-logo.png"
+                     class="serviceone-logo"
+                     alt="ServiceOne">
+            </a>
+
+
+            <!-- TÍTULO -->
+
+            <div class="header-title">
+
+                <h1>
+                    APRESENTAÇÃO DO SERVIÇO
+                </h1>
+
+            </div>
+
+
+        </header>
+
+
+
+        <!-- ================================= -->
+        <!-- CONTEÚDO PRINCIPAL -->
+        <!-- ================================= -->
+
+        <section class="service-content"
+                 id="service-content"
+                 aria-labelledby="service-name">
+
+
+            <!-- INFORMAÇÕES DO SERVIÇO -->
+
+            <article class="service-information">
+
+
+                <!-- NOME -->
+
+                <header class="service-name-area">
+
+                    <span class="information-label">
+                        NOME DO SERVIÇO
+                    </span>
+
+                    <h2 id="service-name">
+                        Carregando serviço...
+                    </h2>
+
+                </header>
+
+
+                <!-- DIVISÓRIA -->
+
+                <div class="service-divider"></div>
+
+
+                <!-- TIPO -->
+
+                <section class="information-section">
+
+                    <h3>
+                        TIPO DE SERVIÇO
+                    </h3>
+
+                    <p id="service-type">
+                        --
+                    </p>
+
+                </section>
+
+
+                <!-- DESCRIÇÃO -->
+
+                <section class="information-section description-section">
+
+                    <h3>
+                        DESCRIÇÃO
+                    </h3>
+
+                    <p id="service-description">
+                        Carregando descrição...
+                    </p>
+
+                </section>
+
+
+                <!-- AVALIAÇÃO -->
+
+                <section class="information-section rating-section">
+
+                    <h3>
+                        AVALIAÇÃO DOS CLIENTES
+                    </h3>
+
+
+                    <div class="rating-display">
+
+                        <div
+                            id="rating-stars"
+                            class="rating-stars"
+                            role="img"
+                            aria-label="Avaliação ainda não disponível">
+
+                        </div>
+
+
+                        <span id="rating-value"
+                              class="rating-value">
+
+                            --
+
+                        </span>
+
+                        <span class="rating-maximum">
+                            / 5
+                        </span>
+
+                    </div>
+
+
+                    <p id="rating-description"
+                       class="rating-description">
+
+                        Ainda não existem avaliações.
+
+                    </p>
+
+                </section>
+
+
+            </article>
+
+
+
+            <!-- RODAPÉ E AÇÃO -->
+
+            <footer class="service-footer">
+
+
+                <!-- VISÍVEL SOMENTE PARA CLIENTES -->
+
+                <button
+                    id="book-service-button"
+                    class="book-service-button"
+                    type="button"
+                    hidden>
+
+                    AGENDAR SERVIÇO
+
+                </button>
+
+
+                <!-- VISÍVEL SOMENTE PARA PRESTADORES -->
+
+                <div
+                    id="provider-notice"
+                    class="provider-notice"
+                    hidden>
+
+                    Você está visualizando este serviço
+                    como prestador. O agendamento é
+                    exclusivo para clientes.
+
+                </div>
+
+
+            </footer>
+
+
+        </section>
+
+
+
+        <!-- ================================= -->
+        <!-- ESTADO DE ERRO -->
+        <!-- ================================= -->
+
+        <section
+            id="service-error"
+            class="service-error"
+            hidden>
+
+            <div class="error-icon">
+                !
+            </div>
+
+            <h2>
+                NÃO FOI POSSÍVEL CARREGAR O SERVIÇO
+            </h2>
+
+            <p id="service-error-message">
+                As informações deste serviço não estão disponíveis.
+            </p>
+
+            <a href="tela-principal.html"
+               class="return-button">
+
+                VOLTAR À PÁGINA PRINCIPAL
+
+            </a>
+
+        </section>
+
+
+    </main>
+
+</body>
+</html>
