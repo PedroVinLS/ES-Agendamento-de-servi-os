@@ -1,5 +1,60 @@
 "use strict";
 
+const API_BASE_URL =
+    "https://studious-space-umbrella-r7g44j57475fpv75-3000.app.github.dev";
+
+async function apiRequest(endpoint, method, data, token = null) {
+    const headers = {
+        "Content-Type": "application/json"
+    };
+
+    if (token) {
+        headers.Authorization = `Bearer ${token}`;
+    }
+
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        method,
+        headers,
+        body: JSON.stringify(data)
+    });
+
+    let responseData = {};
+
+    try {
+        responseData = await response.json();
+    } catch {
+        responseData = {};
+    }
+
+    if (!response.ok) {
+        const error = new Error(
+            responseData.error ||
+            `Erro na comunicação com a API (${response.status}).`
+        );
+
+        error.status = response.status;
+        throw error;
+    }
+
+    return responseData;
+}
+
+function obterUsuarioAutenticado() {
+    const usuarioSalvo = sessionStorage.getItem("es_usuario");
+
+    if (!usuarioSalvo) {
+        throw new Error("Usuário não encontrado. Faça login novamente.");
+    }
+
+    const usuario = JSON.parse(usuarioSalvo);
+
+    if (!usuario.id) {
+        throw new Error("Identificação do usuário não encontrada.");
+    }
+
+    return usuario;
+}
+
 
 // ==========================================
 // 1. ELEMENTOS HTML
@@ -312,285 +367,185 @@ function markValidity(field, isValid) {
 
 
 // ==========================================
-// 8. VALIDAÇÃO DO CLIENTE
+// 8. CADASTRO DO CLIENTE INTEGRADO À API
 // ==========================================
 
-clientForm.addEventListener("submit", event => {
-
-    // Impede o envio tradicional do formulário.
-
+clientForm.addEventListener("submit", async event => {
     event.preventDefault();
 
-
-    // Verifica se o CPF possui exatamente
-    // onze números de 0 a 9.
-
-    const cpfIsValid =
-        /^[0-9]{11}$/.test(clientCpf.value);
-
-
-    // Verifica se o usuário aceitou os termos.
-
+    const cpf = clientCpf.value.trim();
+    const cpfIsValid = /^[0-9]{11}$/.test(cpf);
     const acceptedTerms = clientTerms.checked;
-
 
     markValidity(clientCpf, cpfIsValid);
 
-
-    // --------------------------------------
-    // CASO 1: INFORMAÇÕES INCORRETAS
-    // --------------------------------------
-
     if (!cpfIsValid || !acceptedTerms) {
-
         let message;
 
-
         if (!cpfIsValid && !acceptedTerms) {
-
             message =
-                "O CPF deve conter exatamente 11 números, sem pontos, espaços ou hífen, e você precisa aceitar os termos de serviço. Confira os dados e tente novamente.";
-
-        }
-
-        else if (!cpfIsValid) {
-
+                "O CPF deve conter exatamente 11 números e você precisa aceitar os termos de serviço.";
+        } else if (!cpfIsValid) {
             message =
-                "O CPF informado está em formato incorreto. Insira exatamente 11 números de 0 a 9, sem pontos, espaços ou hífen.";
-
-        }
-
-        else {
-
+                "O CPF informado está em formato incorreto. Insira exatamente 11 números.";
+        } else {
             message =
                 "Para continuar, é necessário aceitar os termos de serviço.";
-
         }
-
-
-        // Exibe o pop-up de erro.
 
         openFeedback({
-
             type: "error",
-
             title: "DADOS INCORRETOS",
-
-            message: message,
-
+            message,
             buttonText: "VOLTAR E CORRIGIR",
-
-            action: () => {
-
-                // Permanece na tela de cadastro do cliente.
-
-                showScreen(clientScreen);
-
-            },
-
-            focusTarget: !cpfIsValid
-                ? clientCpf
-                : clientTerms
-
+            action: () => showScreen(clientScreen),
+            focusTarget: !cpfIsValid ? clientCpf : clientTerms
         });
 
-
         return;
-
     }
 
+    const submitButton = clientForm.querySelector(
+        'button[type="submit"], input[type="submit"]'
+    );
 
-    // --------------------------------------
-    // CASO 2: INFORMAÇÕES CORRETAS
-    // --------------------------------------
+    if (submitButton) submitButton.disabled = true;
 
-    // Nenhum CPF é enviado ou armazenado.
-    // A validação é exclusivamente estrutural.
+    try {
+        const usuario = obterUsuarioAutenticado();
 
-    openFeedback({
+        await apiRequest(
+            "/cliente",
+            "POST",
+            {
+                id_usuario: usuario.id,
+                cpf
+            }
+        );
 
-        type: "success",
+        sessionStorage.setItem("app:activeRole", "cliente");
 
-        title: "CADASTRO CONCLUÍDO!",
+        openFeedback({
+            type: "success",
+            title: "CADASTRO CONCLUÍDO!",
+            message:
+                "Seu perfil de cliente foi cadastrado com sucesso.",
+            buttonText: "NAVEGAR SERVIÇOS",
+            action: () => {
+                window.location.replace("tela-principal.html");
+            }
+        });
 
-        message:
-            "Seu cadastro como cliente foi concluído nesta demonstração. Agora você já pode desfrutar dos serviços locais.",
+    } catch (erro) {
+        console.error("Falha no cadastro do cliente:", erro.message);
 
-        buttonText: "NAVEGAR SERVIÇOS",
+        openFeedback({
+            type: "error",
+            title: "NÃO FOI POSSÍVEL CADASTRAR",
+            message: erro.message,
+            buttonText: "VOLTAR E CORRIGIR",
+            action: () => showScreen(clientScreen)
+        });
 
-        action: () => {
-
-            // A página de navegação de serviços
-            // ainda não existe.
-            // Recarrega a aplicação e retorna
-            // à tela inicial de escolha do papel.
-
-            window.location.replace("tela-principal.html");
-
-        }
-
-    });
-
+    } finally {
+        if (submitButton) submitButton.disabled = false;
+    }
 });
 
 
 // ==========================================
-// 9. VALIDAÇÃO DO PROVEDOR
+// 9. PREPARAÇÃO DO CADASTRO DO PRESTADOR
 // ==========================================
 
 providerForm.addEventListener("submit", event => {
-
     event.preventDefault();
 
+    const cnpj = providerCnpj.value.trim();
 
-    // Verifica se o CNPJ possui exatamente
-    // quatorze números de 0 a 9.
+    const cnpjIsValid = /^[0-9]{14}$/.test(cnpj);
 
-    const cnpjIsValid =
-        /^[0-9]{14}$/.test(providerCnpj.value);
-
-
-    // Verifica se o tipo de serviço foi preenchido
-    // e se respeita o limite de 150 caracteres.
-
-    const serviceText =
-        providerService.value.trim();
+    const serviceText = providerService.value.trim();
 
     const serviceIsValid =
         serviceText.length >= 1 &&
-        providerService.value.length <= 150;
-
-
-    // Verifica o aceite dos termos.
+        serviceText.length <= 150;
 
     const acceptedTerms = providerTerms.checked;
 
-
     markValidity(providerCnpj, cnpjIsValid);
-
     markValidity(providerService, serviceIsValid);
 
-
-    // --------------------------------------
-    // CASO 1: INFORMAÇÕES INCORRETAS
-    // --------------------------------------
-
-    if (
-        !cnpjIsValid ||
-        !serviceIsValid ||
-        !acceptedTerms
-    ) {
-
+    if (!cnpjIsValid || !serviceIsValid || !acceptedTerms) {
         let message;
 
-
-        if (
-            !cnpjIsValid &&
-            !serviceIsValid &&
-            !acceptedTerms
-        ) {
-
+        if (!cnpjIsValid && !serviceIsValid && !acceptedTerms) {
             message =
-                "O CNPJ deve conter exatamente 14 números, o tipo de serviço deve ser preenchido com até 150 caracteres e você precisa aceitar os termos de serviço. Confira os dados e tente novamente.";
-
-        }
-
-        else if (!cnpjIsValid) {
-
+                "O CNPJ deve conter 14 números, o serviço deve ser preenchido com até 150 caracteres e você precisa aceitar os termos.";
+        } else if (!cnpjIsValid) {
             message =
-                "O CNPJ informado está em formato incorreto. Insira exatamente 14 números de 0 a 9, sem pontos, espaços ou hífen.";
-
-        }
-
-        else if (!serviceIsValid) {
-
+                "O CNPJ informado está em formato incorreto. Insira exatamente 14 números.";
+        } else if (!serviceIsValid) {
             message =
-                "Informe o tipo de serviço que você presta. O campo deve conter entre 1 e 150 caracteres.";
-
-        }
-
-        else {
-
+                "Informe o tipo de serviço que você presta, com até 150 caracteres.";
+        } else {
             message =
                 "Para continuar, é necessário aceitar os termos de serviço.";
-
         }
-
-
-        // Identifica qual campo precisa ser corrigido.
 
         const firstInvalidField = !cnpjIsValid
-
             ? providerCnpj
-
             : !serviceIsValid
-
                 ? providerService
-
                 : providerTerms;
 
-
-        // Exibe o pop-up de erro.
-
         openFeedback({
-
             type: "error",
-
             title: "DADOS INCORRETOS",
-
-            message: message,
-
+            message,
             buttonText: "VOLTAR E CORRIGIR",
-
-            action: () => {
-
-                // Mantém o usuário na tela de cadastro
-                // do provedor, preservando os dados digitados.
-
-                showScreen(providerScreen);
-
-            },
-
+            action: () => showScreen(providerScreen),
             focusTarget: firstInvalidField
-
         });
 
-
         return;
-
     }
 
+    try {
+        const usuario = obterUsuarioAutenticado();
 
-    // --------------------------------------
-    // CASO 2: INFORMAÇÕES CORRETAS
-    // --------------------------------------
+        // Guarda os dados necessários para concluir
+        // o cadastro do prestador na próxima tela.
+        sessionStorage.setItem(
+            "es_dados_prestador",
+            JSON.stringify({
+                id_usuario: usuario.id,
+                cnpj,
+                servicoPrestado: serviceText
+            })
+        );
 
-    // Nenhum CNPJ ou tipo de serviço
-    // é enviado ou armazenado.
+        sessionStorage.setItem("app:activeRole", "prestador");
 
-    openFeedback({
+        openFeedback({
+            type: "success",
+            title: "DADOS REGISTRADOS!",
+            message:
+                "Agora informe o preço do serviço para concluir o cadastro do prestador.",
+            buttonText: "CONTINUAR",
+            action: () => {
+                window.location.href = "criacao-servicos.html";
+            }
+        });
 
-        type: "success",
-
-        title: "CADASTRO CONCLUÍDO!",
-
-        message:
-            "Seu cadastro como prestador foi concluído nesta demonstração. Agora você já pode cadastrar seu serviço.",
-
-        buttonText: "CADASTRAR SERVIÇO",
-
-        action: () => {
-
-            // A página de cadastro de serviços
-            // ainda não existe.
-            // Retorna à tela inicial.
-
-            window.location.replace("tela-principal.html");
-
-        }
-
-    });
-
+    } catch (erro) {
+        openFeedback({
+            type: "error",
+            title: "NÃO FOI POSSÍVEL CONTINUAR",
+            message: erro.message,
+            buttonText: "VOLTAR",
+            action: () => showScreen(providerScreen)
+        });
+    }
 });
 
 

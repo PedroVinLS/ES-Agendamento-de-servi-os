@@ -5,6 +5,9 @@
 // 1. CONFIGURAÇÕES
 // ==========================================
 
+const API_BASE_URL =
+    "https://studious-space-umbrella-r7g44j57475fpv75-3000.app.github.dev";
+
 const WEEK_DAYS = [
     "SEGUNDA-FEIRA",
     "TERÇA-FEIRA",
@@ -78,9 +81,6 @@ const createServiceButton = document.getElementById("create-service-button");
 
 const state = {
 
-    // Por padrão, considera o usuário como cliente.
-    // O backend deverá informar o papel verdadeiro.
-
     role: "cliente",
 
     activeTab: "schedule",
@@ -92,6 +92,8 @@ const state = {
     searchQuery: "",
 
     isLoadingServices: false,
+
+    servicesError: null,
 
     weekStart: getMonday(new Date())
 
@@ -236,36 +238,25 @@ function updateRoleInterface() {
 
     const isProvider = state.role === "prestador";
 
-    // Mantém o papel no DOM sincronizado com o login/sessão.
     document.body.dataset.userRole = state.role;
-
 
     roleIndicator.textContent = isProvider
         ? "PRESTADOR"
         : "CLIENTE";
 
-
     scheduleHeading.textContent = isProvider
         ? "MINHA AGENDA DE TRABALHO"
         : "MEUS AGENDAMENTOS";
 
-
     scheduleDescription.textContent = isProvider
-
         ? "Consulte os horários em que você ou sua equipe deverão trabalhar nesta semana."
-
         : "Consulte os serviços que você agendou nesta semana.";
-
 
     providerLegend.hidden = !isProvider;
 
-    // Somente prestadores podem acessar a criação de serviços.
     if (createServiceButton) {
         createServiceButton.hidden = !isProvider;
     }
-
-
-    // Informa a categoria da pesquisa.
 
     searchPanel.dataset.userRole = state.role;
 
@@ -280,11 +271,7 @@ function changeTab(tabName) {
 
     const showSchedule = tabName === "schedule";
 
-
     state.activeTab = tabName;
-
-
-    // Atualiza os botões.
 
     scheduleTab.classList.toggle(
         "is-active",
@@ -296,7 +283,6 @@ function changeTab(tabName) {
         !showSchedule
     );
 
-
     scheduleTab.setAttribute(
         "aria-selected",
         String(showSchedule)
@@ -307,15 +293,9 @@ function changeTab(tabName) {
         String(!showSchedule)
     );
 
-
-    // Atualiza os painéis.
-
     schedulePanel.hidden = !showSchedule;
 
     searchPanel.hidden = showSchedule;
-
-
-    // Notifica a integração.
 
     dispatchAppEvent(
         "main:tab-change",
@@ -349,7 +329,6 @@ if (createServiceButton) {
 
     createServiceButton.addEventListener("click", () => {
 
-        // Segunda verificação: não depende apenas do botão estar oculto.
         if (state.role !== "prestador") {
             return;
         }
@@ -358,7 +337,6 @@ if (createServiceButton) {
             role: state.role
         });
 
-        // O destino único é definido no HTML, conforme o nome real do arquivo.
         const destination = createServiceButton.dataset.target;
 
         if (destination) {
@@ -394,14 +372,11 @@ function renderWeekGrid() {
 
     weekGrid.replaceChildren();
 
-
     weekLabel.textContent =
         formatWeek(state.weekStart);
 
-
     const todayKey =
         getTodayKey(new Date());
-
 
     WEEK_DAYS.forEach((day, dayIndex) => {
 
@@ -410,32 +385,19 @@ function renderWeekGrid() {
             dayIndex
         );
 
-
         const dateKey = getTodayKey(date);
-
-
-        // COLUNA DO DIA
 
         const column = document.createElement("article");
 
         column.className = "day-column";
 
-
-        // DESTACA O DIA ATUAL.
-
         if (dateKey === todayKey) {
-
             column.classList.add("is-today");
-
         }
-
-
-        // CABEÇALHO DO DIA
 
         const heading = document.createElement("header");
 
         heading.className = "day-heading";
-
 
         const dayName = document.createElement("span");
 
@@ -443,31 +405,24 @@ function renderWeekGrid() {
 
         dayName.textContent = day;
 
-
         const dayDate = document.createElement("span");
 
         dayDate.className = "day-date";
 
         dayDate.textContent = formatDate(date);
 
-
         heading.append(
             dayName,
             dayDate
         );
 
-
-        // EVENTOS DO DIA
-
         const eventsContainer = document.createElement("div");
 
         eventsContainer.className = "day-events";
 
-
         const events = state.schedule.filter(
             item => getEventDate(item, date) === dateKey
         );
-
 
         if (events.length === 0) {
 
@@ -481,7 +436,6 @@ function renderWeekGrid() {
             eventsContainer.appendChild(empty);
 
         }
-
 
         events
             .sort((a, b) => {
@@ -498,12 +452,10 @@ function renderWeekGrid() {
 
             });
 
-
         column.append(
             heading,
             eventsContainer
         );
-
 
         weekGrid.appendChild(column);
 
@@ -519,11 +471,8 @@ function renderWeekGrid() {
 function getEventDate(event, fallbackDate) {
 
     if (event.date) {
-
         return String(event.date).slice(0, 10);
-
     }
-
 
     if (
         Number.isInteger(event.dayIndex) &&
@@ -537,7 +486,6 @@ function getEventDate(event, fallbackDate) {
 
     }
 
-
     if (event.day) {
 
         const dayName = String(event.day)
@@ -545,7 +493,6 @@ function getEventDate(event, fallbackDate) {
             .trim();
 
         const dayIndex = WEEK_DAYS.indexOf(dayName);
-
 
         if (dayIndex >= 0) {
 
@@ -556,7 +503,6 @@ function getEventDate(event, fallbackDate) {
         }
 
     }
-
 
     return getTodayKey(fallbackDate);
 
@@ -570,18 +516,14 @@ function getEventDate(event, fallbackDate) {
 function getTimeValue(value) {
 
     if (typeof value === "number") {
-
         return value;
-
     }
-
 
     const parts = String(value || "00:00").split(":");
 
     const hours = Number(parts[0]);
 
     const minutes = Number(parts[1] || 0);
-
 
     return hours * 60 + minutes;
 
@@ -595,11 +537,8 @@ function getTimeValue(value) {
 function displayTime(value) {
 
     if (typeof value === "number") {
-
         return `${String(value).padStart(2, "0")}:00`;
-
     }
-
 
     return String(value || "--:--");
 
@@ -616,18 +555,13 @@ function createScheduleEvent(event) {
 
     card.className = "schedule-event";
 
-
     if (state.role === "prestador") {
-
         card.classList.add("provider-event");
-
     }
-
 
     const time = document.createElement("span");
 
     time.className = "event-time";
-
 
     const start = displayTime(
         event.startTime ?? event.start
@@ -637,9 +571,7 @@ function createScheduleEvent(event) {
         event.endTime ?? event.end
     );
 
-
     time.textContent = `${start} até ${end}`;
-
 
     const name = document.createElement("h3");
 
@@ -651,18 +583,14 @@ function createScheduleEvent(event) {
         event.title ||
         "Serviço sem identificação";
 
-
     card.append(
         time,
         name
     );
 
-
     const personName = state.role === "prestador"
-
         ? event.clientName
         : event.providerName;
-
 
     if (personName) {
 
@@ -676,6 +604,17 @@ function createScheduleEvent(event) {
 
     }
 
+    if (event.local) {
+
+        const location = document.createElement("span");
+
+        location.className = "event-person";
+
+        location.textContent = `Local: ${event.local}`;
+
+        card.appendChild(location);
+
+    }
 
     return card;
 
@@ -693,17 +632,7 @@ function changeWeek(direction) {
         direction * 7
     );
 
-
     renderWeekGrid();
-
-
-    // Não mantém os horários da semana anterior
-    // enquanto a nova consulta está pendente.
-
-    state.schedule = [];
-
-    renderWeekGrid();
-
 
     dispatchAppEvent(
         "main:week-change",
@@ -744,18 +673,10 @@ searchForm.addEventListener("submit", event => {
 
     event.preventDefault();
 
-
     state.searchQuery =
         searchInput.value.trim();
 
-
-    // Primeiro filtra os dados já recebidos.
-
     renderServices();
-
-
-    // Depois avisa a camada de integração,
-    // que poderá consultar a API.
 
     dispatchAppEvent(
         "main:search",
@@ -789,9 +710,7 @@ clearSearchButton.addEventListener("click", () => {
 
     clearSearchButton.hidden = true;
 
-
     renderServices();
-
 
     dispatchAppEvent(
         "main:search",
@@ -800,7 +719,6 @@ clearSearchButton.addEventListener("click", () => {
             role: state.role
         }
     );
-
 
     searchInput.focus();
 
@@ -817,13 +735,9 @@ function getFilteredServices() {
         .trim()
         .toLocaleLowerCase("pt-BR");
 
-
     if (!query) {
-
         return [...state.services];
-
     }
-
 
     return state.services.filter(service => {
 
@@ -842,7 +756,6 @@ function getFilteredServices() {
             .join(" ")
             .toLocaleLowerCase("pt-BR");
 
-
         return searchableText.includes(query);
 
     });
@@ -860,7 +773,6 @@ function sortServices(services) {
 
     switch (serviceSort.value) {
 
-
         case "name":
 
             ordered.sort((a, b) => {
@@ -875,7 +787,6 @@ function sortServices(services) {
 
             break;
 
-
         case "price":
 
             ordered.sort((a, b) => {
@@ -885,7 +796,6 @@ function sortServices(services) {
             });
 
             break;
-
 
         case "rating":
 
@@ -898,7 +808,6 @@ function sortServices(services) {
 
             break;
 
-
         default:
 
             ordered.sort((a, b) => {
@@ -910,7 +819,6 @@ function sortServices(services) {
 
     }
 
-
     return ordered;
 
 }
@@ -920,7 +828,6 @@ function getPrice(service) {
 
     const value =
         service.minimumPrice ?? service.price;
-
 
     return Number(value) || 0;
 
@@ -946,11 +853,9 @@ function createServiceCard(service) {
 
     card.className = "service-card";
 
-
     const image = document.createElement("div");
 
     image.className = "service-image";
-
 
     if (service.imageUrl) {
 
@@ -973,11 +878,9 @@ function createServiceCard(service) {
 
     }
 
-
     const information = document.createElement("div");
 
     information.className = "service-info";
-
 
     const title = document.createElement("h3");
 
@@ -986,7 +889,6 @@ function createServiceCard(service) {
     title.textContent =
         service.name || "Serviço sem nome";
 
-
     const description = document.createElement("p");
 
     description.className = "service-description";
@@ -994,17 +896,14 @@ function createServiceCard(service) {
     description.textContent =
         service.description || "Sem descrição disponível.";
 
-
     information.append(
         title,
         description
     );
 
-
     const metadata = document.createElement("div");
 
     metadata.className = "service-metadata";
-
 
     if (service.providerName) {
 
@@ -1016,7 +915,6 @@ function createServiceCard(service) {
         metadata.appendChild(provider);
 
     }
-
 
     if (service.rating !== undefined && service.rating !== null) {
 
@@ -1031,7 +929,6 @@ function createServiceCard(service) {
 
     }
 
-
     if (service.category) {
 
         const category = document.createElement("span");
@@ -1042,20 +939,15 @@ function createServiceCard(service) {
 
     }
 
-
     information.appendChild(metadata);
-
 
     const price = document.createElement("div");
 
     price.className = "service-price";
 
-
     const priceValue = getPrice(service);
 
-
     price.textContent = priceValue > 0
-
         ? priceValue.toLocaleString(
             "pt-BR",
             {
@@ -1063,9 +955,7 @@ function createServiceCard(service) {
                 currency: "BRL"
             }
         )
-
         : "Consultar";
-
 
     const priceHint = document.createElement("small");
 
@@ -1073,9 +963,7 @@ function createServiceCard(service) {
         ? "Preço mínimo"
         : "Preço";
 
-
     price.appendChild(priceHint);
-
 
     card.append(
         image,
@@ -1083,29 +971,33 @@ function createServiceCard(service) {
         price
     );
 
-
-    // --------------------------------------
-    // ABRIR PÁGINA DE APRESENTAÇÃO
-    // --------------------------------------
-
     card.addEventListener("click", () => {
+        const serviceData = {
+            ...service,
+            id: service.id,
+            cnpj: service.cnpj || service.id,
+            name: service.name || service.servicoPrestado,
+            servicoPrestado: service.servicoPrestado || service.name,
+            role: state.role
+        };
 
-        dispatchAppEvent(
-            "main:open-service",
-            {
-                serviceId: service.id,
-
-                service,
-
-                role: state.role,
-
-                readOnly: state.role === "prestador"
-
-            }
+        sessionStorage.setItem(
+            "app:selectedService",
+            JSON.stringify(serviceData)
         );
 
-    });
+        sessionStorage.setItem(
+            "app:activeRole",
+            state.role
+        );
 
+        const params = new URLSearchParams({
+            serviceId: serviceData.cnpj
+        });
+
+        window.location.href =
+            `apresentação-servico.html?${params.toString()}`;
+    });
 
     return card;
 
@@ -1120,21 +1012,15 @@ function renderServices() {
 
     serviceResults.replaceChildren();
 
-
     const filtered = sortServices(
         getFilteredServices()
     );
 
-
     const count = filtered.length;
 
-
     resultsCount.textContent = count === 1
-
         ? "1 serviço encontrado."
-
         : `${count} serviços encontrados.`;
-
 
     if (state.isLoadingServices) {
 
@@ -1151,7 +1037,6 @@ function renderServices() {
 
     }
 
-
     loadingState.hidden = true;
 
     serviceResults.setAttribute(
@@ -1159,13 +1044,9 @@ function renderServices() {
         "false"
     );
 
-
-    // NENHUM RESULTADO.
-
     if (count === 0) {
 
         emptyState.hidden = false;
-
 
         const title =
             emptyState.querySelector("h3");
@@ -1173,8 +1054,17 @@ function renderServices() {
         const description =
             emptyState.querySelector("p");
 
+        if (state.servicesError) {
 
-        if (state.searchQuery) {
+            title.textContent =
+                "NÃO FOI POSSÍVEL CARREGAR OS SERVIÇOS";
+
+            description.textContent =
+                state.servicesError;
+
+        }
+
+        else if (state.searchQuery) {
 
             title.textContent =
                 "NENHUM SERVIÇO ENCONTRADO";
@@ -1194,16 +1084,11 @@ function renderServices() {
 
         }
 
-
         return;
 
     }
 
-
     emptyState.hidden = true;
-
-
-    // INSERE OS CARTÕES RECEBIDOS DA API.
 
     filtered.forEach(service => {
 
@@ -1233,14 +1118,7 @@ function setServicesLoading(isLoading) {
 // 22. CONTROLE PÚBLICO DA TELA
 // ==========================================
 
-// Esta interface pública permite que o JavaScript
-// já existente no projeto forneça dados à página.
-//
-// Ela não faz chamadas próprias ao backend.
-
 window.MainScreen = Object.freeze({
-
-    // Define se o usuário é cliente ou prestador.
 
     setUserRole(role) {
 
@@ -1269,9 +1147,6 @@ window.MainScreen = Object.freeze({
 
     },
 
-
-    // Recebe os horários da semana atual.
-
     renderSchedule(entries) {
 
         state.schedule = Array.isArray(entries)
@@ -1281,9 +1156,6 @@ window.MainScreen = Object.freeze({
         renderWeekGrid();
 
     },
-
-
-    // Recebe os serviços retornados pela API.
 
     renderServices(services) {
 
@@ -1295,27 +1167,16 @@ window.MainScreen = Object.freeze({
 
     },
 
-
-    // Define o estado de carregamento da pesquisa.
-
     setServicesLoading,
 
-
-    // Troca de aba externamente.
-
     changeTab,
-
-
-    // Permite atualizar o período exibido.
 
     setWeekStart(date) {
 
         const parsed = new Date(date);
 
         if (Number.isNaN(parsed.getTime())) {
-
             return;
-
         }
 
         state.weekStart = getMonday(parsed);
@@ -1323,9 +1184,6 @@ window.MainScreen = Object.freeze({
         renderWeekGrid();
 
     },
-
-
-    // Consulta o estado atual da interface.
 
     getState() {
 
@@ -1349,16 +1207,249 @@ window.MainScreen = Object.freeze({
 
 
 // ==========================================
+// 22A. CARREGAR PRESTADORES DA API
+// ==========================================
+
+async function carregarPrestadores() {
+
+    state.servicesError = null;
+
+    setServicesLoading(true);
+
+    try {
+
+        const [resPrestadores, resUsuarios] = await Promise.all([
+            fetch(`${API_BASE_URL}/prestador`, {
+                method: "GET",
+                headers: { "Accept": "application/json" }
+            }),
+            fetch(`${API_BASE_URL}/usuario`, {
+                method: "GET",
+                headers: { "Accept": "application/json" }
+            }).catch(() => null)
+        ]);
+
+        const data = await resPrestadores.json().catch(() => null);
+
+        if (!resPrestadores.ok) {
+
+            throw new Error(
+                data?.error ||
+                "Não foi possível consultar os prestadores."
+            );
+
+        }
+
+        if (!Array.isArray(data)) {
+
+            throw new Error(
+                "A resposta da API possui um formato inesperado."
+            );
+
+        }
+
+        const usuarios = (resUsuarios && resUsuarios.ok)
+            ? await resUsuarios.json().catch(() => [])
+            : [];
+
+        const usuarioPorId = new Map(
+            (Array.isArray(usuarios) ? usuarios : []).map(u => [
+                Number(u.id),
+                u.nome
+            ])
+        );
+
+        const services = data.map(prestador => ({
+
+            ...prestador,
+
+            id: prestador.cnpj,
+
+            name: prestador.servicoPrestado,
+
+            providerName: usuarioPorId.get(Number(prestador.id_usuario)) || null,
+
+            price: Number(prestador.preco),
+
+            rating: Number(prestador.avaliacao)
+
+        }));
+
+        state.servicesError = null;
+
+        window.MainScreen.renderServices(services);
+
+    } catch (error) {
+
+        console.error(
+            "Erro ao carregar prestadores:",
+            error
+        );
+
+        state.servicesError =
+            error.message ||
+            "Erro de comunicação com o servidor.";
+
+        window.MainScreen.renderServices([]);
+
+    } finally {
+
+        setServicesLoading(false);
+
+    }
+
+}
+
+
+// ==========================================
+// 22B. CARREGAR AGENDAMENTOS DO USUÁRIO
+// ==========================================
+
+async function carregarAgendamentos() {
+
+    const token = sessionStorage.getItem("es_token");
+
+    if (!token) {
+        return;
+    }
+
+    try {
+
+        const [resServicos, resAgendas, resPrestadores, resClientes, resUsuarios] = await Promise.all([
+            fetch(`${API_BASE_URL}/servico`, {
+                method: "GET",
+                headers: {
+                    "Accept": "application/json",
+                    "Authorization": `Bearer ${token}`
+                }
+            }),
+            fetch(`${API_BASE_URL}/agenda`, {
+                method: "GET",
+                headers: { "Accept": "application/json" }
+            }),
+            fetch(`${API_BASE_URL}/prestador`, {
+                method: "GET",
+                headers: { "Accept": "application/json" }
+            }),
+            fetch(`${API_BASE_URL}/cliente`, {
+                method: "GET",
+                headers: { "Accept": "application/json" }
+            }).catch(() => null),
+            fetch(`${API_BASE_URL}/usuario`, {
+                method: "GET",
+                headers: { "Accept": "application/json" }
+            }).catch(() => null)
+        ]);
+
+        if (!resServicos.ok || !resAgendas.ok) {
+            return;
+        }
+
+        const [servicos, agendas, prestadores] = await Promise.all([
+            resServicos.json(),
+            resAgendas.json(),
+            resPrestadores.ok ? resPrestadores.json() : []
+        ]);
+
+        const clientes = (resClientes && resClientes.ok)
+            ? await resClientes.json().catch(() => [])
+            : [];
+
+        const usuarios = (resUsuarios && resUsuarios.ok)
+            ? await resUsuarios.json().catch(() => [])
+            : [];
+
+        if (!Array.isArray(servicos) || !Array.isArray(agendas)) {
+            return;
+        }
+
+        const agendaPorId = new Map(
+            agendas.map(a => [String(a.id), a])
+        );
+
+        const usuarioPorId = new Map(
+            (Array.isArray(usuarios) ? usuarios : []).map(u => [
+                Number(u.id),
+                u.nome
+            ])
+        );
+
+        const prestadorPorCnpj = new Map(
+            (Array.isArray(prestadores) ? prestadores : []).map(p => [
+                String(p.cnpj),
+                p
+            ])
+        );
+
+        const clientePorCpf = new Map(
+            (Array.isArray(clientes) ? clientes : []).map(c => [
+                String(c.cpf),
+                c
+            ])
+        );
+
+        const entradasAgenda = servicos
+            .map(servico => {
+                const agenda = agendaPorId.get(String(servico.id_agenda));
+
+                if (!agenda || !agenda.horario) {
+                    return null;
+                }
+
+                const dataInicio = new Date(agenda.horario);
+
+                if (Number.isNaN(dataInicio.getTime())) {
+                    return null;
+                }
+
+                const horaInicio = dataInicio.getHours();
+                const horaFim = horaInicio + 1;
+
+                const prestador = prestadorPorCnpj.get(String(servico.id_prestador));
+                const cliente = clientePorCpf.get(String(servico.id_cliente));
+
+                const providerName = prestador
+                    ? usuarioPorId.get(Number(prestador.id_usuario)) || null
+                    : null;
+
+                const clientName = cliente
+                    ? usuarioPorId.get(Number(cliente.id_usuario)) || null
+                    : null;
+
+                return {
+                    id: servico.id,
+                    date: getTodayKey(dataInicio),
+                    start: horaInicio,
+                    end: horaFim,
+                    serviceName:
+                        prestador?.servicoPrestado ||
+                        servico.descricao ||
+                        "Serviço agendado",
+                    providerName,
+                    clientName,
+                    local: agenda.local || ""
+                };
+            })
+            .filter(Boolean);
+
+        window.MainScreen.renderSchedule(entradasAgenda);
+
+    } catch (error) {
+
+        console.error(
+            "Erro ao carregar agendamentos:",
+            error
+        );
+
+    }
+
+}
+
+
+// ==========================================
 // 23. INICIALIZAÇÃO
 // ==========================================
 
-// Tenta obter o papel já informado pelo sistema.
-
-// O papel autenticado pelo backend é a fonte prioritária.
-// Se ainda não estiver disponível globalmente, usamos o papel
-// colocado no sessionStorage pelo fluxo de cadastro/login.
-// O atributo estático do HTML é apenas o último fallback, para
-// não sobrescrever "prestador" com um data-user-role="cliente".
 function readInitialUserRole() {
 
     const backendRole =
@@ -1390,16 +1481,11 @@ function readInitialUserRole() {
 
 state.role = readInitialUserRole();
 
-// Sincroniza o papel inicial para que a apresentação do serviço
-// e outros módulos da mesma sessão recebam a mesma informação.
 try {
     sessionStorage.setItem("app:activeRole", state.role);
 } catch (error) {
     console.warn("Não foi possível guardar o papel inicial:", error);
 }
-
-
-// Configura a apresentação inicial.
 
 updateRoleInterface();
 
@@ -1407,13 +1493,13 @@ renderWeekGrid();
 
 renderServices();
 
-
-// Notifica o JavaScript da integração de que
-// a tela principal terminou sua inicialização.
-
 dispatchAppEvent(
     "main:ready",
     {
         role: state.role
     }
 );
+
+// Carrega os prestadores e os agendamentos cadastrados no backend.
+carregarPrestadores();
+carregarAgendamentos();

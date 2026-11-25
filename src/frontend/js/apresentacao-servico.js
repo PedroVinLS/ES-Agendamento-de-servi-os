@@ -1,5 +1,5 @@
-"use strict";
 
+"use strict";
 
 // ==========================================
 // 1. CONFIGURAÇÕES
@@ -8,6 +8,9 @@
 const SELECTED_SERVICE_KEY = "app:selectedService";
 const ACTIVE_ROLE_KEY = "app:activeRole";
 const AGENDA_CONTEXT_KEY = "app:agendaContext";
+
+const API_BASE_URL =
+    "https://studious-space-umbrella-r7g44j57475fpv75-3000.app.github.dev";
 
 
 // ==========================================
@@ -23,7 +26,6 @@ const serviceError =
 const serviceErrorMessage =
     document.getElementById("service-error-message");
 
-
 const serviceName =
     document.getElementById("service-name");
 
@@ -33,7 +35,6 @@ const serviceType =
 const serviceDescription =
     document.getElementById("service-description");
 
-
 const ratingStars =
     document.getElementById("rating-stars");
 
@@ -42,7 +43,6 @@ const ratingValue =
 
 const ratingDescription =
     document.getElementById("rating-description");
-
 
 const bookServiceButton =
     document.getElementById("book-service-button");
@@ -56,7 +56,6 @@ const providerNotice =
 // ==========================================
 
 function normalizeRole(role) {
-
     const normalized = String(role || "")
         .trim()
         .toLowerCase();
@@ -66,58 +65,39 @@ function normalizeRole(role) {
         normalized === "provedor" ||
         normalized === "provider"
     ) {
-
         return "prestador";
-
     }
 
     if (
         normalized === "cliente" ||
         normalized === "client"
     ) {
-
         return "cliente";
-
     }
 
     return "desconhecido";
-
 }
 
 
 function getCurrentRole() {
-
-    // O papel fornecido pela sessão autenticada
-    // tem prioridade sobre o contexto temporário.
-
     const authenticatedRole = window.APP_USER?.role;
 
     if (authenticatedRole) {
-
         return normalizeRole(authenticatedRole);
-
     }
 
-
     try {
-
         return normalizeRole(
             sessionStorage.getItem(ACTIVE_ROLE_KEY)
         );
-
-    }
-
-    catch (error) {
-
+    } catch (error) {
         console.warn(
             "Não foi possível recuperar o papel do usuário.",
             error
         );
 
         return "desconhecido";
-
     }
-
 }
 
 
@@ -125,32 +105,22 @@ const currentRole = getCurrentRole();
 
 
 // ==========================================
-// 4. DEFINIR A VISIBILIDADE DO AGENDAMENTO
+// 4. VISIBILIDADE DO AGENDAMENTO
 // ==========================================
 
 function updateRoleVisibility() {
-
     const isClient = currentRole === "cliente";
 
     bookServiceButton.hidden = !isClient;
-
     providerNotice.hidden = isClient;
 
-
     if (currentRole === "prestador") {
-
         providerNotice.textContent =
             "Você está visualizando este serviço como prestador. O agendamento é exclusivo para clientes.";
-
-    }
-
-    else if (currentRole === "desconhecido") {
-
+    } else if (currentRole === "desconhecido") {
         providerNotice.textContent =
             "Não foi possível identificar seu perfil. Entre novamente para utilizar as funcionalidades da aplicação.";
-
     }
-
 }
 
 
@@ -158,108 +128,112 @@ updateRoleVisibility();
 
 
 // ==========================================
-// 5. RECUPERAR O SERVIÇO SELECIONADO
+// 5. RECUPERAR SERVIÇO SELECIONADO
 // ==========================================
 
 function getSelectedService() {
-
     try {
-
         const stored =
             sessionStorage.getItem(SELECTED_SERVICE_KEY);
 
-
         if (!stored) {
-
             return null;
-
         }
 
-
         const service = JSON.parse(stored);
-
 
         if (
             !service ||
             typeof service !== "object" ||
             Array.isArray(service)
         ) {
-
             return null;
-
         }
 
-
         return service;
-
-    }
-
-    catch (error) {
-
+    } catch (error) {
         console.error(
             "Erro ao recuperar os dados do serviço:",
             error
         );
 
         return null;
-
     }
-
 }
 
 
 // ==========================================
-// 6. NORMALIZAR OS DADOS DO SERVIÇO
+// 6. NORMALIZAR DADOS DO SERVIÇO
 // ==========================================
 
 function normalizeService(service) {
+    const id =
+        service.cnpj ??
+        service.id ??
+        service.serviceId ??
+        service.service_id ??
+        null;
+
+    const name =
+        service.servicoPrestado ??
+        service.name ??
+        service.serviceName ??
+        service.nome ??
+        "Serviço sem nome";
+
+    const providerName =
+        service.usuario?.nome ??
+        service.providerName ??
+        service.provider ??
+        null;
+
+    const price =
+        service.preco ??
+        service.price ??
+        null;
+
+    const rating =
+        service.avaliacao ??
+        service.rating ??
+        service.averageRating ??
+        service.average_rating ??
+        null;
+
+    const details = [];
+
+    if (providerName) {
+        details.push(`Prestador: ${providerName}`);
+    }
+
+    if (price !== null && price !== undefined) {
+        const numericPrice = Number(price);
+
+        if (Number.isFinite(numericPrice)) {
+            const formattedPrice = numericPrice.toLocaleString(
+                "pt-BR",
+                {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }
+            );
+
+            details.push(`Preço: R$ ${formattedPrice}`);
+        }
+    }
 
     return {
-
-        id:
-            service.id ??
-            service.serviceId ??
-            service.service_id ??
-            null,
-
-
-        name:
-            service.name ??
-            service.serviceName ??
-            service.nome ??
-            "Serviço sem nome",
-
-
-        type:
-            service.type ??
-            service.serviceType ??
-            service.category ??
-            service.tipoServico ??
-            "Tipo de serviço não informado",
-
-
-        description:
-            service.description ??
-            service.serviceDescription ??
-            service.descricao ??
-            "Descrição não disponível.",
-
-
-        rating:
-            service.rating ??
-            service.averageRating ??
-            service.average_rating ??
-            service.avaliacao ??
-            null,
-
-
-        providerName:
-            service.providerName ??
-            service.provider ??
-            null
-
+        ...service,
+        id,
+        cnpj: service.cnpj ?? id,
+        name,
+        type: "Serviço oferecido pelo prestador",
+        description: details.length
+            ? details.join(" | ")
+            : "Não há informações complementares cadastradas.",
+        rating,
+        providerName,
+        price
     };
-
 }
 
 
@@ -268,33 +242,24 @@ function normalizeService(service) {
 // ==========================================
 
 function normalizeRating(value) {
-
     if (
         value === null ||
         value === undefined ||
         value === ""
     ) {
-
         return null;
-
     }
-
 
     const rating = Number(value);
 
-
     if (!Number.isFinite(rating)) {
-
         return null;
-
     }
-
 
     return Math.min(
         5,
         Math.max(0, rating)
     );
-
 }
 
 
@@ -303,15 +268,11 @@ function normalizeRating(value) {
 // ==========================================
 
 function renderRating(value) {
-
     ratingStars.replaceChildren();
-
 
     const rating = normalizeRating(value);
 
-
     if (rating === null) {
-
         ratingValue.textContent = "--";
 
         ratingDescription.textContent =
@@ -323,116 +284,73 @@ function renderRating(value) {
         );
 
         return;
-
     }
 
-
-    // Exibe cinco estrelas.
-    // Valores fracionários são representados
-    // usando meia estrela quando necessário.
-
     for (let index = 0; index < 5; index++) {
-
         const star = document.createElement("span");
 
         star.className = "rating-star";
-
         star.textContent = "★";
-
 
         const remaining = rating - index;
 
-
         if (remaining >= 0.75) {
-
             star.classList.add("is-full");
-
-        }
-
-        else if (remaining >= 0.25) {
-
+        } else if (remaining >= 0.25) {
             star.classList.add("is-half");
-
         }
-
 
         ratingStars.appendChild(star);
-
     }
-
 
     ratingValue.textContent =
         rating.toFixed(1);
-
 
     ratingStars.setAttribute(
         "aria-label",
         `Avaliação de ${rating.toFixed(1)} de 5 estrelas`
     );
 
-
     ratingDescription.textContent =
         `Média de ${rating.toFixed(1)} de 5 estrelas.`;
-
 }
 
 
 // ==========================================
-// 9. APRESENTAR OS DADOS DO SERVIÇO
+// 9. APRESENTAR DADOS DO SERVIÇO
 // ==========================================
 
 let currentService = null;
 
 
 function setService(serviceData) {
-
     if (
         !serviceData ||
         typeof serviceData !== "object" ||
         Array.isArray(serviceData)
     ) {
-
         showError(
             "Os dados recebidos para este serviço são inválidos."
         );
 
         return;
-
     }
 
-
     currentService = normalizeService(serviceData);
-
-
-    // NOME
 
     serviceName.textContent =
         currentService.name;
 
-
-    // TIPO
-
     serviceType.textContent =
         currentService.type;
-
-
-    // DESCRIÇÃO
 
     serviceDescription.textContent =
         currentService.description;
 
-
-    // AVALIAÇÃO
-
     renderRating(currentService.rating);
 
-
-    // EXIBE A PÁGINA.
-
     serviceContent.hidden = false;
-
     serviceError.hidden = true;
-
 }
 
 
@@ -441,66 +359,96 @@ function setService(serviceData) {
 // ==========================================
 
 function showError(message) {
-
     serviceContent.hidden = true;
-
     serviceError.hidden = false;
 
     serviceErrorMessage.textContent = message;
-
 }
 
 
 // ==========================================
-// 11. SOLICITAR DADOS À INTEGRAÇÃO
+// 11. CONSULTAR PRESTADOR NA API
 // ==========================================
 
-function requestServiceFromBackend(serviceId) {
+async function requestServiceFromBackend(serviceId) {
+    if (!serviceId) {
+        showError(
+            "Identificador do prestador não informado."
+        );
 
-    // Permite que o JavaScript já integrado ao backend
-    // busque os detalhes completos do serviço.
+        return;
+    }
 
-    document.dispatchEvent(
-        new CustomEvent(
-            "service-presentation:load",
+    try {
+        const response = await fetch(
+            `${API_BASE_URL}/prestador/${encodeURIComponent(serviceId)}/more`,
             {
-                detail: {
-                    serviceId,
-                    role: currentRole
+                method: "GET",
+                headers: {
+                    "Accept": "application/json"
                 }
             }
-        )
-    );
+        );
 
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+            throw new Error(
+                data.erro ||
+                data.error ||
+                data.mensagem ||
+                "Não foi possível carregar os dados do serviço."
+            );
+        }
+
+        if (
+            !data ||
+            typeof data !== "object" ||
+            Array.isArray(data) ||
+            !data.cnpj
+        ) {
+            throw new Error(
+                "A API retornou dados inválidos do prestador."
+            );
+        }
+
+        sessionStorage.setItem(
+            SELECTED_SERVICE_KEY,
+            JSON.stringify(data)
+        );
+
+        setService(data);
+
+    } catch (error) {
+        console.error(
+            "Erro ao consultar serviço:",
+            error
+        );
+
+        showError(
+            error.message ||
+            "Não foi possível carregar os dados do serviço."
+        );
+    }
 }
 
 
 // ==========================================
-// 12. RECEBER SERVIÇO DO BACKEND
+// 12. DISPONIBILIZAR INTEGRAÇÃO
 // ==========================================
 
-// A camada de integração pode chamar:
-//
-// ServicePresentation.setService(dadosDoServico);
-
 window.ServicePresentation = Object.freeze({
-
     setService,
 
     showError,
 
     getRole() {
-
         return currentRole;
-
     },
 
     getService() {
-
         return currentService;
-
     }
-
 });
 
 
@@ -508,78 +456,31 @@ window.ServicePresentation = Object.freeze({
 // 13. CARREGAMENTO INICIAL
 // ==========================================
 
-function initializeServicePage() {
+async function initializeServicePage() {
+    updateRoleVisibility();
 
     const selectedService = getSelectedService();
 
-
-    if (selectedService) {
-
-        setService(selectedService);
-
-    }
-
-    else {
-
-        const parameters = new URLSearchParams(
-            window.location.search
-        );
-
-        const serviceId =
-            parameters.get("serviceId");
-
-
-        if (serviceId) {
-
-            // O backend pode buscar os dados completos
-            // utilizando o identificador recebido.
-
-            serviceName.textContent =
-                "Carregando serviço...";
-
-            serviceType.textContent = "--";
-
-            serviceDescription.textContent =
-                "Buscando informações do serviço.";
-
-            serviceContent.hidden = false;
-
-            serviceError.hidden = true;
-
-            requestServiceFromBackend(serviceId);
-
-        }
-
-        else {
-
-            showError(
-                "Nenhum serviço foi selecionado. Volte à página principal e escolha um serviço."
-            );
-
-        }
-
-    }
-
-
-    // Se a integração carregar os dados posteriormente,
-    // o evento acima permite concluir a apresentação.
-
-    document.dispatchEvent(
-        new CustomEvent(
-            "service-presentation:ready",
-            {
-                detail: {
-                    serviceId:
-                        currentService?.id ??
-                        new URLSearchParams(window.location.search)
-                            .get("serviceId"),
-
-                    role: currentRole
-                }
-            }
-        )
+    const params = new URLSearchParams(
+        window.location.search
     );
 
+    const serviceId =
+        params.get("serviceId") ||
+        selectedService?.cnpj ||
+        selectedService?.id;
+
+    if (!serviceId) {
+        showError(
+            "Nenhum serviço foi selecionado."
+        );
+    } else {
+        await requestServiceFromBackend(serviceId);
+    }
+
+    document.dispatchEvent(
+        new CustomEvent("service-presentation:ready")
+    );
 }
 
 
@@ -588,57 +489,32 @@ function initializeServicePage() {
 // ==========================================
 
 bookServiceButton.addEventListener("click", () => {
-
-    // Impede que prestadores ou usuários sem
-    // papel identificado iniciem agendamentos.
-
     if (currentRole !== "cliente") {
-
         return;
-
     }
 
-
     if (!currentService) {
-
         showError(
             "Não foi possível recuperar as informações deste serviço."
         );
 
         return;
-
     }
 
-
-    // Guarda somente os dados necessários
-    // para identificar o serviço na agenda.
-
     const agendaContext = {
-
         serviceId: currentService.id,
-
         serviceName: currentService.name,
-
         serviceType: currentService.type,
-
         providerName: currentService.providerName,
-
         role: currentRole
-
     };
 
-
     try {
-
         sessionStorage.setItem(
             AGENDA_CONTEXT_KEY,
             JSON.stringify(agendaContext)
         );
-
-    }
-
-    catch (error) {
-
+    } catch (error) {
         console.error(
             "Não foi possível preparar o agendamento:",
             error
@@ -649,33 +525,21 @@ bookServiceButton.addEventListener("click", () => {
         );
 
         return;
-
     }
-
-
-    // A tela agenda.html carrega seus próprios arquivos:
-    // agenda.css e agenda.js.
 
     const agendaUrl = new URL(
         "agenda.html",
         window.location.href
     );
 
-
     if (currentService.id !== null) {
-
         agendaUrl.searchParams.set(
             "serviceId",
             String(currentService.id)
         );
-
     }
 
-
-    // Navega para a agenda já existente.
-
     window.location.href = agendaUrl.href;
-
 });
 
 

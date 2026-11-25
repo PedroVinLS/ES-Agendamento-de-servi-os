@@ -1,5 +1,43 @@
 "use strict";
 
+const API_BASE_URL =
+    "https://studious-space-umbrella-r7g44j57475fpv75-3000.app.github.dev";
+
+
+async function apiRequest(endpoint, method, data, token) {
+    const headers = {
+        "Content-Type": "application/json"
+    };
+
+    if (token) {
+        headers.Authorization = `Bearer ${token}`;
+    }
+
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        method,
+        headers,
+        body: data ? JSON.stringify(data) : undefined
+    });
+
+    const responseData = await response.json().catch(() => null);
+
+    if (!response.ok) {
+        const detalhes = Array.isArray(responseData?.detalhes)
+            ? ` (${responseData.detalhes.join(" ")})`
+            : "";
+
+        throw new Error(
+            (responseData?.error ||
+                responseData?.mensagem ||
+                responseData?.message ||
+                "Não foi possível realizar a operação no servidor.") +
+            detalhes
+        );
+    }
+
+    return responseData;
+}
+
 
 // ==========================================
 // CONFIGURAÇÕES DO PROTÓTIPO
@@ -24,13 +62,6 @@ const HOURS = Array.from(
 );
 
 const STORAGE_KEY = "servicosCriados";
-
-
-// Senha exclusivamente demonstrativa enquanto não existe API.
-// Altere este valor para testar outra senha.
-// NÃO use uma senha fixa no código em produção.
-
-const DEMO_PASSWORD = "123456";
 
 
 // Nome, descrição, preço e ao menos um horário são obrigatórios.
@@ -113,7 +144,7 @@ const resultClose =
 
 
 // ==========================================
-// ESTADO DA AGENDA
+// ESTADO DA AGENDA E DO PRESTADOR
 // ==========================================
 
 // A seleção é identificada por pares dia-horário.
@@ -126,6 +157,9 @@ const selectedAvailability = new Set();
 const temporaryAvailability = new Set();
 
 const availabilityButtons = new Map();
+
+// Guarda os dados do prestador já cadastrado (modo edição).
+let prestadorExistente = null;
 
 
 // ==========================================
@@ -810,318 +844,253 @@ phoneNumber.addEventListener("input", () => {
 
 
 // ==========================================
-// ABRIR MODAL DE CONFIRMAÇÃO DA SENHA
+// CARREGAMENTO DO CONTEXTO DO PRESTADOR
 // ==========================================
 
-serviceForm.addEventListener("submit", event => {
+async function carregarContextoPrestador() {
+    let usuario = null;
+    let dadosPrestador = null;
 
+    try {
+        usuario = JSON.parse(
+            sessionStorage.getItem("es_usuario") || "null"
+        );
+        dadosPrestador = JSON.parse(
+            sessionStorage.getItem("es_dados_prestador") || "null"
+        );
+    } catch {
+        return;
+    }
+
+    if (dadosPrestador?.servicoPrestado && !serviceName.value.trim()) {
+        serviceName.value = dadosPrestador.servicoPrestado;
+        updateCreateButton();
+    }
+
+    if (!usuario?.id) {
+        return;
+    }
+
+    try {
+        const res = await fetch(`${API_BASE_URL}/prestador`, {
+            method: "GET",
+            headers: { "Accept": "application/json" }
+        });
+
+        if (!res.ok) {
+            return;
+        }
+
+        const lista = await res.json();
+
+        if (!Array.isArray(lista)) {
+            return;
+        }
+
+        const encontrado = lista.find(
+            p => Number(p.id_usuario) === Number(usuario.id)
+        );
+
+        if (encontrado) {
+            prestadorExistente = encontrado;
+
+            if (!serviceName.value.trim() && encontrado.servicoPrestado) {
+                serviceName.value = encontrado.servicoPrestado;
+            }
+
+            if (!servicePrice.value.trim() && encontrado.preco) {
+                servicePrice.value = String(encontrado.preco);
+            }
+
+            createButton.textContent = "SALVAR SERVIÇO";
+            updateCreateButton();
+        }
+    } catch (error) {
+        console.warn("Não foi possível consultar dados existentes do prestador:", error);
+    }
+}
+
+
+// ==========================================
+// ENVIAR CADASTRO OU ATUALIZAÇÃO DO PRESTADOR
+// ==========================================
+
+serviceForm.addEventListener("submit", async event => {
     event.preventDefault();
 
-
     if (!isFormReady()) {
-
         if (selectedAvailability.size === 0) {
-
             selectionSummary.textContent =
                 "Selecione pelo menos um horário para continuar.";
-
         }
 
         updateCreateButton();
-
         return;
-
     }
 
+    const token = sessionStorage.getItem("es_token");
 
-    confirmationPassword.value = "";
-
-    passwordError.textContent = "";
-
-    setInvalid(confirmationPassword, false);
-
-
-    openDialog(passwordDialog);
-
-    confirmationPassword.focus();
-
-});
-
-
-// ==========================================
-// LEITURA DOS SERVIÇOS JÁ SALVOS
-// ==========================================
-
-function readSavedServices() {
+    let dadosPrestador;
+    let usuario;
 
     try {
+        dadosPrestador = JSON.parse(
+            sessionStorage.getItem("es_dados_prestador") || "null"
+        );
 
-        const raw =
-            localStorage.getItem(STORAGE_KEY);
+        usuario = JSON.parse(
+            sessionStorage.getItem("es_usuario") || "null"
+        );
+    } catch {
+        showError("Os dados da sessão estão inválidos. Faça login novamente.");
+        return;
+    }
 
+    if (!token || !usuario?.id) {
+        showError("Sua sessão expirou. Faça login novamente.");
+        return;
+    }
 
-        if (!raw) {
+    const servicoPrestado =
+        serviceName.value.trim() ||
+        dadosPrestador?.servicoPrestado?.trim() ||
+        "";
 
-            return [];
+    const preco = normalizePrice(servicePrice.value);
 
+    if (!servicoPrestado || servicoPrestado.length > 150 || preco === null) {
+        showError("Informe um nome de serviço válido (até 150 caracteres) e um preço mínimo de R$ 0,01.");
+        return;
+    }
+
+    createButton.disabled = true;
+    createButton.textContent = "Enviando...";
+
+    try {
+        // Caso 1: Prestador já cadastrado atualizando serviço/preço.
+        if (prestadorExistente?.cnpj) {
+            await apiRequest(
+                `/prestador/${encodeURIComponent(prestadorExistente.cnpj)}`,
+                "PUT",
+                {
+                    servicoPrestado,
+                    preco
+                },
+                token
+            );
+
+            sessionStorage.setItem("app:activeRole", "prestador");
+            showSuccess(servicoPrestado, true);
+            return;
         }
 
+        // Caso 2: Primeiro cadastro de prestador vindo de selecao-papel.html.
+        if (!dadosPrestador) {
+            showError("Os dados de CNPJ não foram encontrados. Retorne à seleção de perfil para informar seu CNPJ.");
+            return;
+        }
 
-        const parsed = JSON.parse(raw);
+        const cnpj = onlyDigits(dadosPrestador.cnpj);
 
+        if (
+            String(dadosPrestador.id_usuario) !== String(usuario.id) ||
+            cnpj.length !== 14
+        ) {
+            showError("Os dados do cadastro do prestador estão incompletos ou inválidos. Revise a etapa anterior.");
+            return;
+        }
 
-        return Array.isArray(parsed)
-            ? parsed
-            : [];
+        const dados = {
+            id_usuario: usuario.id,
+            cnpj,
+            servicoPrestado,
+            preco
+        };
 
-    }
-
-    catch (error) {
-
-        console.error(
-            "Não foi possível ler os serviços salvos:",
-            error
+        await apiRequest(
+            "/prestador",
+            "POST",
+            dados,
+            token
         );
 
-        return null;
+        sessionStorage.removeItem("es_dados_prestador");
+        sessionStorage.setItem("app:activeRole", "prestador");
 
+        showSuccess(servicoPrestado, false);
+
+    } catch (error) {
+        console.error("Erro ao salvar prestador:", error);
+        showError(error.message);
+
+    } finally {
+        createButton.textContent = prestadorExistente
+            ? "SALVAR SERVIÇO"
+            : "CRIAR SERVIÇO";
+        updateCreateButton();
     }
-
-}
-
-
-// ==========================================
-// CONSTRUIR REGISTRO DO SERVIÇO
-// ==========================================
-
-function buildServiceRecord() {
-
-    const availability =
-        [...selectedAvailability].map(key => {
-
-            const {
-                dayIndex,
-                hourIndex
-            } = parseSlotKey(key);
-
-
-            const hour = HOURS[hourIndex];
-
-
-            return {
-
-                day: DAYS[dayIndex],
-
-                dayIndex,
-
-                start: hour.start,
-
-                end: hour.end
-
-            };
-
-        }).sort((a, b) =>
-
-            a.dayIndex - b.dayIndex ||
-            a.start - b.start
-
-        );
-
-
-    const area = onlyDigits(phoneArea.value);
-
-    const number = onlyDigits(phoneNumber.value);
-
-
-    return {
-
-        id: (
-            typeof crypto !== "undefined" &&
-            crypto.randomUUID
-        )
-
-            ? crypto.randomUUID()
-
-            : `servico-${Date.now()}`,
-
-        name: serviceName.value.trim(),
-
-        minimumPrice: normalizePrice(
-            servicePrice.value
-        ),
-
-        phone: area && number
-
-            ? {
-                areaCode: area,
-                number
-            }
-
-            : null,
-
-        description: serviceDescription.value.trim(),
-
-        availability,
-
-        createdAt: new Date().toISOString()
-
-    };
-
-}
-
-
-// ==========================================
-// SALVAR SERVIÇO LOCALMENTE
-// ==========================================
-
-function saveServiceLocally(service) {
-
-    const services = readSavedServices();
-
-
-    if (services === null) {
-
-        throw new Error(
-            "Os dados locais não puderam ser lidos. Verifique o armazenamento do navegador."
-        );
-
-    }
-
-
-    services.push(service);
-
-
-    try {
-
-        localStorage.setItem(
-            STORAGE_KEY,
-            JSON.stringify(services)
-        );
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "Erro ao salvar o serviço:",
-            error
-        );
-
-
-        throw new Error(
-            "Não foi possível salvar o serviço neste navegador. Verifique o espaço disponível e as permissões de armazenamento."
-        );
-
-    }
-
-}
-
-
-// ==========================================
-// VERIFICAÇÃO DEMONSTRATIVA DA SENHA
-// ==========================================
-
-passwordForm.addEventListener("submit", event => {
-
-    event.preventDefault();
-
-
-    const typedPassword =
-        confirmationPassword.value;
-
-
-    if (!typedPassword) {
-
-        passwordError.textContent =
-            "Digite sua senha para continuar.";
-
-        setInvalid(confirmationPassword, true);
-
-        confirmationPassword.focus();
-
-        return;
-
-    }
-
-
-    // A senha é comparada apenas à constante
-    // de demonstração.
-    //
-    // Nenhuma senha é gravada no localStorage.
-
-    if (typedPassword !== DEMO_PASSWORD) {
-
-        passwordError.textContent =
-            "Senha incorreta. Confira e tente novamente.";
-
-        setInvalid(confirmationPassword, true);
-
-        confirmationPassword.focus();
-
-        return;
-
-    }
-
-
-    // Se a senha estiver correta, cria o serviço.
-
-    try {
-
-        const service = buildServiceRecord();
-
-        saveServiceLocally(service);
-
-        closeDialog(passwordDialog);
-
-        showSuccess(service.name);
-
-    }
-
-    catch (error) {
-
-        passwordError.textContent =
-            error.message;
-
-    }
-
-});
-
-
-confirmationPassword.addEventListener("input", () => {
-
-    passwordError.textContent = "";
-
-    setInvalid(confirmationPassword, false);
-
 });
 
 
 // ==========================================
-// MODAL DE SUCESSO
+// MODAL DE RESULTADO
 // ==========================================
 
-function showSuccess(serviceNameValue) {
-
-    resultTitle.textContent =
-        "SERVIÇO CRIADO!";
+let prestadorCadastrado = false;
 
 
-    resultMessage.textContent =
+// ==========================================
+// EXIBIR SUCESSO
+// ==========================================
 
-        `O serviço “${serviceNameValue}” foi salvo localmente neste navegador. A integração com o servidor será adicionada quando a API estiver pronta.`;
+function showSuccess(serviceNameValue, isUpdate = false) {
 
+    prestadorCadastrado = true;
+
+    resultTitle.textContent = isUpdate
+        ? "SERVIÇO ATUALIZADO!"
+        : "CADASTRO REALIZADO!";
+
+    resultMessage.textContent = isUpdate
+        ? `O serviço "${serviceNameValue}" foi atualizado com sucesso no servidor.`
+        : `O prestador "${serviceNameValue}" foi cadastrado com sucesso no servidor.`;
 
     openDialog(resultDialog);
 
 }
 
 
+// ==========================================
+// EXIBIR ERRO
+// ==========================================
+
+function showError(message) {
+
+    prestadorCadastrado = false;
+
+    resultTitle.textContent =
+        "NÃO FOI POSSÍVEL SALVAR";
+
+    resultMessage.textContent = message;
+
+    openDialog(resultDialog);
+
+}
+
+
+// ==========================================
+// FECHAR MODAL DE RESULTADO
+// ==========================================
+
 resultClose.addEventListener("click", () => {
 
     closeDialog(resultDialog);
 
-    // O serviço já está salvo.
-    // Os dados permanecem na tela para revisão.
+    if (prestadorCadastrado) {
+
+        window.location.href = "tela-principal.html";
+
+    }
 
 });
 
@@ -1168,9 +1137,6 @@ document.querySelectorAll("[data-close]").forEach(button => {
 });
 
 
-// A marca ServiceOne é um link direto para tela-principal.html.
-
-
 // ==========================================
 // INICIALIZAÇÃO
 // ==========================================
@@ -1180,3 +1146,5 @@ createAvailabilityGrid();
 updateSelectionSummary();
 
 updateCreateButton();
+
+carregarContextoPrestador();

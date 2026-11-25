@@ -1,4 +1,3 @@
-
 "use strict";
 
 // ==========================================
@@ -252,6 +251,51 @@ feedbackButton.addEventListener("click", () => {
 
 
 // ==========================================
+// 10A. IDENTIFICAÇÃO DO PERFIL DO USUÁRIO
+// ==========================================
+
+async function identificarPerfilUsuario(usuarioId) {
+    const [resPrestadores, resClientes] = await Promise.all([
+        fetch(`${API_BASE_URL}/prestador`, {
+            method: "GET",
+            headers: { "Accept": "application/json" }
+        }),
+        fetch(`${API_BASE_URL}/cliente`, {
+            method: "GET",
+            headers: { "Accept": "application/json" }
+        })
+    ]);
+
+    if (!resPrestadores.ok || !resClientes.ok) {
+        throw new Error(
+            "Não foi possível verificar o perfil cadastrado do usuário."
+        );
+    }
+
+    const [prestadores, clientes] = await Promise.all([
+        resPrestadores.json(),
+        resClientes.json()
+    ]);
+
+    const ehPrestador = Array.isArray(prestadores) &&
+        prestadores.some(p => Number(p.id_usuario) === Number(usuarioId));
+
+    if (ehPrestador) {
+        return "prestador";
+    }
+
+    const ehCliente = Array.isArray(clientes) &&
+        clientes.some(c => Number(c.id_usuario) === Number(usuarioId));
+
+    if (ehCliente) {
+        return "cliente";
+    }
+
+    return null;
+}
+
+
+// ==========================================
 // 11. LOGIN INTEGRADO À API
 // ==========================================
 
@@ -329,8 +373,16 @@ loginForm.addEventListener("submit", async event => {
             JSON.stringify(resultado.usuario || {})
         );
 
-        // Login confirmado
-        window.location.replace("tela-principal.html");
+        // Identifica se o usuário possui perfil de prestador ou cliente
+        const papel = await identificarPerfilUsuario(resultado.usuario?.id);
+
+        if (papel) {
+            sessionStorage.setItem("app:activeRole", papel);
+            window.location.replace("tela-principal.html");
+        } else {
+            sessionStorage.removeItem("app:activeRole");
+            window.location.replace("selecao-papel.html");
+        }
 
     } catch (erro) {
         console.error(
@@ -378,12 +430,7 @@ registerForm.addEventListener("submit", async event => {
     markValidity(registerEmail, emailIsValid);
     markValidity(registerPassword, passwordIsValid);
 
-    // Validação dos campos
-    if (
-        !nameIsValid ||
-        !emailIsValid ||
-        !passwordIsValid
-    ) {
+    if (!nameIsValid || !emailIsValid || !passwordIsValid) {
         const errors = [];
 
         if (!nameIsValid) {
@@ -404,15 +451,11 @@ registerForm.addEventListener("submit", async event => {
             );
         }
 
-        let firstInvalidField;
-
-        if (!nameIsValid) {
-            firstInvalidField = registerName;
-        } else if (!emailIsValid) {
-            firstInvalidField = registerEmail;
-        } else {
-            firstInvalidField = registerPassword;
-        }
+        const firstInvalidField = !nameIsValid
+            ? registerName
+            : !emailIsValid
+                ? registerEmail
+                : registerPassword;
 
         openFeedback({
             type: "error",
@@ -429,7 +472,7 @@ registerForm.addEventListener("submit", async event => {
     setFormLoading(registerForm, true);
 
     try {
-        // Envia os dados para a API
+        // 1. Cadastra a conta
         await apiRequest(
             "/usuario",
             "POST",
@@ -440,12 +483,41 @@ registerForm.addEventListener("submit", async event => {
             }
         );
 
-        // Cadastro confirmado no backend
+        // 2. Realiza login automaticamente
+        const resultado = await apiRequest(
+            "/usuario/login",
+            "POST",
+            {
+                email,
+                senha: password
+            }
+        );
+
+        if (!resultado.token || !resultado.usuario?.id) {
+            throw new Error(
+                "A API não retornou os dados necessários para iniciar a sessão."
+            );
+        }
+
+        // 3. Armazena a sessão
+        sessionStorage.setItem(
+            "es_token",
+            resultado.token
+        );
+
+        sessionStorage.setItem(
+            "es_usuario",
+            JSON.stringify(resultado.usuario)
+        );
+
+        sessionStorage.removeItem("app:activeRole");
+
+        // 4. Encaminha para a escolha do perfil
         openFeedback({
             type: "success",
             title: "CADASTRO CONCLUÍDO!",
             message:
-                "Sua conta foi cadastrada com sucesso. Agora escolha se deseja utilizar a aplicação como cliente ou prestador de serviços.",
+                "Sua conta foi cadastrada e autenticada com sucesso. Agora escolha se deseja utilizar a aplicação como cliente ou prestador de serviços.",
             buttonText: "CONTINUAR",
             action: () => {
                 window.location.href = "selecao-papel.html";
@@ -454,7 +526,7 @@ registerForm.addEventListener("submit", async event => {
 
     } catch (erro) {
         console.error(
-            "Falha no cadastro:",
+            "Falha no cadastro ou autenticação:",
             erro.message
         );
 
@@ -467,7 +539,7 @@ registerForm.addEventListener("submit", async event => {
 
         openFeedback({
             type: "error",
-            title: "NÃO FOI POSSÍVEL CADASTRAR",
+            title: "NÃO FOI POSSÍVEL CONCLUIR O CADASTRO",
             message: mensagem,
             buttonText: "VOLTAR",
             action: () => showScreen(registerScreen)
