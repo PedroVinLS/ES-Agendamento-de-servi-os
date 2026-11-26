@@ -1,0 +1,10 @@
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "tipo": "Bearer",
+  "expiraEm": 3600,
+  "usuario": {
+    "id": 1,
+    "nome": "Pedro Henrique",
+    "email": "pedro@email.com"
+  }
+}
