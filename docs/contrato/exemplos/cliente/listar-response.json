@@ -1,0 +1,12 @@
+[
+  {
+    "id_usuario": 1,
+    "cpf": "12345678901",
+    "observacoes": "Prefere atendimento no período da manhã."
+  },
+  {
+    "id_usuario": 2,
+    "cpf": "98765432100",
+    "observacoes": null
+  }
+]

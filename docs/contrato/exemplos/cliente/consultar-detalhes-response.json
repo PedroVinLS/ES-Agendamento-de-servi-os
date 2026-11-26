@@ -1,0 +1,9 @@
+{
+  "id_usuario": 1,
+  "cpf": "12345678901",
+  "observacoes": "Prefere atendimento no período da manhã.",
+  "usuario": {
+    "nome": "Pedro Henrique",
+    "email": "pedro@email.com"
+  }
+}
