@@ -1,0 +1,101 @@
+name: verificacao
+
+on:
+    pull_request:
+        branches:
+            - main
+
+    push:
+        branches:
+            - main
+            - feat/testes-automatizados-integracao
+
+permissions:
+    contents: read
+
+jobs:
+    testes:
+        runs-on: ubuntu-24.04
+        timeout-minutes: 20
+
+        env:
+            ENV_FILE: .env.test
+
+        steps:
+            - name: Baixar codigo
+              uses: actions/checkout@v7
+
+            - name: Configurar Node.js
+              uses: actions/setup-node@v7
+              with:
+                  node-version: '26'
+                  cache: npm
+
+            - name: Instalar dependencias
+              id: install
+              run: npm ci
+
+            - name: Instalar e iniciar MariaDB
+              id: mariadb
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install --no-install-recommends -y mariadb-server
+                  sudo systemctl start mariadb
+
+                  for attempt in {1..30}; do
+                    if sudo mariadb-admin ping --silent; then
+                      exit 0
+                    fi
+                    sleep 2
+                  done
+
+                  echo "MariaDB nao iniciou."
+                  exit 1
+
+            - name: Criar banco de testes
+              id: database
+              run: |
+                  sudo mariadb <<'SQL'
+                  CREATE DATABASE sistema_servicos_test
+                    CHARACTER SET utf8mb4
+                    COLLATE utf8mb4_unicode_ci;
+
+                  CREATE USER 'sistema_test'@'127.0.0.1'
+                    IDENTIFIED BY 'ci_test_password_only';
+
+                  GRANT ALL PRIVILEGES ON sistema_servicos_test.*
+                    TO 'sistema_test'@'127.0.0.1';
+                  SQL
+
+            - name: Criar ambiente de testes
+              id: envfile
+              run: |
+                  cat > .env.test <<'EOF'
+                  DB_NAME=sistema_servicos_test
+                  DB_USER=sistema_test
+                  DB_PASS_DEV=ci_test_password_only
+                  DB_HOST_DEV=127.0.0.1
+                  DB_PORT=3306
+                  DB_DIALECT=mysql
+                  PORT=3001
+                  JWT_SECRET=segredo-exclusivo-para-testes-com-mais-de-32-caracteres
+                  EOF
+
+            - name: Executar migrations
+              id: migrations
+              run: npx sequelize-cli db:migrate --env development
+
+            - name: Verificar formatacao
+              id: prettier
+              if: ${{ always() && steps.install.outcome == 'success' }}
+              run: npm run format:check
+
+            - name: Verificar estilo
+              id: eslint
+              if: ${{ always() && steps.install.outcome == 'success' }}
+              run: npm run lint
+
+            - name: Executar testes automatizados
+              id: tests
+              if: ${{ always() && steps.install.outcome == 'success' && steps.mariadb.outcome == 'success' && steps.database.outcome == 'success' && steps.envfile.outcome == 'success' && steps.migrations.outcome == 'success' }}
+              run: npm test
