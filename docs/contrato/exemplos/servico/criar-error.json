@@ -1,0 +1,8 @@
+[
+    {
+    "error": "Este prestador ou cliente já possui um serviço registrado neste horário."
+    },
+    {
+    "error": "Informe uma agenda válida."
+    }
+]

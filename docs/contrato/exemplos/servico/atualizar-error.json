@@ -1,0 +1,11 @@
+[
+    {
+    "error": "Informe um horário ou local novo."
+    },
+    {
+    "error": "Informe um horário válido."
+    },
+    {
+    "error": "Você não tem permissão para alterar este serviço."
+    }
+]
