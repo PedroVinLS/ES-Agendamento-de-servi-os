@@ -1,0 +1,11 @@
+{
+  "id_usuario": 1,
+  "cnpj": "12345678000199",
+  "servicoPrestado": "Manutenção de computadores",
+  "preco": "150.00",
+  "avaliacao": 0,
+  "usuario": {
+    "nome": "Pedro Henrique",
+    "email": "pedro@email.com"
+  }
+}

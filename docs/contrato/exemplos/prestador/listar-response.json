@@ -1,0 +1,16 @@
+[
+  {
+    "id_usuario": 1,
+    "cnpj": "12345678000199",
+    "servicoPrestado": "Manutenção de computadores",
+    "preco": "150.00",
+    "avaliacao": 0
+  },
+  {
+    "id_usuario": 2,
+    "cnpj": "98765432000188",
+    "servicoPrestado": "Instalação elétrica",
+    "preco": "200.00",
+    "avaliacao": 4
+  }
+]

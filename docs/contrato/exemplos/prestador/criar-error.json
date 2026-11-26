@@ -1,0 +1,6 @@
+{
+  "error": "Dados do serviço inválidos.",
+  "detalhes": [
+    "O serviço prestado deve conter entre 1 e 150 caracteres."
+  ]
+}
