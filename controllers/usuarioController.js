@@ -7,7 +7,7 @@ class usuarioController {
     async index (req, res) {
         try {
             const usuarios = await Usuario.findAll({
-                attributes: { excludes: ['senha'] }
+                attributes: { exclude: ['senha'] }
         });
             return res.json(usuarios);
         } catch (erro) {

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#DFEFE9">
+    <title>ServiceOne | Página inicial</title>
+
+    <link rel="stylesheet" href="../css/tela-principal.css">
+    <script src="../js/tela-principal.js" defer></script>
+</head>
+<body data-user-role="cliente">
+
+<main class="main-app">
+
+    <!-- CABEÇALHO -->
+    <header class="main-header">
+        <div class="brand-area">
+            <h1 class="brand-name">Service<span class="brand-accent">One</span></h1>
+            <p class="brand-subtitle">Encontre serviços. Organize sua rotina.</p>
+        </div>
+
+        <div class="user-information">
+            <span class="role-indicator" id="role-indicator">CLIENTE</span>
+        </div>
+    </header>
+
+    <!-- ABAS PRINCIPAIS -->
+    <nav class="tab-navigation" aria-label="Navegação principal">
+        <button
+            class="tab-button is-active"
+            id="schedule-tab"
+            type="button"
+            role="tab"
+            aria-selected="true"
+            aria-controls="schedule-panel">
+            <span class="tab-icon" aria-hidden="true">▦</span>
+            MINHA AGENDA
+        </button>
+
+        <button
+            class="tab-button"
+            id="search-tab"
+            type="button"
+            role="tab"
+            aria-selected="false"
+            aria-controls="search-panel">
+            <span class="tab-icon" aria-hidden="true">⌕</span>
+            PESQUISAR SERVIÇOS
+        </button>
+    </nav>
+
+    <!-- ABA 1: AGENDA -->
+    <section
+        class="tab-panel is-active"
+        id="schedule-panel"
+        role="tabpanel"
+        aria-labelledby="schedule-tab">
+
+        <header class="section-heading">
+            <div>
+                <h2 id="schedule-heading">MEUS AGENDAMENTOS</h2>
+                <p id="schedule-description">Consulte os serviços que você agendou nesta semana.</p>
+            </div>
+
+            <div class="week-navigation">
+                <button id="previous-week" class="week-button" type="button" aria-label="Semana anterior">‹</button>
+                <span id="week-label" class="week-label">Esta semana</span>
+                <button id="next-week" class="week-button" type="button" aria-label="Próxima semana">›</button>
+            </div>
+        </header>
+
+        <div class="week-scroll" id="week-scroll">
+            <div class="week-grid" id="week-grid" aria-live="polite"></div>
+        </div>
+
+        <div class="schedule-footer">
+            <span class="schedule-legend">
+                <i class="legend-dot client-dot"></i>
+                Horários agendados
+            </span>
+
+            <span class="schedule-legend" id="provider-legend" hidden>
+                <i class="legend-dot provider-dot"></i>
+                Horários de trabalho
+            </span>
+        </div>
+    </section>
+
+    <!-- ABA 2: PESQUISA DE SERVIÇOS -->
+    <section
+        class="tab-panel"
+        id="search-panel"
+        role="tabpanel"
+        aria-labelledby="search-tab"
+        hidden>
+
+        <div class="search-heading-row">
+            <header class="search-heading">
+                <h2>ENCONTRE O SERVIÇO QUE VOCÊ PRECISA</h2>
+                <p>Pesquise serviços disponíveis na plataforma.</p>
+            </header>
+
+            <!-- Exibido exclusivamente para usuários Prestadores. -->
+            <button
+                id="create-service-button"
+                class="create-service-button"
+                type="button"
+                data-target="criacao-servicos.html"
+                hidden>
+                <span class="create-service-plus" aria-hidden="true">+</span>
+                <span>CRIAR NOVO SERVIÇO</span>
+            </button>
+        </div>
+
+        <form id="search-form" class="search-form">
+            <div class="search-input-wrapper">
+                <input
+                    id="service-search"
+                    class="search-input"
+                    type="search"
+                    placeholder="Buscar serviços..."
+                    maxlength="150"
+                    autocomplete="off"
+                    aria-label="Nome do serviço">
+
+                <button
+                    class="search-clear-button"
+                    id="clear-search"
+                    type="button"
+                    aria-label="Limpar pesquisa"
+                    hidden>×</button>
+            </div>
+
+            <button class="search-submit-button" type="submit">
+                <span aria-hidden="true">⌕</span>
+                <span class="search-button-text">PESQUISAR</span>
+            </button>
+        </form>
+
+        <div class="results-heading">
+            <div>
+                <h3>RESULTADOS</h3>
+                <p id="results-count">Nenhum serviço encontrado.</p>
+            </div>
+
+            <label class="sort-control" for="service-sort">
+                <span>ORDENAR:</span>
+                <select id="service-sort">
+                    <option value="relevance">Relevância</option>
+                    <option value="name">Nome</option>
+                    <option value="price">Menor preço</option>
+                    <option value="rating">Melhor avaliação</option>
+                </select>
+            </label>
+        </div>
+
+        <div class="results-scroll" id="results-scroll">
+            <div
+                class="service-results"
+                id="service-results"
+                aria-live="polite"
+                aria-busy="false"></div>
+
+            <div class="empty-state" id="empty-state">
+                <div class="empty-icon" aria-hidden="true">⌕</div>
+                <h3>NENHUM SERVIÇO DISPONÍVEL</h3>
+                <p>Ainda não existem serviços cadastrados na plataforma.</p>
+            </div>
+
+            <div class="loading-state" id="loading-state" hidden>
+                Carregando serviços...
+            </div>
+        </div>
+    </section>
+
+</main>
+
+</body>
+</html>

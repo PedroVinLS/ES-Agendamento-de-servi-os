@@ -1,3 +1,4 @@
+
 'use strict'
 
 const {
@@ -16,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
                 onDelete: 'CASCADE',
                 onUpdate: 'CASCADE',
             });
-            
+
             this.belongsTo(models.Prestador, {
                 foreignKey: 'id_prestador',
                 targetKey: 'cnpj',
@@ -33,24 +34,25 @@ module.exports = (sequelize, DataTypes) => {
             });
         }
     }
+
     Servico.init({
-        id:  {
+        id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true,
         },
-        id_cliente:  {
+        id_cliente: {
+            type: DataTypes.CHAR(11),
+            allowNull: false,
+        },
+        id_prestador: {
             type: DataTypes.CHAR(14),
             allowNull: false,
         },
-        id_prestador:  {
-            type: DataTypes.CHAR(14),
-            allowNull: false,
-        },
-        id_agenda:  {
+        id_agenda: {
             type: DataTypes.INTEGER,
             allowNull: false,
-        }, 
+        },
         tag: {
             type: DataTypes.STRING(100),
             allowNull: true
@@ -63,7 +65,8 @@ module.exports = (sequelize, DataTypes) => {
         sequelize,
         modelName: 'Servico',
         tableName: 'SERVICO',
-        timestamps: false, 
+        timestamps: false,
     });
+
     return Servico;
 };
