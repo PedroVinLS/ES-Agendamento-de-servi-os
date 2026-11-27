@@ -451,7 +451,7 @@ loginForm.addEventListener("submit", event => {
     */
 
 
-    window.location.reload();
+    window.location.replace("tela-principal.html");
 
 });
 
